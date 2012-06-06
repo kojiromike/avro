@@ -16,17 +16,15 @@
 """
 Read/Write Avro File Object Containers.
 """
-import zlib
+from __future__ import print_function
 try:
   from cStringIO import StringIO
 except ImportError:
   from StringIO import StringIO
 from avro import schema
 from avro import io
-try:
-  import snappy
-except:
-  pass # fail later if snappy is used
+from sys import stderr
+
 #
 # Constants
 #
@@ -43,11 +41,34 @@ META_SCHEMA = schema.parse("""\
    {"name": "meta", "type": {"type": "map", "values": "bytes"}},
    {"name": "sync", "type": {"type": "fixed", "name": "sync", "size": %d}}]}
 """ % (MAGIC_SIZE, SYNC_SIZE))
-VALID_CODECS = ['null', 'deflate', 'snappy']
+VALID_CODECS = ['null', 'deflate', 'snappy', 'lz4']
 VALID_ENCODINGS = ['binary'] # not used yet
 
 CODEC_KEY = "avro.codec"
 SCHEMA_KEY = "avro.schema"
+
+def import_codec(codec):
+  """
+  Import the desired codec library and return the validated codec name
+  """
+  codeclib = None
+  codec = codec or 'null'
+  try:
+    if codec not in VALID_CODECS:
+      print("Unknown codec: %r. Falling back to null compression." % codec)
+      codec = 'null'
+    elif 'null' == codec:
+      pass
+    elif 'deflate' == codec:
+      import zlib as codeclib
+    elif 'snappy' == codec:
+      import snappy as codeclib
+    elif 'lz4' == codec:
+      import lz4 as codeclib
+  except ImportError:
+    print("Codec for %r not installed. Falling back to null compression." % codec, stderr)
+    codec = 'null'
+  return (codec, codeclib)
 
 #
 # Exceptions
@@ -85,9 +106,8 @@ class DataFileWriter(object):
     self._meta = {}
 
     if writers_schema is not None:
-      if codec not in VALID_CODECS:
-        raise DataFileException("Unknown codec: %r" % codec)
       self._sync_marker = DataFileWriter.generate_sync_marker()
+      codec, self.codeclib = import_codec(codec)
       self.set_meta('avro.codec', codec)
       self.set_meta('avro.schema', str(writers_schema))
       self.datum_writer.writers_schema = writers_schema
@@ -95,7 +115,7 @@ class DataFileWriter(object):
     else:
       # open writer for reading to collect metadata
       dfr = DataFileReader(writer, io.DatumReader())
-      
+
       # TODO(hammer): collect arbitrary metadata
       # collect metadata
       self._sync_marker = dfr.sync_marker
@@ -157,10 +177,10 @@ class DataFileWriter(object):
       elif self.get_meta(CODEC_KEY) == 'deflate':
         # The first two characters and last character are zlib
         # wrappers around deflate data.
-        compressed_data = zlib.compress(uncompressed_data)[2:-1]
+        compressed_data = self.codeclib.compress(uncompressed_data)[2:-1]
         compressed_data_length = len(compressed_data)
-      elif self.get_meta(CODEC_KEY) == 'snappy':
-        compressed_data = snappy.compress(uncompressed_data)
+      elif self.get_meta(CODEC_KEY) in ('snappy', 'lz4'):
+        compressed_data = self.codeclib.compress(uncompressed_data)
         compressed_data_length = len(compressed_data) + 4 # crc32
       else:
         fail_msg = '"%s" codec is not supported.' % self.get_meta(CODEC_KEY)
@@ -171,16 +191,16 @@ class DataFileWriter(object):
 
       # Write block
       self.writer.write(compressed_data)
-      
+
       # Write CRC32 checksum for Snappy
-      if self.get_meta(CODEC_KEY) == 'snappy':
+      if self.get_meta(CODEC_KEY) in ('snappy', 'lz4'):
         self.encoder.write_crc32(uncompressed_data)
 
       # write sync marker
       self.writer.write(self.sync_marker)
 
       # reset buffer
-      self.buffer_writer.truncate(0) 
+      self.buffer_writer.truncate(0)
       self.block_count = 0
 
   def append(self, datum):
@@ -220,16 +240,14 @@ class DataFileReader(object):
     self._raw_decoder = io.BinaryDecoder(reader)
     self._datum_decoder = None # Maybe reset at every block.
     self._datum_reader = datum_reader
-    
+
     # read the header: magic, meta, sync
     self._read_header()
 
     # ensure codec is valid
     self.codec = self.get_meta('avro.codec')
-    if self.codec is None:
-      self.codec = "null"
-    if self.codec not in VALID_CODECS:
-      raise DataFileException('Unknown codec: %s.' % self.codec)
+    self.codec, self.codeclib = import_codec(self.codec)
+    self.set_meta('avro.codec', self.codec)
 
     # get file length
     self._file_length = self.determine_file_length()
@@ -284,7 +302,7 @@ class DataFileReader(object):
 
   def _read_header(self):
     # seek to the beginning of the file to get magic block
-    self.reader.seek(0, 0) 
+    self.reader.seek(0, 0)
 
     # read header into a dict
     header = self.datum_reader.read_data(
@@ -314,13 +332,13 @@ class DataFileReader(object):
       data = self.raw_decoder.read_bytes()
       # -15 is the log of the window size; negative indicates
       # "raw" (no zlib headers) decompression.  See zlib.h.
-      uncompressed = zlib.decompress(data, -15)
+      uncompressed = self.codeclib.decompress(data, -15)
       self._datum_decoder = io.BinaryDecoder(StringIO(uncompressed))
-    elif self.codec == 'snappy':
+    elif self.codec in ('snappy', 'lz4'):
       # Compressed data includes a 4-byte CRC32 checksum
       length = self.raw_decoder.read_long()
       data = self.raw_decoder.read(length - 4)
-      uncompressed = snappy.decompress(data)
+      uncompressed = self.codeclib.decompress(data)
       self._datum_decoder = io.BinaryDecoder(StringIO(uncompressed))
       self.raw_decoder.check_crc32(uncompressed);
     else:
@@ -351,7 +369,7 @@ class DataFileReader(object):
       else:
         self._read_block_header()
 
-    datum = self.datum_reader.read(self.datum_decoder) 
+    datum = self.datum_reader.read(self.datum_decoder)
     self.block_count -= 1
     return datum
 
