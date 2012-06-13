@@ -21,7 +21,7 @@ except ImportError:
   from distutils.core import setup
 from sys import version_info
 
-install_requires = ['python-snappy']
+install_requires = []
 if version_info[:2] <= (2, 5):
     install_requires.append('simplejson >= 2.0.9')
 
