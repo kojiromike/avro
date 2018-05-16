@@ -117,7 +117,7 @@ def Validate(expected_schema, datum):
       return False
   return True
 
-def RaiseIfInvalid(expected_schema, datum):
+def RaiseIfInvalid(expected_schema, datum, stack=None):
   """Determines if a python datum is an instance of a schema.
 
   Args:
@@ -128,74 +128,81 @@ def RaiseIfInvalid(expected_schema, datum):
   Returns:
     None
   """
-  avro_type_message = 'Got type "{}" where schema requires type "{}".'
+  avro_type_message = 'Got type "{}" where schema {} requires type "{}".'
   schema_type = expected_schema.type
+  if stack is None:
+    stack = []
+  try:
+    stack.append(expected_schema.name)
+  except KeyError:
+    stack.append('<Anonymous Schema Field>')
   if schema_type == 'null':
     if datum is not None:
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
   elif schema_type == 'boolean':
     if not isinstance(datum, bool):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
   elif schema_type == 'string':
     if not isinstance(datum, str):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
   elif schema_type == 'bytes':
     if not isinstance(datum, bytes):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
   elif schema_type == 'int':
     if not isinstance(datum, int):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
     if not (INT_MIN_VALUE <= datum <= INT_MAX_VALUE):
-      raise AvroRangeException('Integer value {} is outside of required range {}-{}.'. \
-          format(datum, INT_MIN_VALUE, INT_MAX_VALUE))
+      raise AvroRangeException('Integer value {} in schema {} is outside of required range {}-{}.'. \
+          format(datum, stack, INT_MIN_VALUE, INT_MAX_VALUE))
   elif schema_type == 'long':
     if not isinstance(datum, int):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
     if not LONG_MIN_VALUE <= datum <= LONG_MAX_VALUE:
-      raise AvroRangeException('Long integer value {} is outside of required range {}-{}.'. \
-          format(datum, LONG_MIN_VALUE, LONG_MAX_VALUE))
+      raise AvroRangeException('Long integer value {} in schema {} is outside of required range {}-{}.'. \
+          format(datum, stack, LONG_MIN_VALUE, LONG_MAX_VALUE))
   elif schema_type in ['float', 'double']:
     if not isinstance(datum, (int, float)):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
   elif schema_type == 'fixed':
     if not isinstance(datum, bytes):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
     size = len(datum)
     if size != expected_schema.size:
-      raise AvroFixedSizeException('Data of size {} provided where schema requires fixed size {}.'. \
-          format(size, expected_schema.size))
+      raise AvroFixedSizeException('Data of size {} provided where schema {} requires fixed size {}.'. \
+          format(size, stack, expected_schema.size))
   elif schema_type == 'enum':
     if datum not in expected_schema.symbols:
-      raise AvroUnknownEnum('Enum symbol "{}" must be one of "{}".'. \
-          format(datum, expected_schema.symbols))
+      raise AvroUnknownEnum('Enum symbol "{}" in schema {} must be one of "{}".'. \
+          format(datum, stack, expected_schema.symbols))
   elif schema_type == 'array':
     if not isinstance(datum, list):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
     for item in datum:
-      RaiseIfInvalid(expected_schema.items, item)
+      RaiseIfInvalid(expected_schema.items, item, stack)
   elif schema_type == 'map':
     if not isinstance(datum, dict):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
     for key in datum.keys():
       if not isinstance(key, str):
-        raise AvroTypeException('Got type "{}" for a map key. A map key must be a string.'.format(type(key)))
+        raise AvroTypeException('Got type "{}" for a map key in schema {}. A map key must be a string.'. \
+            format(type(key), stack))
     for value in datum.values():
-      RaiseIfInvalid(expected_schema.values, value)
+      RaiseIfInvalid(expected_schema.values, value, stack)
   elif schema_type in ['union', 'error_union']:
     for union_branch in expected_schema.schemas:
       try:
-        RaiseIfInvalid(union_branch, datum)
+        RaiseIfInvalid(union_branch, datum, stack)
       except AvroTypeException:
         continue
       break
     else:
-      raise AvroTypeException('Got type "{}" where schema requires one of "{}"'. \
-          format(type(datum), expected_schema.schemas))
+      raise AvroTypeException('Got type "{}" where schema {} requires one of "{}"'. \
+          format(type(datum), stack, expected_schema.schemas))
   elif schema_type in ['record', 'error', 'request']:
     if not isinstance(datum, dict):
-      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+      raise AvroTypeException(avro_type_message.format(schema_type, stack, type(datum)))
     for field in expected_schema.fields:
-      RaiseIfInvalid(field.type, datum.get(field.name))
+      RaiseIfInvalid(field.type, datum.get(field.name), stack)
   else:
     raise AvroUnknownSchemaType('Unknown Avro schema type: %r' % schema_type)
 
