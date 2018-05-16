@@ -73,11 +73,18 @@ STRUCT_CRC32 = struct.Struct('>I')   # big-endian unsigned int
 
 class AvroTypeException(schema.AvroException):
   """Raised when datum is not an example of schema."""
-  def __init__(self, expected_schema, datum):
-    pretty_expected = json.dumps(json.loads(str(expected_schema)), indent=2)
-    fail_msg = "The datum %s is not an example of the schema %s"\
-               % (datum, pretty_expected)
-    schema.AvroException.__init__(self, fail_msg)
+
+class AvroRangeException(AvroTypeException):
+  """AvroTypeException for numeric values out of bounds."""
+
+class AvroFixedSizeException(AvroTypeException):
+  """AvroTypeException for fixed-size data that is the wrong size."""
+
+class AvroUnknownEnum(AvroTypeException):
+  """AvroTypeException for enums that are not known."""
+
+class AvroUnknownSchemaType(AvroTypeException):
+  """AvroTypeException for a schema type that is not known."""
 
 
 class SchemaResolutionException(schema.AvroException):
@@ -102,45 +109,95 @@ def Validate(expected_schema, datum):
   Returns:
     True if the datum is an instance of the schema.
   """
+  try:
+      RaiseIfInvalid(expected_schema, datum)
+  except AvroUnknownSchemaType:
+      raise
+  except AvroTypeException:
+      return False
+  return True
+
+def RaiseIfInvalid(expected_schema, datum):
+  """Determines if a python datum is an instance of a schema.
+
+  Args:
+    expected_schema: Schema to validate against.
+    datum: Datum to validate.
+  Raises:
+    AvroTypeException if datum is invalid.
+  Returns:
+    None
+  """
+  avro_type_message = 'Got type "{}" where schema requires type "{}".'
   schema_type = expected_schema.type
   if schema_type == 'null':
-    return datum is None
+    if datum is not None:
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
   elif schema_type == 'boolean':
-    return isinstance(datum, bool)
+    if not isinstance(datum, bool):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
   elif schema_type == 'string':
-    return isinstance(datum, str)
+    if not isinstance(datum, str):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
   elif schema_type == 'bytes':
-    return isinstance(datum, bytes)
+    if not isinstance(datum, bytes):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
   elif schema_type == 'int':
-    return (isinstance(datum, int)
-        and (INT_MIN_VALUE <= datum <= INT_MAX_VALUE))
+    if not isinstance(datum, int):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+    if not (INT_MIN_VALUE <= datum <= INT_MAX_VALUE):
+      raise AvroRangeException('Integer value {} is outside of required range {}-{}.'. \
+          format(datum, INT_MIN_VALUE, INT_MAX_VALUE))
   elif schema_type == 'long':
-    return (isinstance(datum, int)
-        and (LONG_MIN_VALUE <= datum <= LONG_MAX_VALUE))
+    if not isinstance(datum, int):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+    if not LONG_MIN_VALUE <= datum <= LONG_MAX_VALUE:
+      raise AvroRangeException('Long integer value {} is outside of required range {}-{}.'. \
+          format(datum, LONG_MIN_VALUE, LONG_MAX_VALUE))
   elif schema_type in ['float', 'double']:
-    return (isinstance(datum, int) or isinstance(datum, float))
+    if not isinstance(datum, (int, float)):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
   elif schema_type == 'fixed':
-    return isinstance(datum, bytes) and (len(datum) == expected_schema.size)
+    if not isinstance(datum, bytes):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+    size = len(datum)
+    if size != expected_schema.size:
+      raise AvroFixedSizeException('Data of size {} provided where schema requires fixed size {}.'. \
+          format(size, expected_schema.size))
   elif schema_type == 'enum':
-    return datum in expected_schema.symbols
+    if datum not in expected_schema.symbols:
+      raise AvroUnknownEnum('Enum symbol "{}" must be one of "{}".'. \
+          format(datum, expected_schema.symbols))
   elif schema_type == 'array':
-    return (isinstance(datum, list)
-        and all(Validate(expected_schema.items, item) for item in datum))
+    if not isinstance(datum, list):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+    for item in datum:
+      RaiseIfInvalid(expected_schema.items, item)
   elif schema_type == 'map':
-    return (isinstance(datum, dict)
-        and all(isinstance(key, str) for key in datum.keys())
-        and all(Validate(expected_schema.values, value)
-                for value in datum.values()))
+    if not isinstance(datum, dict):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+    for key in datum.keys():
+      if not isinstance(key, str):
+        raise AvroTypeException('Got type "{}" for a map key. A map key must be a string.'.format(type(key)))
+    for value in datum.values():
+      RaiseIfInvalid(expected_schema.values, value)
   elif schema_type in ['union', 'error_union']:
-    return any(Validate(union_branch, datum)
-               for union_branch in expected_schema.schemas)
+    for union_branch in expected_schema.schemas:
+      try:
+        RaiseIfInvalid(union_branch, datum)
+      except AvroTypeException:
+        continue
+      break
+    else:
+      raise AvroTypeException('Got type "{}" where schema requires one of "{}"'. \
+          format(type(datum), expected_schema.schemas))
   elif schema_type in ['record', 'error', 'request']:
-    return (isinstance(datum, dict)
-        and all(Validate(field.type, datum.get(field.name))
-                for field in expected_schema.fields))
+    if not isinstance(datum, dict):
+      raise AvroTypeException(avro_type_message.format(schema_type, type(datum)))
+    for field in expected_schema.fields:
+      RaiseIfInvalid(field.type, datum.get(field.name))
   else:
-    raise AvroTypeException('Unknown Avro schema type: %r' % schema_type)
-
+    raise AvroUnknownSchemaType('Unknown Avro schema type: %r' % schema_type)
 
 # ------------------------------------------------------------------------------
 # Decoder/Encoder
@@ -805,9 +862,7 @@ class DatumWriter(object):
 
   def write(self, datum, encoder):
     # validate datum
-    if not Validate(self.writer_schema, datum):
-      raise AvroTypeException(self.writer_schema, datum)
-
+    RaiseIfInvalid(self.writer_schema, datum)
     self.write_data(self.writer_schema, datum, encoder)
 
   def write_data(self, writer_schema, datum, encoder):
