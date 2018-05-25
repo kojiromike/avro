@@ -4,3 +4,5 @@ avro/VERSION.txt
 avro/tests/interop.avsc
 avro_python3.egg-info/
 dist/
+.mypy_cache/
+.pytest_cache/
