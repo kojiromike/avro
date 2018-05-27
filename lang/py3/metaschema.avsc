@@ -1,0 +1,5 @@
+[{"type": "enum",
+  "name": "primitives",
+  "namespace": "avro",
+  "doc": "A choice of type names for primitive types",
+  "symbols": ["null", "boolean", "string", "bytes", "int", "long", "float", "double"]}]

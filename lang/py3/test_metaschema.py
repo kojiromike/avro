@@ -4,7 +4,17 @@
 
 I want to define a valid Avro schema that can itself serialize
 and unserialize to a valid Avro schema.
+"""
 
+from json import dumps
+from io import BytesIO
+from typing import Any, List
+
+from avro.io import DatumReader, BinaryDecoder, DatumWriter, BinaryEncoder
+from avro.schema import Parse as parse, PRIMITIVE_TYPES
+
+SCHEMA: List[Any] = []
+SCHEMA_DOC = """
 Schema Declaration
 
 A Schema is represented in JSON by one of:
@@ -12,29 +22,25 @@ A Schema is represented in JSON by one of:
     A JSON string, naming a defined type.
     A JSON object, of the form:
 
-    {"type": "typeName" ...attributes...}
+        {"type": "typeName" ...attributes...}
 
-    where typeName is either a primitive or derived type name, as defined below. Attributes not defined in this document are permitted as metadata, but must not affect the format of serialized data.
+        where typeName is either a primitive or derived type name, as defined below.
+        Attributes not defined in this document are permitted as metadata, but must
+        not affect the format of serialized data.
+
     A JSON array, representing a union of embedded types.
 """
 
-from json import dumps
-from io import BytesIO
-from pprint import pprint
-from typing import Any, List
-
-from avro.io import DatumReader, BinaryDecoder, DatumWriter, BinaryEncoder
-from avro.schema import Parse as parse, PRIMITIVE_TYPES
+# A JSON string, naming a defined type.
 
 # Initially, an avro schema is a union of three types: string, mapping and union.
-SCHEMA: List[Any] = []
 
 # A JSON string, naming a defined type.
 # Only the primitive types are known at the root.
 # So it's not just a string, it's an enum of primitive types.
 VALID_PRIMITIVES_ENUM = {
     "type": "enum",
-    "name": "valid_primitives_enum",
+    "name": "primitives_type",
     "namespace": "avro",
     "doc": "A choice of valid avro type names.",
     "symbols": tuple(PRIMITIVE_TYPES),
@@ -45,23 +51,49 @@ SCHEMA.append(VALID_PRIMITIVES_ENUM)
 # First, we'll repeat the primitive types in this form.
 VALID_PRIMITIVES_RECORD = {
     "type": "record",
-    "name": "valid_primitives_record",
+    "name": "primitives",
     "namespace": "avro",
-    "fields": [{"name": "type", "type": "valid_primitives_enum"}]
+    "fields": [{"name": "type", "type": "primitives_type"}]
 }
 SCHEMA.append(VALID_PRIMITIVES_RECORD)
 
-# Then we'll add the complex types
-VALID_FIXED_TYPE_TYPE = {
-    "type": "enum",
-    "name": "fixed_type",
-    "namespace": "avro",
-    "doc": "The avro fixed data type",
-    "symbols": tuple(["fixed"])
-}
-"""
-Fixed
+# Then we add some compound types
+ARRAYS_DOC = """
+Arrays use the type name "array" and support a single attribute:
 
+    items: the schema of the array's items.
+
+For example, an array of strings is declared with:
+
+{"type": "array", "items": "string"}
+"""
+ARRAY_TYPE = {
+    "type": "enum",
+    "name": "array_type",
+    "namespace": "avro",
+    "doc": "A string that can only be 'array'",
+    "symbols": tuple(["array"])
+}
+PRIMITIVE_ARRAY_TYPE_RECORD = {
+    "type": "record",
+    "name": "array",
+    "namespace": "avro",
+    "fields": [
+        {"name": "type", "type": ARRAY_TYPE},
+        {"name": "items", "type": SCHEMA.copy()},
+    ]
+}
+
+
+#   [
+#     ARRAY,
+#     MAP,
+#     UNION,
+#     REQUEST,
+#     ERROR_UNION,
+#   ],
+# Then we'll add the complex types
+FIXED_DOC = """
 Fixed uses the type name "fixed" and supports two attributes:
 
     name: a string naming this fixed (required).
@@ -73,14 +105,22 @@ For example, 16-byte quantity may be declared with:
 
 {"type": "fixed", "size": 16, "name": "md5"}
 """
+FIXED_TYPE = {
+    "type": "enum",
+    "name": "fixed_type",
+    "namespace": "avro",
+    "doc": "A string that can only be 'fixed'",
+    "symbols": tuple(["fixed"])
+}
 NAMESPACE_TYPE = ["null", "string"]
 ALIASES_TYPE = ["null"] # or array of strings
 VALID_FIXED_TYPE_RECORD = {
     "type": "record",
-    "name": "valid_fixed_record",
+    "name": "fixed",
     "namespace": "avro",
+    "doc": FIXED_DOC.strip(),
     "fields": [
-        {"name": "type", "type": VALID_FIXED_TYPE_TYPE},
+        {"name": "type", "type": FIXED_TYPE},
         {"name": "name", "type": "string"},
         {"name": "namespace", "type": NAMESPACE_TYPE},
         {"name": "aliases", "type": ALIASES_TYPE},
@@ -89,8 +129,37 @@ VALID_FIXED_TYPE_RECORD = {
 }
 SCHEMA.append(VALID_FIXED_TYPE_RECORD)
 
+ENUM_DOC = """
+An enum is encoded by a int, representing the zero-based position of the symbol in the schema.
+
+For example, consider the enum:
+
+	      {"type": "enum", "name": "Foo", "symbols": ["A", "B", "C", "D"] }
+
+This would be encoded by an int between zero and three, with zero indicating "A", and 3 indicating "D".
+"""
+ENUM_TYPE = {
+    "type": "enum",
+    "name": "enum_type",
+    "namespace": "avro",
+    "doc": "A string that can only be 'enum'",
+    "symbols": tuple(["enum"])
+}
+VALID_ENUM_TYPE_RECORD = {
+    "type": "record",
+    "name": "enum",
+    "namespace": "avro",
+    "doc": "The enum type",
+    "fields": [
+        {"name": "type", "type": ENUM_TYPE},
+        {"name": "name", "type": "string"},
+        {"name": "namespace", "type": NAMESPACE_TYPE},
+        {"name": "aliases", "type": ALIASES_TYPE},
+        {"name": "symbols", "type": []}
+    ]
+}
+
 # NAMED_TYPES = frozenset([
-#   FIXED,
 #   ENUM,
 #   RECORD,
 #   ERROR,
@@ -118,7 +187,7 @@ METASCHEMA = parse(dumps(SCHEMA))
 # SCHEMA.append("mapping") # A JSON object, of the form `{"type": "typeName", ...attributes...}`
 
 print("schema looks like")
-print(dumps(METASCHEMA.to_json(), indent=2))
+print(dumps(METASCHEMA.to_json()))
 print()
 
 def _avro_test_objects(schema):
@@ -165,7 +234,6 @@ def test_dict_primitives():
 def test_fixed():
     """Test that a fixed type type can be encoded and decoded."""
     writer, reader, storage, encoder, decoder = _avro_test_objects(METASCHEMA)
-    result = set([])
     writer.write({"type": "fixed", "name": "test", "size": 12}, encoder)
     storage.seek(0)
     datum = reader.read(decoder)
