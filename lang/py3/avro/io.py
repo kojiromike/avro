@@ -73,12 +73,10 @@ STRUCT_CRC32 = struct.Struct('>I')   # big-endian unsigned int
 
 class AvroTypeException(schema.AvroException):
   """Raised when datum is not an example of schema."""
-  def __init__(self, expected_schema, datum):
-    pretty_expected = json.dumps(json.loads(str(expected_schema)), indent=2)
-    fail_msg = "The datum %s is not an example of the schema %s"\
-               % (datum, pretty_expected)
-    schema.AvroException.__init__(self, fail_msg)
-
+  def __init__(self, msg, schema=None, datum=None):
+    super().__init__(msg)
+    self.schema = schema
+    self.datum = datum
 
 class SchemaResolutionException(schema.AvroException):
   def __init__(self, fail_msg, writer_schema=None, reader_schema=None):
@@ -92,6 +90,39 @@ class SchemaResolutionException(schema.AvroException):
 # ------------------------------------------------------------------------------
 # Validate
 
+_VALID_TYPE_MAP = {
+  'null': None,
+  'boolean': bool,
+  'string': str,
+  'bytes': bytes,
+  'int': int,
+  'long': int,
+  'float': (int, float),
+  'double': (int, float),
+  'fixed': bytes,
+  'enum': str,
+  'array': list,
+  'map': dict,
+  'union': list,
+  'error_union': list,
+  'record': dict,
+  'error': dict,
+  'request': dict,
+}
+
+def validate_type(schema, datum):
+  """Raises an AvroTypeException if the datum is
+  basically the same data type as the schema expects.
+
+  Since a union schema cannot contain repeat data types,
+  we can use this to narrow down the expected union branch
+  when reporting error messages.
+  """
+  if schema.type in _VALID_TYPE_MAP:
+    if isinstance(datum, _VALID_TYPE_MAP[schema.type]):
+      return
+    raise AvroTypeException('Datum is not the type the schema expects.', schema, datum)
+  raise AvroTypeException('Schema does not have a known type.', schema, datum)
 
 def Validate(expected_schema, datum):
   """Determines if a python datum is an instance of a schema.
@@ -103,44 +134,74 @@ def Validate(expected_schema, datum):
     True if the datum is an instance of the schema.
   """
   schema_type = expected_schema.type
-  if schema_type == 'null':
-    return datum is None
-  elif schema_type == 'boolean':
-    return isinstance(datum, bool)
-  elif schema_type == 'string':
-    return isinstance(datum, str)
-  elif schema_type == 'bytes':
-    return isinstance(datum, bytes)
-  elif schema_type == 'int':
-    return (isinstance(datum, int)
-        and (INT_MIN_VALUE <= datum <= INT_MAX_VALUE))
-  elif schema_type == 'long':
-    return (isinstance(datum, int)
-        and (LONG_MIN_VALUE <= datum <= LONG_MAX_VALUE))
-  elif schema_type in ['float', 'double']:
-    return (isinstance(datum, int) or isinstance(datum, float))
-  elif schema_type == 'fixed':
-    return isinstance(datum, bytes) and (len(datum) == expected_schema.size)
-  elif schema_type == 'enum':
-    return datum in expected_schema.symbols
-  elif schema_type == 'array':
-    return (isinstance(datum, list)
-        and all(Validate(expected_schema.items, item) for item in datum))
-  elif schema_type == 'map':
-    return (isinstance(datum, dict)
-        and all(isinstance(key, str) for key in datum.keys())
-        and all(Validate(expected_schema.values, value)
-                for value in datum.values()))
-  elif schema_type in ['union', 'error_union']:
-    return any(Validate(union_branch, datum)
-               for union_branch in expected_schema.schemas)
-  elif schema_type in ['record', 'error', 'request']:
-    return (isinstance(datum, dict)
-        and all(Validate(field.type, datum.get(field.name))
-                for field in expected_schema.fields))
-  else:
-    raise AvroTypeException('Unknown Avro schema type: %r' % schema_type)
+  if schema_type == 'union':
+    return validate_union(expected_schema, datum)
 
+  validate_type(expected_schema, datum)
+  if schema_type in ('null', 'boolean', 'string', 'bytes', 'float', 'double'):
+    return
+  if schema_type == 'int':
+    if not (INT_MIN_VALUE <= datum <= INT_MAX_VALUE):
+      raise AvroTypeException('Integer out of bounds.', expected_schema, datum)
+    return
+  if schema_type == 'long':
+    if not (LONG_MIN_VALUE <= datum <= LONG_MAX_VALUE):
+      raise AvroTypeException('Long out of bounds.', expected_schema, datum)
+    return
+  if schema_type == 'fixed':
+    if (len(datum) < expected_schema.size):
+      raise AvroTypeException('Fixed value is too small.', expected_schema, datum)
+    if (len(datum) > expected_schema.size):
+      raise AvroTypeException('Fixed value is too large.', expected_schema, datum)
+    return
+  if schema_type == 'enum':
+    if datum not in expected_schema.symbols:
+      raise AvroTypeException('Enum value is not one of the expected symbols.', expected_schema, datum)
+    return
+  if schema_type == 'array':
+    for item in datum:
+      Validate(expected_schema.items, item)
+    return
+  if schema_type == 'map':
+    for key, value in datum.items():
+      if not isinstance(key, str):
+        raise AvroTypeException('Map key is not a string.', expected_schema, datum)
+      Validate(expected_schema.values, value)
+    return
+  if schema_type in ('union', 'error_union'):
+    return validate_union(expected_schema, datum)
+  if schema_type in ('record', 'error', 'request'):
+    for field in expected_schema.fields:
+      Validate(field.type, datum.get(field.name))
+    return
+  raise AvroTypeException('Datum is not one of the expected types.', expected_schema, datum)
+
+def validate_union(schema, datum):
+  """Unions may not contain more than one schema with the same type, except for the named types
+  record, fixed and enum. For example, unions containing two array types or two map types are
+  not permitted, but two types with different names are permitted. (Names permit efficient
+  resolution when reading and writing unions.)
+
+  Unions may not immediately contain other unions."""
+  errors = {}
+  type_indices = []
+  for union_index, branch in enumerate(schema.schemas):
+    datum_type = _VALID_TYPE_MAP[branch.type]
+    if isinstance(datum, datum_type):
+      type_indices.append(union_index)
+  if not type_indices:
+    raise AvroTypeException('Datum type is not one of the types the union schema expects.',
+                            schema, datum)
+  error_schema = []
+  for index in type_indices:
+    branch = schema.schemas[index]
+    try:
+      Validate(branch, datum)
+      return
+    except AvroTypeException as error:
+      error_schema.append(branch)
+  raise AvroTypeException('The datum did not validate against any of the union schema '
+                          'members that match its type.', error_schema, datum)
 
 # ------------------------------------------------------------------------------
 # Decoder/Encoder
@@ -805,9 +866,7 @@ class DatumWriter(object):
 
   def write(self, datum, encoder):
     # validate datum
-    if not Validate(self.writer_schema, datum):
-      raise AvroTypeException(self.writer_schema, datum)
-
+    Validate(self.writer_schema, datum)
     self.write_data(self.writer_schema, datum, encoder)
 
   def write_data(self, writer_schema, datum, encoder):
@@ -908,12 +967,15 @@ class DatumWriter(object):
     the zero-based position within the union of the schema of its value.
     The value is then encoded per the indicated schema within the union.
     """
-    # resolve union
-    index_of_schema = -1
-    for i, candidate_schema in enumerate(writer_schema.schemas):
-      if Validate(candidate_schema, datum):
-        index_of_schema = i
-    if index_of_schema < 0: raise AvroTypeException(writer_schema, datum)
+    for index_of_schema, candidate_schema in enumerate(writer_schema.schemas):
+      try:
+        Validate(candidate_schema, datum)
+        break
+      except AvroTypeException:
+        continue
+    else: # break statement did not happen
+      raise AvroTypeException('Datum failed to validate against union schema.',
+                              writer_schema, datum)
 
     # write data
     encoder.write_long(index_of_schema)
