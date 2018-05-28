@@ -91,7 +91,7 @@ class SchemaResolutionException(schema.AvroException):
 # Validate
 
 _VALID_TYPE_MAP = {
-  'null': None,
+  'null': type(None),
   'boolean': bool,
   'string': str,
   'bytes': bytes,
