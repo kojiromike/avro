@@ -13,20 +13,18 @@ from typing import Any, List
 from avro.io import AvroTypeException, DatumReader, BinaryDecoder, DatumWriter, BinaryEncoder
 from avro.schema import Parse as parse, PRIMITIVE_TYPES
 
-TEST_CASES = {
-    "string": {"type": "string"},
-    "record": {"type": "record",
-               "name": "LongList",
-               "aliases": ["LinkedLongs"],
-               "fields" : [{"name": "value", "type": "long"},
-                           {"name": "next", "type": ["null", "LongList"]}]},
+SIMPLE_TEST_CASES = {
+    "fixed": {"type": "fixed", "size": 16, "name": "md5"},
     "enum": {"type": "enum",
              "name": "Suit",
              "symbols" : ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"]},
+}
+
+PRIMITIVE_CONTAINER_TEST_CASES = {
+    "union": ["string", "long"],
     "array": {"type": "array", "items": "string"},
     "map": {"type": "map", "values": "long"},
-    "fixed": {"type": "fixed", "size": 16, "name": "md5"},
-    "union": ["string", "long"]
+    "record": {"type": "record", "name": "test", "fields": [{"name": "test", "type": "boolean"}]}
 }
 
 def _avro_test_objects(schema):
@@ -63,10 +61,13 @@ def test_primitive_type_strings():
     writer, _, _, encoder, _ = _avro_test_objects(metaschema)
     for name in PRIMITIVE_TYPES:
         writer.write(name, encoder)
+        writer.write({"type": name}, encoder)
 
 def test_cases():
     """Test the examples given in the avro documentation."""
     metaschema = _parse_metaschema()
     writer, _, _, encoder, _ = _avro_test_objects(metaschema)
-    for name, example in TEST_CASES.items():
+    for example in SIMPLE_TEST_CASES.values():
+        writer.write(example, encoder)
+    for example in PRIMITIVE_CONTAINER_TEST_CASES.values():
         writer.write(example, encoder)
