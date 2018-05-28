@@ -13,19 +13,32 @@ from typing import Any, List
 from avro.io import AvroTypeException, DatumReader, BinaryDecoder, DatumWriter, BinaryEncoder
 from avro.schema import Parse as parse, PRIMITIVE_TYPES
 
-SIMPLE_TEST_CASES = {
-    "fixed": {"type": "fixed", "size": 16, "name": "md5"},
-    "enum": {"type": "enum",
-             "name": "Suit",
-             "symbols" : ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"]},
-}
+SIMPLE_TEST_CASES = [
+    {"type": "fixed", "size": 16, "name": "md5"},
+    {"type": "enum", "name": "Suit",
+     "symbols" : ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"]},
+]
 
-PRIMITIVE_CONTAINER_TEST_CASES = {
-    "union": ["string", "long"],
-    "array": {"type": "array", "items": "string"},
-    "map": {"type": "map", "values": "long"},
-    "record": {"type": "record", "name": "test", "fields": [{"name": "test", "type": "boolean"}]}
-}
+PRIMITIVE_CONTAINER_TEST_CASES = [
+    ["string", "long"],
+    {"type": "array", "items": "string"},
+    {"type": "map", "values": "long"},
+    {"type": "record", "name": "test", "fields": [{"name": "test", "type": "boolean"}]}
+]
+
+NESTED_TEST_CASES = [
+    ["null", {"type": "array", "items": "string"}],
+    {"type": "array", "items": {"type": "record", "name": "test",
+                                "fields": [{"name": "test", "type": "boolean"}]}},
+    {"type": "map", "values": {"type": "record", "name": "test",
+                               "fields": [{"name": "test", "type": "boolean"}]}},
+    {"type": "record", "name": "test",
+     "fields": [{"name": "test1", "type": {"type": "map", "values": "int"}},
+                {"name": "test2",
+                 "type": {"type": "record", "name": "test_inner",
+                          "fields": [{"name": "test_inner_field", "type": "float"}]}}]}
+]
+
 
 def _avro_test_objects(schema):
     """Regenerate avro test objects"""
@@ -67,7 +80,9 @@ def test_cases():
     """Test the examples given in the avro documentation."""
     metaschema = _parse_metaschema()
     writer, _, _, encoder, _ = _avro_test_objects(metaschema)
-    for example in SIMPLE_TEST_CASES.values():
+    for example in SIMPLE_TEST_CASES:
         writer.write(example, encoder)
-    for example in PRIMITIVE_CONTAINER_TEST_CASES.values():
+    for example in PRIMITIVE_CONTAINER_TEST_CASES:
+        writer.write(example, encoder)
+    for example in NESTED_TEST_CASES:
         writer.write(example, encoder)
