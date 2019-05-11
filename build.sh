@@ -15,29 +15,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e                # exit on error
+set -e  # exit on error
 
-cd `dirname "$0"`     # connect to root
+cd "${0%/*}"  # connect to root
 
-VERSION=`cat share/VERSION.txt`
+VERSION=$(<share/VERSION.txt)
 
-function usage {
+usage() {
   echo "Usage: $0 {test|dist|sign|clean|docker|rat|githooks}"
   exit 1
 }
 
-if [ $# -eq 0 ]
-then
-  usage
-fi
+(( $# )) || usage
 
-set -x                # echo commands
+set -x  # echo commands
 
-for target in "$@"
-do
-  case "$target" in
-
-    test)
+test_() {
       # run lang-specific tests
       (cd lang/java; ./build.sh test)
       # install java artifacts required by other builds and interop tests
@@ -73,9 +66,9 @@ do
       (cd lang/java; mvn package -DskipTests)
       # run interop rpc test
       /bin/bash share/test/interop/bin/test_rpc_interop.sh
-    ;;
+}
 
-    dist)
+dist() {
       # ensure version matches
       # FIXME: enforcer is broken:MENFORCER-42
       # mvn enforcer:enforce -Davro.version=$VERSION
@@ -139,11 +132,18 @@ do
       (cd build; tar czf ../dist/avro-doc-$VERSION.tar.gz $DOC_DIR)
 
       cp DIST_README.txt dist/README.txt
-      ;;
+)
 
-    sign)
+githooks() {
+  echo "Installing AVRO git hooks."
+  cp share/githooks/* .git/hooks
+  find .git/hooks/ -type f |
+    fgrep -v sample |
+    xargs chmod 755
+}
+
+sign() {
       set +x
-
       echo -n "Enter password: "
       stty -echo
       read password
@@ -157,13 +157,11 @@ do
         (cd `dirname $f`; sha1sum `basename $f`) > $f.sha1
         gpg --passphrase $password --armor --output $f.asc --detach-sig $f
       done
-
       set -x
-      ;;
+}
 
-    clean)
-      rm -rf build dist
-      (cd doc; ant clean)
+clean() {
+cd doc; ant clean)
 
       (mvn clean)
       rm -rf lang/java/*/userlogs/
@@ -194,9 +192,10 @@ do
       (cd lang/php; ./build.sh clean)
 
       (cd lang/perl; ./build.sh clean)
-      ;;
+      rm -rf build dist
+}
 
-    docker)
+docker_() {
       docker build -t avro-build share/docker
       if [ "$(uname -s)" == "Linux" ]; then
         USER_NAME=${SUDO_USER:=$USER}
@@ -213,34 +212,36 @@ RUN groupadd -g ${GROUP_ID} ${USER_NAME} || true
 RUN useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME}
 ENV HOME /home/${USER_NAME}
 UserSpecificDocker
-      # By mapping the .m2 directory you can do an mvn install from
-      # within the container and use the result on your normal
-      # system.  And this also is a significant speedup in subsequent
-      # builds because the dependencies are downloaded only once.
-      docker run --rm=true -t -i \
-        -v ${PWD}:/home/${USER_NAME}/avro \
-        -w /home/${USER_NAME}/avro \
-        -v ${HOME}/.m2:/home/${USER_NAME}/.m2 \
-        -v ${HOME}/.gnupg:/home/${USER_NAME}/.gnupg \
-        -u ${USER_NAME} \
-        avro-build-${USER_NAME}
-      ;;
+#Bymappingthe.m2 directory you can do an mvn install from
+# within the container and use the result on your normal
+# system.  And this also is a significant speedup in subsequent
+# builds because the dependencies are downloaded only once.
+docker run --rm -t -i \
+      -v ${PWD}:/home/${USER_NAME}/avro \
+      -w /home/${USER_NAME}/avro \
+      -v ${HOME}/.m2:/home/${USER_NAME}/.m2 \
+      -v ${HOME}/.gnupg:/home/${USER_NAME}/.gnupg \
+      -u ${USER_NAME} \
+      "avro-build-${USER_NAME}"
+}
 
-    rat)
-      mvn test -Dmaven.main.skip=true -Dmaven.test.skip=true -DskipTests=true -P rat -pl :avro-toplevel
-      ;;
+rat() {
+  mvn test -Dmaven.main.skip=true -Dmaven.test.skip=true -DskipTests=true -P rat -pl :avro-toplevel
+}
 
-    githooks)
-      echo "Installing AVRO git hooks."
-      cp share/githooks/* .git/hooks
-      find .git/hooks/ -type f | fgrep -v sample | xargs chmod 755
-      ;;
+main() {
+  while [[ $1 ]]; do
+    case "$1" in
+      test) test_;;
+      dist) dist;;
+      sign) sign;;
+      clean) clean;;
+      docker) docker_;;
+      rat) rat;;
+      githooks) githooks;;
+      *) usage;;
+    esac
+  done
+}
 
-    *)
-      usage
-      ;;
-  esac
-
-done
-
-exit 0
+main "$@"
