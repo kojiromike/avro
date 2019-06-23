@@ -146,7 +146,7 @@ def Validate(expected_schema, datum):
             return False
     return True
   else:
-    raise AvroTypeException('Unknown Avro schema type: %r' % schema_type)
+    raise AvroTypeException(schema_type, datum)
 
 
 # ------------------------------------------------------------------------------
