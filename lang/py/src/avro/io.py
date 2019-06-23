@@ -91,6 +91,7 @@ class AvroTypeException(schema.AvroException):
                    % (datum, pretty_expected)
         schema.AvroException.__init__(self, fail_msg)
 
+
 class SchemaResolutionException(schema.AvroException):
     def __init__(self, fail_msg, writers_schema=None, readers_schema=None):
         pretty_writers = json.dumps(json.loads(str(writers_schema)), indent=2)
@@ -103,8 +104,10 @@ class SchemaResolutionException(schema.AvroException):
 # Validate
 #
 
+
 def _is_timezone_aware_datetime(dt):
     return dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None
+
 
 def validate(expected_schema, datum):
     """Determine if a python datum is an instance of a schema."""
@@ -165,6 +168,7 @@ def validate(expected_schema, datum):
 #
 # Decoder/Encoder
 #
+
 
 class BinaryDecoder(object):
     """Read leaf values."""
@@ -372,6 +376,7 @@ class BinaryDecoder(object):
 
     def skip(self, n):
         self.reader.seek(self.reader.tell() + n)
+
 
 class BinaryEncoder(object):
     """Write leaf values."""
@@ -995,6 +1000,7 @@ class DatumReader(object):
         else:
             fail_msg = 'Unknown type: %s' % field_schema.type
             raise schema.AvroException(fail_msg)
+
 
 class DatumWriter(object):
     """DatumWriter for generic python objects."""
