@@ -65,8 +65,10 @@ else:
     class SimpleStruct(object):
         def __init__(self, format):
             self.format = format
+
         def pack(self, *args):
             return struct.pack(self.format, *args)
+
         def unpack(self, *args):
             return struct.unpack(self.format, *args)
     struct_class = SimpleStruct
@@ -85,6 +87,7 @@ STRUCT_SIGNED_LONG = struct_class('>q')     # big-endian signed long
 
 class AvroTypeException(schema.AvroException):
     """Raised when datum is not an example of schema."""
+
     def __init__(self, expected_schema, datum):
         pretty_expected = json.dumps(json.loads(str(expected_schema)), indent=2)
         fail_msg = "The datum %s is not an example of the schema %s"\
@@ -174,6 +177,7 @@ def validate(expected_schema, datum):
 
 class BinaryDecoder(object):
     """Read leaf values."""
+
     def __init__(self, reader):
         """
         reader is a Python object on which we can call read, seek, and tell.
@@ -382,6 +386,7 @@ class BinaryDecoder(object):
 
 class BinaryEncoder(object):
     """Write leaf values."""
+
     def __init__(self, writer):
         """
         writer is a Python object on which we can call write.
@@ -654,6 +659,7 @@ class DatumReader(object):
         self._writers_schema = writers_schema
     writers_schema = property(lambda self: self._writers_schema,
                               set_writers_schema)
+
     def set_readers_schema(self, readers_schema):
         self._readers_schema = readers_schema
     readers_schema = property(lambda self: self._readers_schema,
@@ -1007,6 +1013,7 @@ class DatumReader(object):
 
 class DatumWriter(object):
     """DatumWriter for generic python objects."""
+
     def __init__(self, writers_schema=None):
         self._writers_schema = writers_schema
 
