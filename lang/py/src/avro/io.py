@@ -157,18 +157,18 @@ def validate(expected_schema, datum):
         return datum in expected_schema.symbols
     elif schema_type == 'array':
         return (isinstance(datum, list) and
-          False not in [validate(expected_schema.items, d) for d in datum])
+                False not in [validate(expected_schema.items, d) for d in datum])
     elif schema_type == 'map':
         return (isinstance(datum, dict) and
-          False not in [isinstance(k, basestring) for k in datum.keys()] and
-          False not in
-            [validate(expected_schema.values, v) for v in datum.values()])
+                False not in [isinstance(k, basestring) for k in datum.keys()] and
+                False not in
+                [validate(expected_schema.values, v) for v in datum.values()])
     elif schema_type in ['union', 'error_union']:
         return True in [validate(s, datum) for s in expected_schema.schemas]
     elif schema_type in ['record', 'error', 'request']:
         return (isinstance(datum, dict) and
-          False not in
-            [validate(f.type, datum.get(f.name)) for f in expected_schema.fields])
+                False not in
+                [validate(f.type, datum.get(f.name)) for f in expected_schema.fields])
 
 #
 # Decoder/Encoder
@@ -697,7 +697,7 @@ class DatumReader(object):
                     writers_schema.logical_type == constants.DATE):
                 return decoder.read_date_from_int()
             elif (hasattr(writers_schema, 'logical_type') and
-              writers_schema.logical_type == constants.TIME_MILLIS):
+                  writers_schema.logical_type == constants.TIME_MILLIS):
                 return decoder.read_time_millis_from_int()
             else:
                 return decoder.read_int()
