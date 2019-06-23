@@ -115,10 +115,10 @@ def Validate(expected_schema, datum):
     return isinstance(datum, bytes)
   elif schema_type == 'int':
     return (isinstance(datum, int)
-        and (INT_MIN_VALUE <= datum <= INT_MAX_VALUE))
+            and (INT_MIN_VALUE <= datum <= INT_MAX_VALUE))
   elif schema_type == 'long':
     return (isinstance(datum, int)
-        and (LONG_MIN_VALUE <= datum <= LONG_MAX_VALUE))
+            and (LONG_MIN_VALUE <= datum <= LONG_MAX_VALUE))
   elif schema_type in ['float', 'double']:
     return (isinstance(datum, int) or isinstance(datum, float))
   elif schema_type == 'fixed':
@@ -127,12 +127,12 @@ def Validate(expected_schema, datum):
     return datum in expected_schema.symbols
   elif schema_type == 'array':
     return (isinstance(datum, list)
-        and all(Validate(expected_schema.items, item) for item in datum))
+            and all(Validate(expected_schema.items, item) for item in datum))
   elif schema_type == 'map':
     return (isinstance(datum, dict)
-        and all(isinstance(key, str) for key in datum.keys())
-        and all(Validate(expected_schema.values, value)
-                for value in datum.values()))
+            and all(isinstance(key, str) for key in datum.keys())
+            and all(Validate(expected_schema.values, value)
+                    for value in datum.values()))
   elif schema_type in ['union', 'error_union']:
     return any(Validate(union_branch, datum)
                for union_branch in expected_schema.schemas)
