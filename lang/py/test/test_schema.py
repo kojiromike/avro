@@ -5,9 +5,9 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
+#
 # https://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 """
 Test the schema parsing logic.
 """
+import json
 import unittest
 
 import set_avro_test_path
@@ -31,6 +32,8 @@ def print_test_name(test_name):
 
 class ExampleSchema(object):
   def __init__(self, schema_string, valid, name='', comment=''):
+    if not isinstance(schema_string, basestring):
+      schema_string = json.dumps(schema_string, indent=2)
     self._schema_string = schema_string
     self._valid = valid
     self._name = name or schema_string # default to schema_string for name
@@ -53,323 +56,324 @@ class ExampleSchema(object):
 #
 
 def make_primitive_examples():
-  examples = []
   for type in schema.PRIMITIVE_TYPES:
-    examples.append(ExampleSchema('"%s"' % type, True))
-    examples.append(ExampleSchema('{"type": "%s"}' % type, True))
-  return examples
+    yield ExampleSchema('"%s"' % type, True)
+    yield ExampleSchema('{"type": "%s"}' % type, True)
 
 PRIMITIVE_EXAMPLES = [
   ExampleSchema('"True"', False),
   ExampleSchema('True', False),
   ExampleSchema('{"no_type": "test"}', False),
   ExampleSchema('{"type": "panther"}', False),
-] + make_primitive_examples()
+] + list(make_primitive_examples())
 
 FIXED_EXAMPLES = [
-  ExampleSchema('{"type": "fixed", "name": "Test", "size": 1}', True),
-  ExampleSchema("""\
-    {"type": "fixed",
-     "name": "MyFixed",
-     "namespace": "org.apache.hadoop.avro",
-     "size": 1}
-    """, True),
-  ExampleSchema("""\
-    {"type": "fixed",
-     "name": "Missing size"}
-    """, False),
-  ExampleSchema("""\
-    {"type": "fixed",
-     "size": 314}
-    """, False),
+  ExampleSchema({"type": "fixed", "name": "Test", "size": 1}, True),
+  ExampleSchema({
+    "type": "fixed",
+    "name": "MyFixed",
+    "namespace": "org.apache.hadoop.avro",
+    "size": 1}, True),
+  ExampleSchema({"type": "fixed", "name": "Missing size"}, False),
+  ExampleSchema({"type": "fixed", "size": 314}, False),
 ]
 
 ENUM_EXAMPLES = [
-  ExampleSchema('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', True),
-  ExampleSchema("""\
-    {"type": "enum",
-     "name": "Status",
-     "symbols": "Normal Caution Critical"}
-    """, False),
-  ExampleSchema("""\
-    {"type": "enum",
-     "name": [ 0, 1, 1, 2, 3, 5, 8 ],
-     "symbols": ["Golden", "Mean"]}
-    """, False),
-  ExampleSchema("""\
-    {"type": "enum",
-     "symbols" : ["I", "will", "fail", "no", "name"]}
-    """, False),
-  ExampleSchema("""\
-    {"type": "enum",
-     "name": "Test"
-     "symbols" : ["AA", "AA"]}
-    """, False),
+  ExampleSchema({"type": "enum", "name": "Test", "symbols": ["A", "B"]}, True),
+  ExampleSchema({
+    "type": "enum",
+    "name": "Status",
+    "symbols": "Normal Caution Critical"}, False),
+  ExampleSchema({
+    "type": "enum",
+    "name": [0, 1, 1, 2, 3, 5, 8],
+    "symbols": ["Golden", "Mean"]}, False),
+  ExampleSchema({
+    "type": "enum",
+    "symbols" : ["I", "will", "fail", "no", "name"]}, False),
+  ExampleSchema({
+    "type": "enum",
+    "name": "Test",
+    "symbols": ["AA", "AA"]}, False),
 ]
 
 ARRAY_EXAMPLES = [
-  ExampleSchema('{"type": "array", "items": "long"}', True),
-  ExampleSchema("""\
-    {"type": "array",
-     "items": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}
-    """, True),
+  ExampleSchema({"type": "array", "items": "long"}, True),
+  ExampleSchema({
+    "type": "array",
+    "items": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}, True),
 ]
 
 MAP_EXAMPLES = [
-  ExampleSchema('{"type": "map", "values": "long"}', True),
-  ExampleSchema("""\
-    {"type": "map",
-     "values": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}
-    """, True),
+  ExampleSchema({"type": "map", "values": "long"}, True),
+  ExampleSchema({
+    "type": "map",
+    "values": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}, True),
 ]
 
 UNION_EXAMPLES = [
-  ExampleSchema('["string", "null", "long"]', True),
-  ExampleSchema('["null", "null"]', False),
-  ExampleSchema('["long", "long"]', False),
-  ExampleSchema("""\
-    [{"type": "array", "items": "long"}
-     {"type": "array", "items": "string"}]
-    """, False),
+  ExampleSchema(["string", "null", "long"], True),
+  ExampleSchema(["null", "null"], False),
+  ExampleSchema(["long", "long"], False),
+  ExampleSchema([
+    {"type": "array", "items": "long"},
+    {"type": "array", "items": "string"}], False),
 ]
 
 RECORD_EXAMPLES = [
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "Test",
-     "fields": [{"name": "f",
-                 "type": "long"}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "error",
-     "name": "Test",
-     "fields": [{"name": "f",
-                 "type": "long"}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "Node",
-     "fields": [{"name": "label", "type": "string"},
-                {"name": "children",
-                 "type": {"type": "array", "items": "Node"}}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "Lisp",
-     "fields": [{"name": "value",
-                 "type": ["null", "string",
-                          {"type": "record",
-                           "name": "Cons",
-                           "fields": [{"name": "car", "type": "Lisp"},
-                                      {"name": "cdr", "type": "Lisp"}]}]}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "HandshakeRequest",
-     "namespace": "org.apache.avro.ipc",
-     "fields": [{"name": "clientHash",
-                 "type": {"type": "fixed", "name": "MD5", "size": 16}},
-                {"name": "clientProtocol", "type": ["null", "string"]},
-                {"name": "serverHash", "type": "MD5"},
-                {"name": "meta", 
-                 "type": ["null", {"type": "map", "values": "bytes"}]}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "HandshakeResponse",
-     "namespace": "org.apache.avro.ipc",
-     "fields": [{"name": "match",
-                 "type": {"type": "enum",
-                          "name": "HandshakeMatch",
-                          "symbols": ["BOTH", "CLIENT", "NONE"]}},
-                {"name": "serverProtocol", "type": ["null", "string"]},
-                {"name": "serverHash",
-                 "type": ["null",
-                          {"name": "MD5", "size": 16, "type": "fixed"}]},
-                {"name": "meta",
-                 "type": ["null", {"type": "map", "values": "bytes"}]}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "Interop",
-     "namespace": "org.apache.avro",
-     "fields": [{"name": "intField", "type": "int"},
-                {"name": "longField", "type": "long"},
-                {"name": "stringField", "type": "string"},
-                {"name": "boolField", "type": "boolean"},
-                {"name": "floatField", "type": "float"},
-                {"name": "doubleField", "type": "double"},
-                {"name": "bytesField", "type": "bytes"},
-                {"name": "nullField", "type": "null"},
-                {"name": "arrayField",
-                 "type": {"type": "array", "items": "double"}},
-                {"name": "mapField",
-                 "type": {"type": "map",
-                          "values": {"name": "Foo",
-                                     "type": "record",
-                                     "fields": [{"name": "label",
-                                                 "type": "string"}]}}},
-                {"name": "unionField",
-                 "type": ["boolean",
-                          "double",
-                          {"type": "array", "items": "bytes"}]},
-                {"name": "enumField",
-                 "type": {"type": "enum",
-                          "name": "Kind",
-                          "symbols": ["A", "B", "C"]}},
+  ExampleSchema({
+    "type": "record",
+    "name": "Test",
+    "fields": [{"name": "f", "type": "long"}]}, True),
+  ExampleSchema({
+    "type": "error",
+    "name": "Test",
+    "fields": [{"name": "f", "type": "long"}]}, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "Node",
+    "fields": [
+      {"name": "label", "type": "string"},
+      {"name": "children", "type": {"type": "array", "items": "Node"}}
+    ]}, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "Lisp",
+    "fields": [{
+      "name": "value",
+      "type": ["null", "string", {
+        "type": "record", "name": "Cons", "fields": [
+          {"name": "car", "type": "Lisp"},
+          {"name": "cdr", "type": "Lisp"},
+        ]}]}]}, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "HandshakeRequest",
+    "namespace": "org.apache.avro.ipc",
+    "fields": [{
+      "name": "clientHash",
+      "type": {"type": "fixed", "name": "MD5", "size": 16}},
+      {"name": "clientProtocol", "type": ["null", "string"]},
+      {"name": "serverHash", "type": "MD5"},
+      {"name": "meta",
+        "type": ["null", {"type": "map", "values": "bytes"}]}]}, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "HandshakeResponse",
+    "namespace": "org.apache.avro.ipc",
+    "fields": [{"name": "match",
+      "type": {"type": "enum",
+        "name": "HandshakeMatch",
+        "symbols": ["BOTH", "CLIENT", "NONE"]}},
+      {"name": "serverProtocol", "type": ["null", "string"]},
+      {"name": "serverHash",
+        "type": ["null",
+          {"name": "MD5", "size": 16, "type": "fixed"}]},
+        {"name": "meta",
+          "type": ["null", {"type": "map", "values": "bytes"}]}]}, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "Interop",
+    "namespace": "org.apache.avro",
+    "fields": [{"name": "intField", "type": "int"},
+      {"name": "longField", "type": "long"},
+      {"name": "stringField", "type": "string"},
+      {"name": "boolField", "type": "boolean"},
+      {"name": "floatField", "type": "float"},
+      {"name": "doubleField", "type": "double"},
+      {"name": "bytesField", "type": "bytes"},
+      {"name": "nullField", "type": "null"},
+      {"name": "arrayField",
+        "type": {"type": "array", "items": "double"}},
+      {"name": "mapField",
+        "type": {"type": "map",
+          "values": {"name": "Foo",
+            "type": "record",
+            "fields": [{"name": "label",
+              "type": "string"}]}}},
+            {"name": "unionField",
+              "type": ["boolean",
+                "double",
+                {"type": "array", "items": "bytes"}]},
+              {"name": "enumField",
+                "type": {"type": "enum",
+                  "name": "Kind",
+                  "symbols": ["A", "B", "C"]}},
                 {"name": "fixedField",
-                 "type": {"type": "fixed", "name": "MD5", "size": 16}},
+                  "type": {"type": "fixed", "name": "MD5", "size": 16}},
                 {"name": "recordField",
-                 "type": {"type": "record",
-                          "name": "Node",
-                          "fields": [{"name": "label", "type": "string"},
-                                     {"name": "children",
-                                      "type": {"type": "array",
-                                               "items": "Node"}}]}}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "ipAddr",
-     "fields": [{"name": "addr", 
-                 "type": [{"name": "IPv6", "type": "fixed", "size": 16},
-                          {"name": "IPv4", "type": "fixed", "size": 4}]}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "Address",
-     "fields": [{"type": "string"},
-                {"type": "string", "name": "City"}]}
-    """, False),
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "Event",
-     "fields": [{"name": "Sponsor"},
-                {"name": "City", "type": "string"}]}
-    """, False),
-  ExampleSchema("""\
-    {"type": "record",
-     "fields": "His vision, from the constantly passing bars,"
-     "name", "Rainer"}
-    """, False),
-  ExampleSchema("""\
-    {"name": ["Tom", "Jerry"],
-     "type": "record",
-     "fields": [{"name": "name", "type": "string"}]}
-    """, False),
+                  "type": {"type": "record",
+                    "name": "Node",
+                    "fields": [{"name": "label", "type": "string"},
+                      {"name": "children",
+                        "type": {"type": "array",
+                          "items": "Node"}}]}}]}, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "ipAddr",
+    "fields": [{"name": "addr",
+                "type": [{"name": "IPv6", "type": "fixed", "size": 16},
+                         {"name": "IPv4", "type": "fixed", "size": 4}]}]}, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "Address",
+    "fields": [{"type": "string"},
+               {"type": "string", "name": "City"}]}, False),
+  ExampleSchema({
+    "type": "record",
+    "name": "Event",
+    "fields": [{"name": "Sponsor"},
+               {"name": "City", "type": "string"}]}, False),
+  ExampleSchema({
+    "type": "record",
+    "fields": "His vision, from the constantly passing bars",
+    "name": "Rainer"}, False),
+  ExampleSchema({
+    "name": ["Tom", "Jerry"],
+    "type": "record",
+    "fields": [{"name": "name", "type": "string"}]}, False),
 ]
 
 DOC_EXAMPLES = [
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "TestDoc",
-     "doc":  "Doc string",
-     "fields": [{"name": "name", "type": "string", 
-                 "doc" : "Doc String"}]}
-    """, True),
-  ExampleSchema("""\
-    {"type": "enum", "name": "Test", "symbols": ["A", "B"],
-     "doc": "Doc String"}
-    """, True),
+  ExampleSchema({
+    "type": "record",
+    "name": "TestDoc",
+    "doc":  "Doc string",
+    "fields": [{"name": "name", "type": "string",
+                "doc" : "Doc String"}]}, True),
+  ExampleSchema({
+    "type": "enum", "name": "Test", "symbols": ["A", "B"],
+    "doc": "Doc String"}, True),
 ]
 
 OTHER_PROP_EXAMPLES = [
-  ExampleSchema("""\
-    {"type": "record",
-     "name": "TestRecord",
-     "cp_string": "string",
-     "cp_int": 1,
-     "cp_array": [ 1, 2, 3, 4],
-     "fields": [ {"name": "f1", "type": "string", "cp_object": {"a":1,"b":2} },
-                 {"name": "f2", "type": "long", "cp_null": null} ]}
-    """, True),
-  ExampleSchema("""\
-     {"type": "map", "values": "long", "cp_boolean": true}
-    """, True),
-  ExampleSchema("""\
-    {"type": "enum",
-     "name": "TestEnum",
-     "symbols": [ "one", "two", "three" ],
-     "cp_float" : 1.0 }
-    """,True),
-  ExampleSchema("""\
-    {"type": "long",
-     "date": "true"}
-    """, True)
+  ExampleSchema({
+    "type": "record",
+    "name": "TestRecord",
+    "cp_string": "string",
+    "cp_int": 1,
+    "cp_array": [ 1, 2, 3, 4],
+    "fields": [{"name": "f1", "type": "string", "cp_object": {"a": 1,"b": 2}},
+               {"name": "f2", "type": "long", "cp_null": None}]}, True),
+  ExampleSchema({"type": "map", "values": "long", "cp_boolean": True}, True),
+  ExampleSchema({
+    "type": "enum",
+    "name": "TestEnum",
+    "symbols": [ "one", "two", "three" ],
+    "cp_float" : 1.0}, True),
+  ExampleSchema({"type": "long", "date": "true"}, True)
 ]
 
 DECIMAL_LOGICAL_TYPE = [
-  ExampleSchema("""{
-  "type": "fixed",
-  "logicalType": "decimal",
-  "name": "TestDecimal",
-  "precision": 4,
-  "size": 10,
-  "scale": 2}""", True),
-  ExampleSchema("""{
-  "type": "bytes",
-  "logicalType": "decimal",
-  "precision": 4,
-  "scale": 2}""", True)
+  ExampleSchema({
+    "type": "fixed",
+    "logicalType": "decimal",
+    "name": "TestDecimal",
+    "precision": 4,
+    "size": 10,
+    "scale": 2}, True),
+  ExampleSchema({
+    "type": "bytes",
+    "logicalType": "decimal",
+    "precision": 4,
+    "scale": 2}, True),
+
+  ExampleSchema({
+    "type": "bytes",
+    "logicalType": "decimal",
+    "precision": 2,
+    "scale": -2}, False),
+  ExampleSchema({
+    "type": "bytes",
+    "logicalType": "decimal",
+    "precision": -2,
+    "scale": 2}, False),
+  ExampleSchema({
+    "type": "bytes",
+    "logicalType": "decimal",
+    "precision": 2,
+    "scale": 3}, False),
+  ExampleSchema({
+    "type": "fixed",
+    "logicalType": "decimal",
+    "name": "TestDecimal",
+    "precision": -10,
+    "scale": 2,
+    "size": 5}, False),
+  ExampleSchema({
+    "type": "fixed",
+    "logicalType": "decimal",
+    "name": "TestDecimal",
+    "precision": 2,
+    "scale": 3,
+    "size": 2}, False),
+  ExampleSchema({
+    "type": "fixed",
+    "logicalType": "decimal",
+    "name": "TestDecimal",
+    "precision": 2,
+    "scale": 2,
+    "size": -2}, False),
 ]
 
 DATE_LOGICAL_TYPE = [
-  ExampleSchema("""{
+  ExampleSchema({
   "type": "int",
-  "logicalType": "date"} """, True),
-  ExampleSchema("""{
+  "logicalType": "date"} , True),
+  ExampleSchema({
   "type": "int",
-  "logicalType": "date1"} """, False),
-  ExampleSchema("""{
+  "logicalType": "date1"} , False),
+  ExampleSchema({
   "type": "long",
-  "logicalType": "date"} """, False),
+  "logicalType": "date"} , False),
 ]
 
 TIMEMILLIS_LOGICAL_TYPE = [
-  ExampleSchema("""{
+  ExampleSchema({
   "type": "int",
-  "logicalType": "time-millis"} """, True),
-  ExampleSchema("""{
+  "logicalType": "time-millis"} , True),
+  ExampleSchema({
   "type": "int",
-  "logicalType": "time-milis"} """, False),
-  ExampleSchema("""{
+  "logicalType": "time-milis"} , False),
+  ExampleSchema({
   "type": "long",
-  "logicalType": "time-millis"} """, False),
+  "logicalType": "time-millis"} , False),
 ]
 
 TIMEMICROS_LOGICAL_TYPE = [
-  ExampleSchema("""{
+  ExampleSchema({
   "type": "long",
-  "logicalType": "time-micros"} """, True),
-  ExampleSchema("""{
+  "logicalType": "time-micros"} , True),
+  ExampleSchema({
   "type": "long",
-  "logicalType": "time-micro"} """, False),
-  ExampleSchema("""{
+  "logicalType": "time-micro"} , False),
+  ExampleSchema({
   "type": "int",
-  "logicalType": "time-micros"} """, False),
+  "logicalType": "time-micros"} , False),
 ]
 
 TIMESTAMPMILLIS_LOGICAL_TYPE = [
-  ExampleSchema("""{
+  ExampleSchema({
   "type": "long",
-  "logicalType": "timestamp-millis"} """, True),
-  ExampleSchema("""{
+  "logicalType": "timestamp-millis"} , True),
+  ExampleSchema({
   "type": "long",
-  "logicalType": "timestamp-milis"} """, False),
-  ExampleSchema("""{
+  "logicalType": "timestamp-milis"} , False),
+  ExampleSchema({
   "type": "int",
-  "logicalType": "timestamp-millis"} """, False),
+  "logicalType": "timestamp-millis"} , False),
 ]
 
 TIMESTAMPMICROS_LOGICAL_TYPE = [
-  ExampleSchema("""{
+  ExampleSchema({
   "type": "long",
-  "logicalType": "timestamp-micros"} """, True),
-  ExampleSchema("""{
+  "logicalType": "timestamp-micros"} , True),
+  ExampleSchema({
   "type": "long",
-  "logicalType": "timestamp-micro"} """, False),
-  ExampleSchema("""{
+  "logicalType": "timestamp-micro"} , False),
+  ExampleSchema({
   "type": "int",
-  "logicalType": "timestamp-micros"} """, False),
+  "logicalType": "timestamp-micros"} , False),
 ]
 
 
@@ -456,7 +460,7 @@ class TestSchema(unittest.TestCase):
       if original_schema == round_trip_schema:
         correct += 1
         debug_msg = "%s: ROUND TRIP SUCCESS" % example.name
-      else:       
+      else:
         debug_msg = "%s: ROUND TRIP FAILURE" % example.name
         self.fail("Round trip failure: %s, %s, %s" % (example.name, original_schema, str(original_schema)))
 
@@ -495,14 +499,14 @@ class TestSchema(unittest.TestCase):
     """
     print_test_name('TEST FULLNAME')
 
-    # name and namespace specified    
+    # name and namespace specified
     fullname = schema.Name('a', 'o.a.h', None).fullname
     self.assertEqual(fullname, 'o.a.h.a')
 
     # fullname and namespace specified
     fullname = schema.Name('a.b.c.d', 'o.a.h', None).fullname
     self.assertEqual(fullname, 'a.b.c.d')
-    
+
     # name and default namespace specified
     fullname = schema.Name('a', None, 'b.c.d').fullname
     self.assertEqual(fullname, 'b.c.d.a')
@@ -578,69 +582,19 @@ class TestSchema(unittest.TestCase):
 
     self.assertTrue(caught_exception, 'Exception was not caught')
 
-  def test_decimal_invalid_schema(self):
-    invalid_schemas = [
-      ExampleSchema("""{
-      "type": "bytes",
-      "logicalType": "decimal",
-      "precision": 2,
-      "scale": -2}""", True),
-
-      ExampleSchema("""{
-      "type": "bytes",
-      "logicalType": "decimal",
-      "precision": -2,
-      "scale": 2}""", True),
-
-      ExampleSchema("""{
-      "type": "bytes",
-      "logicalType": "decimal",
-      "precision": 2,
-      "scale": 3}""", True),
-
-      ExampleSchema("""{
-      "type": "fixed",
-      "logicalType": "decimal",
-      "name": "TestDecimal",
-      "precision": -10,
-      "scale": 2,
-      "size": 5}""", True),
-
-
-      ExampleSchema("""{
-      "type": "fixed",
-      "logicalType": "decimal",
-      "name": "TestDecimal",
-      "precision": 2,
-      "scale": 3,
-      "size": 2}""", True)
-    ]
-
-    for invalid_schema in invalid_schemas:
-      self.assertRaises(SchemaParseException, schema.parse, invalid_schema.schema_string)
-
-    fixed_invalid_schema_size = ExampleSchema("""{
-                                "type": "fixed",
-                                "logicalType": "decimal",
-                                "name": "TestDecimal",
-                                "precision": 2,
-                                "scale": 2,
-                                "size": -2}""", True)
-    self.assertRaises(AvroException, schema.parse, fixed_invalid_schema_size.schema_string)
-
   def test_decimal_valid_type(self):
-    fixed_decimal_schema = ExampleSchema("""{
-    "type": "fixed",
-    "logicalType": "decimal",
-    "name": "TestDecimal",
-    "precision": 4,
-    "scale": 2,
-    "size": 2}""", True)
+    fixed_decimal_schema = ExampleSchema({
+      "type": "fixed",
+      "logicalType": "decimal",
+      "name": "TestDecimal",
+      "precision": 4,
+      "scale": 2,
+      "size": 2}, True)
 
-    bytes_decimal_schema = ExampleSchema("""{
-    "type": "bytes",
-    "logicalType": "decimal",
-    "precision": 4}""", True)
+    bytes_decimal_schema = ExampleSchema({
+      "type": "bytes",
+      "logicalType": "decimal",
+      "precision": 4}, True)
 
     fixed_decimal = schema.parse(fixed_decimal_schema.schema_string)
     self.assertEqual(4, fixed_decimal.get_prop('precision'))
