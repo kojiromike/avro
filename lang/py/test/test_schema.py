@@ -389,6 +389,7 @@ EXAMPLES += TIMESTAMPMILLIS_LOGICAL_TYPE
 EXAMPLES += TIMESTAMPMICROS_LOGICAL_TYPE
 
 VALID_EXAMPLES = [e for e in EXAMPLES if e.valid]
+INVALID_EXAMPLES = [e for e in EXAMPLES if not e.valid]
 
 # TODO(hammer): refactor into harness for examples
 # TODO(hammer): pretty-print detailed output
@@ -402,25 +403,6 @@ class TestSchema(unittest.TestCase):
     t = schema.parse(str(s.fields[0].type))
     # If we've made it this far, the subschema was reasonably stringified; it ccould be reparsed.
     self.assertEqual("X", t.fields[0].type.name)
-
-  def test_parse(self):
-    correct = 0
-    for example in EXAMPLES:
-      try:
-        schema.parse(example.schema_string)
-        if example.valid:
-          correct += 1
-        else:
-          self.fail("Invalid schema was parsed: " + example.schema_string)
-      except:
-        if not example.valid: 
-          correct += 1
-        else:
-          self.fail("Valid schema failed to parse: " + example.schema_string)
-
-    fail_msg = "Parse behavior correct on %d out of %d schemas." % \
-      (correct, len(EXAMPLES))
-    self.assertEqual(correct, len(EXAMPLES), fail_msg)
 
   def test_valid_cast_to_string_after_parse(self):
     """
@@ -647,6 +629,41 @@ class TestSchema(unittest.TestCase):
     bytes_decimal = schema.parse(bytes_decimal_schema.schema_string)
     self.assertEqual(4, bytes_decimal.get_prop('precision'))
     self.assertEqual(0, bytes_decimal.get_prop('scale'))
+
+class ExampleSchemaTestCase(unittest.TestCase):
+  """Enable generating test cases over all the valid and invalid example schema."""
+  def __init__(self, example_schema):
+    """Ignore the normal signature for unittest.TestCase because we are generating
+    many test cases from this one class. This is safe as long as the autoloader
+    ignores this class. The autoloader will ignore this class as long as it has
+    no methods starting with `test_`.
+    """
+    super(ExampleSchemaTestCase, self).__init__(
+        'parse_valid' if example_schema.valid else 'parse_invalid')
+    self.example_schema = example_schema
+
+  def parse_valid(self):
+    """Parsing a valid schema should not error."""
+    try:
+      schema.parse(self.example_schema.schema_string)
+    except (schema.AvroException, schema.SchemaParseException):
+      self.fail("Valid schema failed to parse: " + self.example_schema.schema_string)
+
+  def parse_invalid(self):
+    """Parsing an invalid schema should error."""
+    try:
+      schema.parse(self.example_schema.schema_string)
+    except (schema.AvroException, schema.SchemaParseException):
+      pass
+    else:
+      self.fail("Invalid schema should not have parsed: " + self.example_schema.schema_string)
+
+
+def load_tests(loader, default_tests, pattern):
+  suite = unittest.TestSuite()
+  suite.addTests(loader.loadTestsFromTestCase(TestSchema))
+  suite.addTests(ExampleSchemaTestCase(ex) for ex in EXAMPLES)
+  return suite
 
 if __name__ == '__main__':
   unittest.main()
