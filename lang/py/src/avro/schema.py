@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+##
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -36,6 +39,7 @@ A schema may be one of:
 """
 
 import json
+import logging
 from math import floor, log10
 
 from avro import constants
@@ -44,6 +48,7 @@ from avro import constants
 # Constants
 #
 
+_LOG = logging.getLogger(__name__)
 PRIMITIVE_TYPES = (
   'null',
   'boolean',
