@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+##
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,8 +25,8 @@ try:
   from hashlib import md5
 except ImportError:
   from md5 import md5
-
 import json
+import logging
 
 from avro import schema
 
@@ -31,6 +34,7 @@ from avro import schema
 # Constants
 #
 
+_LOG = logging.getLogger(__name__)
 # TODO(hammer): confirmed 'fixed' with Doug
 VALID_TYPE_SCHEMA_TYPES = ('enum', 'record', 'error', 'fixed')
 
