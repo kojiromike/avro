@@ -29,6 +29,10 @@ main() {
     case "$target" in
       lint)
         ./setup.py isort lint
+        # Mypy has to run in python3 even in a python2 project.
+        # So there's no point integrating it with setuptools.
+        echo 'running mypy'
+        mypy . src test
         ;;
       test)
         ant test

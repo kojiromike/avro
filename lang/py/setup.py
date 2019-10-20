@@ -16,11 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import distutils.errors
 import glob
 import os
 import subprocess
+import typing
 
 import setuptools
 
@@ -38,7 +38,7 @@ def _get_version():
 class LintCommand(setuptools.Command):
     """Run pycodestyle on all your modules"""
     description = __doc__
-    user_options = []
+    user_options = []  # type: typing.List[typing.Text]
 
     def initialize_options(self):
         pass

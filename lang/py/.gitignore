@@ -1,5 +1,7 @@
 *.egg-info/
 .eggs/
+.mypy_cache/
+.python-version
 build/
 lib/
 userlogs/
