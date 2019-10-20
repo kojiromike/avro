@@ -26,43 +26,49 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=isolemnlysweariamuptonogood \
 # Install dependencies from vanilla system packages
 RUN apt-get -qqy update \
  && apt-get -qqy install --no-install-recommends ant \
-                                                 apt-transport-https \
-                                                 asciidoc \
-                                                 bison \
-                                                 bzip2 \
-                                                 bundler \
-                                                 cmake \
-                                                 curl \
-                                                 doxygen \
-                                                 flex \
-                                                 g++ \
-                                                 gcc \
-                                                 git \
-                                                 libboost-all-dev \
-                                                 libfontconfig1-dev \
-                                                 libfreetype6-dev \
-                                                 libglib2.0-dev \
-                                                 libjansson-dev \
-                                                 libsnappy-dev \
-                                                 libsnappy1v5 \
-                                                 make \
-                                                 maven \
-                                                 perl \
-                                                 python \
-                                                 python-pip \
-                                                 python-setuptools \
-                                                 python-snappy \
-                                                 python-wheel \
-                                                 python3-pip \
-                                                 python3-setuptools \
-                                                 python3-snappy \
-                                                 python3-wheel \
-                                                 rake \
-                                                 ruby \
-                                                 ruby-dev \
-                                                 source-highlight \
-                                                 subversion \
-                                                 valgrind \
+                                                apt-transport-https \
+                                                asciidoc \
+                                                bison \
+                                                build-essential \
+                                                bundler \
+                                                bzip2 \
+                                                cmake \
+                                                curl \
+                                                doxygen \
+                                                flex \
+                                                g++ \
+                                                gcc \
+                                                git \
+                                                libboost-all-dev \
+                                                libbz2-dev \
+                                                libffi-dev \
+                                                libfontconfig1-dev \
+                                                libfreetype6-dev \
+                                                libglib2.0-dev \
+                                                libjansson-dev \
+                                                liblzma-dev \
+                                                libncurses5-dev \
+                                                libncursesw5-dev \
+                                                libreadline-dev \
+                                                libsnappy-dev \
+                                                libsnappy1v5 \
+                                                libsqlite3-dev \
+                                                libssl-dev \
+                                                llvm \
+                                                make \
+                                                maven \
+                                                perl \
+                                                python-openssl \
+                                                rake \
+                                                ruby \
+                                                ruby-dev \
+                                                source-highlight \
+                                                subversion \
+                                                tk-dev \
+                                                valgrind \
+                                                wget \
+                                                xz-utils \
+                                                zlib1g-dev \
  && apt-get -qqy clean \
  && rm -rf /var/lib/apt/lists
 
@@ -116,20 +122,23 @@ RUN curl -sSL https://cpanmin.us \
                                                  Try::Tiny \
  && rm -rf .cpanm
 
-# Install Python packages
-ENV PIP_NO_CACHE_DIR=off
-
-# Install Python2 packages
-RUN python2 -m pip install --upgrade pip setuptools \
- && python2 -m pip install zstandard
-
-# Install Python3 packages
-RUN python3 -m pip install --upgrade pip setuptools \
- && python3 -m pip install zstandard
-
 # Install Ruby modules
 COPY lang/ruby/Gemfile /tmp
 RUN bundle install --gemfile=/tmp/Gemfile
+
+# Install Python packages
+ENV PATH="/opt/pyenv/bin:$PATH" \
+    PIP_NO_CACHE_DIR=off \
+    PYENV_ROOT=/opt/pyenv \
+    PYENV_VERSION=3.5.7
+RUN curl -sSL https://pyenv.run \
+  | bash \
+ && printf '%s\n' 'eval "$(pyenv init -)"' \
+                  'eval "$(pyenv virtualenv-init -)"' \
+  | tee -a /etc/skel/.bashrc \
+           /root/.bashrc \
+ && pyenv install 2.7.16 \
+ && pyenv install 3.5.7
 
 # Install .NET SDK
 RUN curl -sSLO https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb \
