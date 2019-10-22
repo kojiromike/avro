@@ -130,7 +130,7 @@ class TestTetherWordCount(unittest.TestCase):
       # Ensure avro and tests are on the PYTHONPATH.
       avro_path = os.path.dirname(avro.__file__)
       test_path = os.path.dirname(__file__)
-      python_path = (os.pathsep).join([apath, tpath])
+      python_path = (os.pathsep).join([avro_path, test_path])
       jarpath = os.path.abspath("@TOPDIR@/../java/tools/target/avro-tools-@AVRO_VERSION@.jar")
       args = ("java", "-jar", jarpath, "tether",
               "--in", inpath,
