@@ -17,6 +17,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""unittest for a python tethered map-reduce job"""
+
 from __future__ import absolute_import, division, print_function
 
 import os
@@ -35,8 +37,6 @@ import set_avro_test_path
 
 
 class TestTetherWordCount(unittest.TestCase):
-  """unittest for a python tethered map-reduce job."""
-
   def _write_lines(self,lines,fname):
     """
     Write the lines to an avro file named fname
@@ -46,14 +46,6 @@ class TestTetherWordCount(unittest.TestCase):
     lines - list of strings to write
     fname - the name of the file to write to.
     """
-    #recursively make all directories
-    dparts=fname.split(os.sep)[:-1]
-    for i in range(len(dparts)):
-      pdir=os.sep+os.sep.join(dparts[:i+1])
-      if not(os.path.exists(pdir)):
-        os.mkdir(pdir)
-
-
     with file(fname,'w') as hf:
       inschema="""{"type":"string"}"""
       writer = avro.datafile.DataFileWriter(hf, avro.io.DatumWriter(inschema), writers_schema=avro.schema.parse(inschema))
@@ -105,6 +97,8 @@ class TestTetherWordCount(unittest.TestCase):
              "the cow jumps over the moon",
              "the rain in spain falls mainly on the plains"]
 
+      if not os.path.isdir(inpath):
+        os.makedirs(inpath)
       self._write_lines(lines,infile)
 
       true_counts=self._count_words(lines)
