@@ -127,51 +127,22 @@ class TestTetherWordCount(unittest.TestCase):
         self.fail("Missing the schema file")
 
       outpath = os.path.join(base_dir, "out")
-
-      args=[]
-
-      args.append("java")
-      args.append("-jar")
-      args.append(os.path.abspath("@TOPDIR@/../java/tools/target/avro-tools-@AVRO_VERSION@.jar"))
-
-
-      args.append("tether")
-      args.extend(["--in",inpath])
-      args.extend(["--out",outpath])
-      args.extend(["--outschema",outschema])
-      args.extend(["--protocol","http"])
-
-      # form the arguments for the subprocess
-      subargs=[]
-
-      srcfile = avro.tether.tether_task_runner.__file__
-
-      # Create a shell script to act as the program we want to execute
-      # We do this so we can set the python path appropriately
-      script="""#!/bin/bash
-export PYTHONPATH={0}
-python -m avro.tether.tether_task_runner word_count_task.WordCountTask
-"""
-      # We need to make sure avro is on the path
-      # getsourcefile(avro) returns .../avro/__init__.py
-      asrc = avro.__file__
-      apath=asrc.rsplit(os.sep,2)[0]
-
-      # path to where the tests lie
-      tpath=os.path.split(__file__)[0]
-
-      exhf=tempfile.NamedTemporaryFile(mode='w',prefix="exec_word_count_",delete=False)
-      exfile=exhf.name
-      exhf.write(script.format((os.pathsep).join([apath,tpath]),srcfile))
-      exhf.close()
-
-      # make it world executable
-      os.chmod(exfile,0o755)
-
-      args.extend(["--program",exfile])
+      # Ensure avro and tests are on the PYTHONPATH.
+      avro_path = os.path.dirname(avro.__file__)
+      test_path = os.path.dirname(__file__)
+      python_path = (os.pathsep).join([apath, tpath])
+      jarpath = os.path.abspath("@TOPDIR@/../java/tools/target/avro-tools-@AVRO_VERSION@.jar")
+      args = ("java", "-jar", jarpath, "tether",
+              "--in", inpath,
+              "--out", outpath,
+              "--outschema", outschema,
+              "--protocol", "http",
+              "--program", "python",
+              "--exec_args", "-m avro.tether.tether_task_runner "
+                             "word_count_task.WordCountTask")
 
       print("Command:\n\t{0}".format(" ".join(args)))
-      proc=subprocess.Popen(args)
+      proc = subprocess.Popen(args, env={"PYTHONPATH": python_path})
 
 
       proc.wait()
