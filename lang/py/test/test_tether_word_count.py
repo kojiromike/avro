@@ -26,6 +26,7 @@ import sys
 import time
 import unittest
 
+import avro
 import set_avro_test_path
 
 
@@ -147,12 +148,14 @@ class TestTetherWordCount(unittest.TestCase):
 
       outpath = os.path.join(base_dir, "out")
 
+      # path to where the tests lie
+      tpath = os.path.dirname(__file__)
+
       args=[]
 
       args.append("java")
       args.append("-jar")
-      args.append(os.path.abspath("@TOPDIR@/../java/tools/target/avro-tools-@AVRO_VERSION@.jar"))
-
+      args.append(os.path.join(tpath, 'avro-tools-{}.jar'.format(avro.__version__)))
 
       args.append("tether")
       args.extend(["--in",inpath])
@@ -175,9 +178,6 @@ python -m avro.tether.tether_task_runner word_count_task.WordCountTask
       # getsourcefile(avro) returns .../avro/__init__.py
       asrc=inspect.getsourcefile(avro)
       apath=asrc.rsplit(os.sep,2)[0]
-
-      # path to where the tests lie
-      tpath=os.path.split(__file__)[0]
 
       exhf=tempfile.NamedTemporaryFile(mode='w',prefix="exec_word_count_",delete=False)
       exfile=exhf.name

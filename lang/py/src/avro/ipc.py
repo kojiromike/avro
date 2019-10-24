@@ -22,6 +22,7 @@
 from __future__ import absolute_import, division, print_function
 
 import httplib
+import os.path
 
 from avro import io, protocol, schema
 
@@ -35,13 +36,18 @@ except ImportError:
 #
 
 # Handshake schema is pulled in during build
-HANDSHAKE_REQUEST_SCHEMA = schema.parse("""
-@HANDSHAKE_REQUEST_SCHEMA@
-""")
+def LoadResource(name):
+  dir_path = os.path.dirname(__file__)
+  rsrc_path = os.path.join(dir_path, name)
+  with open(rsrc_path, 'r') as f:
+    return f.read()
 
-HANDSHAKE_RESPONSE_SCHEMA = schema.parse("""
-@HANDSHAKE_RESPONSE_SCHEMA@
-""")
+
+# Handshake schema is pulled in during build
+HANDSHAKE_REQUEST_SCHEMA_JSON = LoadResource('HandshakeRequest.avsc')
+HANDSHAKE_RESPONSE_SCHEMA_JSON = LoadResource('HandshakeResponse.avsc')
+HANDSHAKE_REQUEST_SCHEMA = schema.parse(HANDSHAKE_REQUEST_SCHEMA_JSON)
+HANDSHAKE_RESPONSE_SCHEMA = schema.parse(HANDSHAKE_RESPONSE_SCHEMA_JSON)
 
 HANDSHAKE_REQUESTOR_WRITER = io.DatumWriter(HANDSHAKE_REQUEST_SCHEMA)
 HANDSHAKE_REQUESTOR_READER = io.DatumReader(HANDSHAKE_RESPONSE_SCHEMA)

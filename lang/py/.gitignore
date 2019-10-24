@@ -2,4 +2,9 @@
 .eggs/
 build/
 lib/
+src/avro/HandshakeRequest.avsc
+src/avro/HandshakeResponse.avsc
+src/avro/VERSION.txt
+test/avro-tools-*.jar
+test/interop.avsc
 userlogs/
