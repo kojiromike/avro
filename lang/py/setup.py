@@ -17,6 +17,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Provide the code necessary for packaging and installing avro-python.
+
+https://pypi.org/project/avro/
+"""
+
 
 from __future__ import absolute_import, division, print_function
 
