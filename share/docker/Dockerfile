@@ -17,7 +17,7 @@
 # Dockerfile for installing the necessary dependencies for building Avro.
 # See BUILD.txt.
 
-FROM openjdk:8
+FROM ubuntu
 WORKDIR /root
 CMD ["/avro/share/docker/run-tests.sh"]
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=isolemnlysweariamuptonogood \
@@ -47,6 +47,8 @@ RUN apt-get -qqy update \
                                                  libsnappy1v5 \
                                                  make \
                                                  maven \
+                                                 openjdk-8-jdk-headless \
+                                                 openjdk-11-jdk-headless \
                                                  perl \
                                                  python \
                                                  python-pip \
