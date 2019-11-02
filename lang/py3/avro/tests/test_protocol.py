@@ -32,21 +32,21 @@ from avro import protocol
 
 
 class ExampleProtocol(object):
-  def __init__(
-      self,
-      protocol_string,
-      valid=True,
-  ):
-    self._protocol_string = protocol_string
-    self._valid = valid
+    def __init__(
+        self,
+        protocol_string,
+        valid=True,
+    ):
+        self._protocol_string = protocol_string
+        self._valid = valid
 
-  @property
-  def protocol_string(self):
-    return self._protocol_string
+    @property
+    def protocol_string(self):
+        return self._protocol_string
 
-  @property
-  def valid(self):
-    return self._valid
+    @property
+    def valid(self):
+        return self._valid
 
 
 # ------------------------------------------------------------------------------
@@ -79,10 +79,10 @@ HELLO_WORLD = ExampleProtocol("""
 """)
 
 EXAMPLES = [
-  HELLO_WORLD,
+    HELLO_WORLD,
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test",
     "protocol": "Simple",
@@ -129,8 +129,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestNamespace",
@@ -162,8 +162,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestImplicitNamespace",
@@ -204,8 +204,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestNamespaceTwo",
@@ -253,8 +253,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestValidRepeatedName",
@@ -291,8 +291,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestInvalidRepeatedName",
@@ -327,10 +327,10 @@ EXAMPLES = [
     }
   }
   """,
-  valid=False),
+        valid=False),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test",
     "protocol": "BulkData",
@@ -348,8 +348,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "protocol": "API",
     "namespace": "xyz.api",
@@ -400,109 +400,109 @@ VALID_EXAMPLES = [e for e in EXAMPLES if e.valid]
 
 class TestProtocol(unittest.TestCase):
 
-  @unittest.mock.patch('avro.protocol.warnings.warn')
-  def test_Parse_is_deprecated(self, warn):
-    """Capital-P Parse is deprecated."""
-    protocol.Parse(HELLO_WORLD.protocol_string)
-    self.assertEqual(warn.call_count, 1)
+    @unittest.mock.patch('avro.protocol.warnings.warn')
+    def test_Parse_is_deprecated(self, warn):
+        """Capital-P Parse is deprecated."""
+        protocol.Parse(HELLO_WORLD.protocol_string)
+        self.assertEqual(warn.call_count, 1)
 
-  def testParse(self):
-    correct = 0
-    for iexample, example in enumerate(EXAMPLES):
-      logging.debug(
-          'Parsing protocol #%d:\n%s',
-          iexample, example.protocol_string)
-      try:
-        parsed = protocol.parse(example.protocol_string)
-        if example.valid:
-          correct += 1
-        else:
-          self.fail(
-              'Invalid protocol was parsed:\n%s' % example.protocol_string)
-      except Exception as exn:
-        if example.valid:
-          self.fail(
-              'Valid protocol failed to parse: %s\n%s'
-              % (example.protocol_string, traceback.format_exc()))
-        else:
-          if logging.getLogger().getEffectiveLevel() <= 5:
-            logging.debug('Expected error:\n%s', traceback.format_exc())
-          else:
-            logging.debug('Expected error: %r', exn)
-          correct += 1
+    def testParse(self):
+        correct = 0
+        for iexample, example in enumerate(EXAMPLES):
+            logging.debug(
+                'Parsing protocol #%d:\n%s',
+                iexample, example.protocol_string)
+            try:
+                parsed = protocol.parse(example.protocol_string)
+                if example.valid:
+                    correct += 1
+                else:
+                    self.fail(
+                        'Invalid protocol was parsed:\n%s' % example.protocol_string)
+            except Exception as exn:
+                if example.valid:
+                    self.fail(
+                        'Valid protocol failed to parse: %s\n%s'
+                        % (example.protocol_string, traceback.format_exc()))
+                else:
+                    if logging.getLogger().getEffectiveLevel() <= 5:
+                        logging.debug('Expected error:\n%s', traceback.format_exc())
+                    else:
+                        logging.debug('Expected error: %r', exn)
+                    correct += 1
 
-    self.assertEqual(
-      correct,
-      len(EXAMPLES),
-      'Parse behavior correct on %d out of %d protocols.'
-      % (correct, len(EXAMPLES)))
+        self.assertEqual(
+            correct,
+            len(EXAMPLES),
+            'Parse behavior correct on %d out of %d protocols.'
+            % (correct, len(EXAMPLES)))
 
-  def testInnerNamespaceSet(self):
-    proto = protocol.parse(HELLO_WORLD.protocol_string)
-    self.assertEqual(proto.namespace, 'com.acme')
-    greeting_type = proto.type_map['com.acme.Greeting']
-    self.assertEqual(greeting_type.namespace, 'com.acme')
+    def testInnerNamespaceSet(self):
+        proto = protocol.parse(HELLO_WORLD.protocol_string)
+        self.assertEqual(proto.namespace, 'com.acme')
+        greeting_type = proto.type_map['com.acme.Greeting']
+        self.assertEqual(greeting_type.namespace, 'com.acme')
 
-  def testInnerNamespaceNotRendered(self):
-    proto = protocol.parse(HELLO_WORLD.protocol_string)
-    self.assertEqual('com.acme.Greeting', proto.types[0].fullname)
-    self.assertEqual('Greeting', proto.types[0].name)
-    # but there shouldn't be 'namespace' rendered to json on the inner type
-    self.assertFalse('namespace' in proto.to_json()['types'][0])
+    def testInnerNamespaceNotRendered(self):
+        proto = protocol.parse(HELLO_WORLD.protocol_string)
+        self.assertEqual('com.acme.Greeting', proto.types[0].fullname)
+        self.assertEqual('Greeting', proto.types[0].name)
+        # but there shouldn't be 'namespace' rendered to json on the inner type
+        self.assertFalse('namespace' in proto.to_json()['types'][0])
 
-  def testValidCastToStringAfterParse(self):
-    """
-    Test that the string generated by an Avro Protocol object is,
-    in fact, a valid Avro protocol.
-    """
-    num_correct = 0
-    for example in VALID_EXAMPLES:
-      proto = protocol.parse(example.protocol_string)
-      try:
-        protocol.parse(str(proto))
-      except ProtocolParseException:
-        logging.debug('Failed to reparse protocol:\n%s',
-                      example.protocol_string)
-        continue
-      logging.debug('Successfully reparsed protocol:\n%s',
+    def testValidCastToStringAfterParse(self):
+        """
+        Test that the string generated by an Avro Protocol object is,
+        in fact, a valid Avro protocol.
+        """
+        num_correct = 0
+        for example in VALID_EXAMPLES:
+            proto = protocol.parse(example.protocol_string)
+            try:
+                protocol.parse(str(proto))
+            except ProtocolParseException:
+                logging.debug('Failed to reparse protocol:\n%s',
+                              example.protocol_string)
+                continue
+            logging.debug('Successfully reparsed protocol:\n%s',
+                          example.protocol_string)
+            num_correct += 1
+        fail_msg = (
+            'Cast to string success on %d out of %d protocols'
+            % (num_correct, len(VALID_EXAMPLES)))
+        self.assertEqual(num_correct, len(VALID_EXAMPLES), fail_msg)
+
+    def testEquivalenceAfterRoundTrip(self):
+        """
+        1. Given a string, parse it to get Avro protocol "original".
+        2. Serialize "original" to a string and parse that string
+             to generate Avro protocol "round trip".
+        3. Ensure "original" and "round trip" protocols are equivalent.
+        """
+        num_correct = 0
+        for example in VALID_EXAMPLES:
+            original_protocol = protocol.parse(example.protocol_string)
+            round_trip_protocol = protocol.parse(str(original_protocol))
+
+            if original_protocol == round_trip_protocol:
+                num_correct += 1
+                logging.debug(
+                    'Successful round-trip for protocol:\n%s',
                     example.protocol_string)
-      num_correct += 1
-    fail_msg = (
-      'Cast to string success on %d out of %d protocols'
-      % (num_correct, len(VALID_EXAMPLES)))
-    self.assertEqual(num_correct, len(VALID_EXAMPLES), fail_msg)
+            else:
+                self.fail(
+                    'Round-trip failure for protocol:\n%s\nOriginal protocol:\n%s'
+                    % (example.protocol_string, str(original_protocol)))
 
-  def testEquivalenceAfterRoundTrip(self):
-    """
-    1. Given a string, parse it to get Avro protocol "original".
-    2. Serialize "original" to a string and parse that string
-         to generate Avro protocol "round trip".
-    3. Ensure "original" and "round trip" protocols are equivalent.
-    """
-    num_correct = 0
-    for example in VALID_EXAMPLES:
-      original_protocol = protocol.parse(example.protocol_string)
-      round_trip_protocol = protocol.parse(str(original_protocol))
-
-      if original_protocol == round_trip_protocol:
-        num_correct += 1
-        logging.debug(
-            'Successful round-trip for protocol:\n%s',
-            example.protocol_string)
-      else:
-        self.fail(
-            'Round-trip failure for protocol:\n%s\nOriginal protocol:\n%s'
-            % (example.protocol_string, str(original_protocol)))
-
-    self.assertEqual(
-        num_correct,
-        len(VALID_EXAMPLES),
-        'Round trip success on %d out of %d protocols.'
-        % (num_correct, len(VALID_EXAMPLES)))
+        self.assertEqual(
+            num_correct,
+            len(VALID_EXAMPLES),
+            'Round trip success on %d out of %d protocols.'
+            % (num_correct, len(VALID_EXAMPLES)))
 
 
 # ------------------------------------------------------------------------------
 
 
 if __name__ == '__main__':
-  raise Exception('Use run_tests.py')
+    raise Exception('Use run_tests.py')
