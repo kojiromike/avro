@@ -71,16 +71,19 @@ SCHEMA_KEY = "avro.schema"
 # Exceptions
 #
 
+
 class DataFileException(schema.AvroException):
   """
   Raised when there's a problem reading or writing file object containers.
   """
+
   def __init__(self, fail_msg):
     schema.AvroException.__init__(self, fail_msg)
 
 #
 # Write Path
 #
+
 
 class DataFileWriter(object):
   @staticmethod
@@ -153,6 +156,7 @@ class DataFileWriter(object):
   # utility functions to read/write metadata entries
   def get_meta(self, key):
     return self._meta.get(key)
+
   def set_meta(self, key, val):
     self._meta[key] = val
 
@@ -237,10 +241,12 @@ class DataFileWriter(object):
     self.flush()
     self.writer.close()
 
+
 class DataFileReader(object):
   """Read files written by DataFileWriter."""
   # TODO(hammer): allow user to specify expected schema?
   # TODO(hammer): allow user to specify the encoder
+
   def __init__(self, reader, datum_reader):
     self._reader = reader
     self._raw_decoder = io.BinaryDecoder(reader)
@@ -292,6 +298,7 @@ class DataFileReader(object):
   # utility functions to read/write metadata entries
   def get_meta(self, key):
     return self._meta.get(key)
+
   def set_meta(self, key, val):
     self._meta[key] = val
 
@@ -389,6 +396,7 @@ class DataFileReader(object):
   def close(self):
     """Close this reader."""
     self.reader.close()
+
 
 def generate_sixteen_random_bytes():
   try:

@@ -151,6 +151,8 @@ class SchemaParseException(AvroException):
 
 # ------------------------------------------------------------------------------
 # Utilities
+
+
 class MappingProxyEncoder(json.JSONEncoder):
   def default(self, obj):
     if isinstance(obj, MappingProxyType):
@@ -240,6 +242,7 @@ _RE_FULL_NAME = re.compile(
     r'([A-Za-z_][A-Za-z0-9_]*)'            # name
     r'$'
 )
+
 
 class Name(object):
   """Representation of an Avro name."""

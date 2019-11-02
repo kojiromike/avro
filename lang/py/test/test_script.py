@@ -59,9 +59,11 @@ LOONIES = (
     ("foghorn", "leghorn", "rooster"),
 )
 
+
 def looney_records():
     for f, l, t in LOONIES:
         yield {"first": f, "last" : l, "type" : t}
+
 
 SCRIPT = join(dirname(__file__), "..", "scripts", "avro")
 
@@ -70,6 +72,7 @@ _JSON_PRETTY = '''{
     "last": "duck", 
     "first": "daffy"
 }'''
+
 
 def gen_avro(filename):
     schema = avro.schema.parse(SCHEMA)
@@ -80,8 +83,10 @@ def gen_avro(filename):
     writer.close()
     fo.close()
 
+
 def tempfile():
     return NamedTemporaryFile(delete=False).name
+
 
 class TestCat(unittest.TestCase):
     def setUp(self):
@@ -156,6 +161,7 @@ class TestCat(unittest.TestCase):
         # Non existing fields are ignored
         out = self._run('--fields', 'first,last,age')
         assert json.loads(out[0]) == {'first': 'daffy', 'last': 'duck'}
+
 
 class TestWrite(unittest.TestCase):
     def setUp(self):

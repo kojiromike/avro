@@ -397,6 +397,7 @@ def parse(json_string):
 
   return ProtocolFromJSONData(json_data)
 
+
 def Parse(json_string):
   """Deprecated implementation of parse."""
   warnings.warn("`Parse` is deprecated in avro 1.10. "

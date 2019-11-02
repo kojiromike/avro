@@ -249,6 +249,7 @@ EXAMPLES += TIMESTAMPMICROS_LOGICAL_TYPE
 VALID_EXAMPLES = [e for e in EXAMPLES if e.valid]
 INVALID_EXAMPLES = [e for e in EXAMPLES if not e.valid]
 
+
 class TestSchema(unittest.TestCase):
   """Miscellaneous tests for schema"""
 
@@ -350,6 +351,7 @@ class TestSchema(unittest.TestCase):
     self.assertEqual(4, bytes_decimal.get_prop('precision'))
     self.assertEqual(0, bytes_decimal.get_prop('scale'))
 
+
 class SchemaParseTestCase(unittest.TestCase):
   """Enable generating parse test cases over all the valid and invalid example schema."""
 
@@ -379,6 +381,7 @@ class SchemaParseTestCase(unittest.TestCase):
     else:
       self.fail("Invalid schema should not have parsed: {!s}".format(self.test_schema))
 
+
 class RoundTripParseTestCase(unittest.TestCase):
   """Enable generating round-trip parse test cases over all the valid test schema."""
 
@@ -396,6 +399,7 @@ class RoundTripParseTestCase(unittest.TestCase):
     parsed = self.test_schema.parse()
     round_trip = schema.parse(str(parsed))
     self.assertEqual(parsed, round_trip)
+
 
 class DocAttributesTestCase(unittest.TestCase):
   """Enable generating document attribute test cases over all the document test schema."""
@@ -466,6 +470,7 @@ def load_tests(loader, default_tests, pattern):
   suite.addTests(DocAttributesTestCase(ex) for ex in DOC_EXAMPLES)
   suite.addTests(OtherAttributesTestCase(ex) for ex in OTHER_PROP_EXAMPLES)
   return suite
+
 
 if __name__ == '__main__':
   unittest.main()

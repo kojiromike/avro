@@ -48,6 +48,7 @@ class GenericResponder(ipc.Responder):
       server_should_shutdown = True
       return self.datum
 
+
 class GenericHandler(BaseHTTPRequestHandler):
   def do_POST(self):
     self.responder = responder
@@ -65,6 +66,7 @@ class GenericHandler(BaseHTTPRequestHandler):
       quitter.daemon = True
       quitter.start()
 
+
 def run_server(uri, proto, msg, datum):
   url_obj = urlparse.urlparse(uri)
   server_addr = (url_obj.hostname, url_obj.port)
@@ -79,6 +81,7 @@ def run_server(uri, proto, msg, datum):
   print("Starting server.", file=sys.stderr)
   server.serve_forever()
 
+
 def send_message(uri, proto, msg, datum):
   url_obj = urlparse.urlparse(uri)
   client = ipc.HTTPTransceiver(url_obj.hostname, url_obj.port)
@@ -86,11 +89,13 @@ def send_message(uri, proto, msg, datum):
   requestor = ipc.Requestor(protocol.parse(proto_json), client)
   print(requestor.request(msg, datum))
 
+
 def file_or_stdin(f):
   if f == "-":
     return sys.stdin
   else:
     return file(f)
+
 
 def main(args=sys.argv):
   if len(args) == 1:
@@ -146,6 +151,7 @@ def main(args=sys.argv):
         return 1
     send_message(uri, proto, msg, datum)
   return 0
+
 
 if __name__ == "__main__":
   sys.exit(main(sys.argv))

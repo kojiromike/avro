@@ -70,6 +70,8 @@ except ImportError:
   print('Zstandard not present, will skip testing it.')
 
 # TODO(hammer): clean up written files with ant, not os.remove
+
+
 class TestDataFile(unittest.TestCase):
   def test_round_trip(self):
     print('')
@@ -216,6 +218,7 @@ class TestDataFile(unittest.TestCase):
 
     with datafile.DataFileReader(open(FILENAME, 'rb'), io.DatumReader()) as dfr:
       self.assertEqual([], list(dfr))
+
 
 if __name__ == '__main__':
   unittest.main()

@@ -42,6 +42,7 @@ class ExampleProtocol(object):
   def set_comment(self, new_comment): self._comment = new_comment
   comment = property(lambda self: self._comment, set_comment)
 
+
 #
 # Example Protocols
 #
@@ -351,6 +352,7 @@ ExampleProtocol("""\
 
 VALID_EXAMPLES = [e for e in EXAMPLES if e.valid]
 
+
 class TestProtocol(unittest.TestCase):
   def test_parse(self):
     num_correct = 0
@@ -440,6 +442,7 @@ class TestProtocol(unittest.TestCase):
     fail_msg = "Round trip success on %d out of %d protocols" % \
       (num_correct, len(VALID_EXAMPLES))
     self.assertEqual(num_correct, len(VALID_EXAMPLES), fail_msg)
+
 
 if __name__ == '__main__':
   unittest.main()

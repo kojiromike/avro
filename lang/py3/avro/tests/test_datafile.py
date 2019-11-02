@@ -86,6 +86,7 @@ SCHEMAS_TO_VALIDATE = (
    {'value': {'car': {'value': 'head'}, 'cdr': {'value': None}}}),
 )
 
+
 def get_codecs_to_validate():
   codecs = (NULL_CODEC, DEFLATE_CODEC, BZIP2_CODEC, XZ_CODEC)
 

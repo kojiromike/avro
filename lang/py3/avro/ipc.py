@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 # ------------------------------------------------------------------------------
 # Constants
 
+
 def LoadResource(name):
   dir_path = os.path.dirname(__file__)
   rsrc_path = os.path.join(dir_path, name)
@@ -83,8 +84,10 @@ class AvroRemoteException(schema.AvroException):
   """
   Raised when an error message is sent by an Avro requestor or responder.
   """
+
   def __init__(self, fail_msg=None):
     schema.AvroException.__init__(self, fail_msg)
+
 
 class ConnectionClosedException(schema.AvroException):
   pass

@@ -50,7 +50,9 @@ def print_json(row):
 def print_json_pretty(row):
   print(json.dumps(row, indent=4, sort_keys=True))
 
+
 _csv_writer = csv.writer(sys.stdout)
+
 
 def _write_row(row):
   _csv_writer.writerow(row)

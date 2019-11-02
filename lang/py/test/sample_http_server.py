@@ -52,6 +52,7 @@ MAIL_PROTOCOL_JSON = """\
 MAIL_PROTOCOL = protocol.parse(MAIL_PROTOCOL_JSON)
 SERVER_ADDRESS = ('localhost', 9090)
 
+
 class MailResponder(ipc.Responder):
   def __init__(self):
     ipc.Responder.__init__(self, MAIL_PROTOCOL)
@@ -65,6 +66,7 @@ class MailResponder(ipc.Responder):
     elif message.name == 'replay':
       return 'replay'
 
+
 class MailHandler(BaseHTTPRequestHandler):
   def do_POST(self):
     self.responder = MailResponder()
@@ -76,6 +78,7 @@ class MailHandler(BaseHTTPRequestHandler):
     self.end_headers()
     resp_writer = ipc.FramedWriter(self.wfile)
     resp_writer.write_framed_message(resp_body)
+
 
 if __name__ == '__main__':
   mail_server = HTTPServer(SERVER_ADDRESS, MailHandler)

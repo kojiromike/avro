@@ -39,6 +39,7 @@ class TestTetherTask(unittest.TestCase):
   """
   TODO: We should validate the the server response by looking at stdout
   """
+
   def test1(self):
     """
     Test that the thether_task is working. We run the mock_tether_parent in a separate
@@ -121,6 +122,7 @@ class TestTetherTask(unittest.TestCase):
         proc.kill()
 
       pass
+
 
 if __name__ == '__main__':
   unittest.main()

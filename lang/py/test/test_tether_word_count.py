@@ -151,5 +151,6 @@ python -m avro.tether.tether_task_runner word_count_task.WordCountTask
       if exfile is not None and os.path.exists(exfile):
         os.remove(exfile)
 
+
 if __name__== "__main__":
   unittest.main()

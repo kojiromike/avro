@@ -72,6 +72,7 @@ STRUCT_CRC32 = struct.Struct('>I')   # big-endian unsigned int
 
 class AvroTypeException(schema.AvroException):
   """Raised when datum is not an example of schema."""
+
   def __init__(self, expected_schema, datum):
     pretty_expected = json.dumps(json.loads(str(expected_schema)), indent=2)
     fail_msg = "The datum %s is not an example of the schema %s"\
@@ -113,6 +114,7 @@ _valid['double'] = _valid['float']
 _valid['error_union'] = _valid['union']
 _valid['error'] = _valid['request'] = _valid['record']
 
+
 def Validate(expected_schema, datum):
   """Determines if a python datum is an instance of a schema.
 
@@ -134,6 +136,7 @@ def Validate(expected_schema, datum):
 
 class BinaryDecoder(object):
   """Read leaf values."""
+
   def __init__(self, reader):
     """
     reader is a Python object on which we can call read, seek, and tell.
@@ -278,7 +281,6 @@ class BinaryEncoder(object):
   def writer(self):
     """Reports the writer used by this encoder."""
     return self._writer
-
 
   def write(self, datum):
     """Write a sequence of bytes.
@@ -432,6 +434,7 @@ class DatumReader(object):
     self._writer_schema = writer_schema
   writer_schema = property(lambda self: self._writer_schema,
                             set_writer_schema)
+
   def set_reader_schema(self, reader_schema):
     self._reader_schema = reader_schema
   reader_schema = property(lambda self: self._reader_schema,
@@ -756,6 +759,7 @@ class DatumReader(object):
 
 class DatumWriter(object):
   """DatumWriter for generic python objects."""
+
   def __init__(self, writer_schema=None):
     self._writer_schema = writer_schema
 

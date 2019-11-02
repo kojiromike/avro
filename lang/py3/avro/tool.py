@@ -45,6 +45,7 @@ class GenericResponder(ipc.Responder):
       server_should_shutdown = True
       return self.datum
 
+
 class GenericHandler(BaseHTTPRequestHandler):
   def do_POST(self):
     self.responder = responder
@@ -60,10 +61,12 @@ class GenericHandler(BaseHTTPRequestHandler):
       print("Shutting down server.", sys.stderr)
       self.server.force_stop()
 
+
 class StoppableHTTPServer(HTTPServer):
   """HTTPServer.shutdown added in Python 2.6. FML."""
   stopped = False
   allow_reuse_address = True
+
   def __init__(self, *args, **kw):
     HTTPServer.__init__(self, *args, **kw)
     self.allow_reuse_address = True
@@ -76,6 +79,7 @@ class StoppableHTTPServer(HTTPServer):
     self.server_close()
     self.stopped = True
     self.serve_forever()
+
 
 def run_server(uri, proto, msg, datum):
   url_obj = urllib.parse.urlparse(uri)
@@ -91,6 +95,7 @@ def run_server(uri, proto, msg, datum):
   print("Starting server.", sys.stderr)
   server.serve_forever()
 
+
 def send_message(uri, proto, msg, datum):
   url_obj = urllib.parse.urlparse(uri)
   client = ipc.HTTPTransceiver(url_obj.hostname, url_obj.port)
@@ -98,11 +103,13 @@ def send_message(uri, proto, msg, datum):
   requestor = ipc.Requestor(protocol.parse(proto_json), client)
   print(requestor.Request(msg, datum))
 
+
 def file_or_stdin(f):
   if f == "-":
     return sys.stdin
   else:
     return file(f)
+
 
 def main(args=sys.argv):
   if len(args) == 1:
@@ -156,6 +163,7 @@ def main(args=sys.argv):
         return 1
     send_message(uri, proto, msg, datum)
   return 0
+
 
 if __name__ == "__main__":
   sys.exit(main(sys.argv))

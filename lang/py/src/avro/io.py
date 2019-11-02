@@ -68,8 +68,10 @@ else:
   class SimpleStruct(object):
     def __init__(self, format):
       self.format = format
+
     def pack(self, *args):
       return struct.pack(self.format, *args)
+
     def unpack(self, *args):
       return struct.unpack(self.format, *args)
   struct_class = SimpleStruct
@@ -88,11 +90,13 @@ STRUCT_SIGNED_LONG = struct_class('>q')     # big-endian signed long
 
 class AvroTypeException(schema.AvroException):
   """Raised when datum is not an example of schema."""
+
   def __init__(self, expected_schema, datum):
     pretty_expected = json.dumps(json.loads(str(expected_schema)), indent=2)
     fail_msg = "The datum %s is not an example of the schema %s"\
                % (datum, pretty_expected)
     schema.AvroException.__init__(self, fail_msg)
+
 
 class SchemaResolutionException(schema.AvroException):
   def __init__(self, fail_msg, writers_schema=None, readers_schema=None):
@@ -105,8 +109,11 @@ class SchemaResolutionException(schema.AvroException):
 #
 # Validate
 #
+
+
 def _is_timezone_aware_datetime(dt):
   return dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None
+
 
 _valid = {
   'null': lambda s, d: d is None,
@@ -163,8 +170,10 @@ def validate(expected_schema, datum):
 # Decoder/Encoder
 #
 
+
 class BinaryDecoder(object):
   """Read leaf values."""
+
   def __init__(self, reader):
     """
     reader is a Python object on which we can call read, seek, and tell.
@@ -336,7 +345,6 @@ class BinaryDecoder(object):
     unix_epoch_datetime = datetime.datetime(1970, 1, 1, 0, 0, 0, 0, tzinfo=timezones.utc)
     return unix_epoch_datetime + timedelta
 
-
   def check_crc32(self, bytes):
     checksum = STRUCT_CRC32.unpack(self.read(4))[0];
     if crc32(bytes) & 0xffffffff != checksum:
@@ -371,8 +379,10 @@ class BinaryDecoder(object):
   def skip(self, n):
     self.reader.seek(self.reader.tell() + n)
 
+
 class BinaryEncoder(object):
   """Write leaf values."""
+
   def __init__(self, writer):
     """
     writer is a Python object on which we can call write.
@@ -645,6 +655,7 @@ class DatumReader(object):
     self._writers_schema = writers_schema
   writers_schema = property(lambda self: self._writers_schema,
                             set_writers_schema)
+
   def set_readers_schema(self, readers_schema):
     self._readers_schema = readers_schema
   readers_schema = property(lambda self: self._readers_schema,
@@ -994,8 +1005,10 @@ class DatumReader(object):
       fail_msg = 'Unknown type: %s' % field_schema.type
       raise schema.AvroException(fail_msg)
 
+
 class DatumWriter(object):
   """DatumWriter for generic python objects."""
+
   def __init__(self, writers_schema=None):
     self._writers_schema = writers_schema
 
