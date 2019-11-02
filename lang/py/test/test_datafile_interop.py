@@ -27,28 +27,29 @@ from avro import datafile, io
 
 
 class TestDataFileInterop(unittest.TestCase):
-  def test_interop(self):
-    print()
-    print('TEST INTEROP')
-    print('============')
-    print()
-    for f in os.listdir('@INTEROP_DATA_DIR@'):
-      base_ext = os.path.splitext(os.path.basename(f))[0].split('_', 1)
-      if len(base_ext) < 2 or base_ext[1] in datafile.VALID_CODECS:
-        print('READING %s' % f)
-        print('')
+    def test_interop(self):
+        print()
+        print('TEST INTEROP')
+        print('============')
+        print()
+        for f in os.listdir('@INTEROP_DATA_DIR@'):
+            base_ext = os.path.splitext(os.path.basename(f))[0].split('_', 1)
+            if len(base_ext) < 2 or base_ext[1] in datafile.VALID_CODECS:
+                print('READING %s' % f)
+                print('')
 
-        # read data in binary from file
-        reader = open(os.path.join('@INTEROP_DATA_DIR@', f), 'rb')
-        datum_reader = io.DatumReader()
-        dfr = datafile.DataFileReader(reader, datum_reader)
-        i = 0
-        for i, datum in enumerate(dfr, 1):
-          assert datum is not None
-        assert i > 0
-      else:
-        print('SKIPPING %s due to an unsupported codec' % f)
-        print('')
+                # read data in binary from file
+                reader = open(os.path.join('@INTEROP_DATA_DIR@', f), 'rb')
+                datum_reader = io.DatumReader()
+                dfr = datafile.DataFileReader(reader, datum_reader)
+                i = 0
+                for i, datum in enumerate(dfr, 1):
+                    assert datum is not None
+                assert i > 0
+            else:
+                print('SKIPPING %s due to an unsupported codec' % f)
+                print('')
+
 
 if __name__ == '__main__':
-  unittest.main()
+    unittest.main()

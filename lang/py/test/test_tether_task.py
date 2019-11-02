@@ -36,91 +36,93 @@ from word_count_task import WordCountTask
 
 
 class TestTetherTask(unittest.TestCase):
-  """
-  TODO: We should validate the the server response by looking at stdout
-  """
-  def test1(self):
     """
-    Test that the thether_task is working. We run the mock_tether_parent in a separate
-    subprocess
+    TODO: We should validate the the server response by looking at stdout
     """
-    task=WordCountTask()
 
-    proc=None
-    try:
-      # launch the server in a separate process
-      # env["AVRO_TETHER_OUTPUT_PORT"]=output_port
-      env=dict()
-      env["PYTHONPATH"]=':'.join(sys.path)
-      server_port = avro.tether.util.find_port()
+    def test1(self):
+        """
+        Test that the thether_task is working. We run the mock_tether_parent in a separate
+        subprocess
+        """
+        task = WordCountTask()
 
-      pyfile=mock_tether_parent.__file__
-      proc=subprocess.Popen(["python", pyfile,"start_server","{0}".format(server_port)])
-      input_port = avro.tether.util.find_port()
+        proc = None
+        try:
+            # launch the server in a separate process
+            # env["AVRO_TETHER_OUTPUT_PORT"]=output_port
+            env = dict()
+            env["PYTHONPATH"] = ':'.join(sys.path)
+            server_port = avro.tether.util.find_port()
 
-      print("Mock server started process pid={0}".format(proc.pid))
-      # Possible race condition? open tries to connect to the subprocess before the subprocess is fully started
-      # so we give the subprocess time to start up
-      time.sleep(1)
-      task.open(input_port,clientPort=server_port)
+            pyfile = mock_tether_parent.__file__
+            proc = subprocess.Popen(["python", pyfile, "start_server", "{0}".format(server_port)])
+            input_port = avro.tether.util.find_port()
 
-      # TODO: We should validate that open worked by grabbing the STDOUT of the subproces
-      # and ensuring that it outputted the correct message.
+            print("Mock server started process pid={0}".format(proc.pid))
+            # Possible race condition? open tries to connect to the subprocess before the subprocess is fully started
+            # so we give the subprocess time to start up
+            time.sleep(1)
+            task.open(input_port, clientPort=server_port)
 
-      #***************************************************************
-      # Test the mapper
-      task.configure(
-        avro.tether.tether_task.TaskType.MAP,
-        str(task.inschema),
-        str(task.midschema)
-      )
+            # TODO: We should validate that open worked by grabbing the STDOUT of the subproces
+            # and ensuring that it outputted the correct message.
 
-      # Serialize some data so we can send it to the input function
-      datum="This is a line of text"
-      writer = StringIO.StringIO()
-      encoder = avio.BinaryEncoder(writer)
-      datum_writer = avio.DatumWriter(task.inschema)
-      datum_writer.write(datum, encoder)
+            # ***************************************************************
+            # Test the mapper
+            task.configure(
+                avro.tether.tether_task.TaskType.MAP,
+                str(task.inschema),
+                str(task.midschema)
+            )
 
-      writer.seek(0)
-      data=writer.read()
+            # Serialize some data so we can send it to the input function
+            datum = "This is a line of text"
+            writer = StringIO.StringIO()
+            encoder = avio.BinaryEncoder(writer)
+            datum_writer = avio.DatumWriter(task.inschema)
+            datum_writer.write(datum, encoder)
 
-      # Call input to simulate calling map
-      task.input(data,1)
+            writer.seek(0)
+            data = writer.read()
 
-      # Test the reducer
-      task.configure(
-        avro.tether.tether_task.TaskType.REDUCE,
-        str(task.midschema),
-        str(task.outschema)
-      )
+            # Call input to simulate calling map
+            task.input(data, 1)
 
-      # Serialize some data so we can send it to the input function
-      datum={"key":"word","value":2}
-      writer = StringIO.StringIO()
-      encoder = avio.BinaryEncoder(writer)
-      datum_writer = avio.DatumWriter(task.midschema)
-      datum_writer.write(datum, encoder)
+            # Test the reducer
+            task.configure(
+                avro.tether.tether_task.TaskType.REDUCE,
+                str(task.midschema),
+                str(task.outschema)
+            )
 
-      writer.seek(0)
-      data=writer.read()
+            # Serialize some data so we can send it to the input function
+            datum = {"key": "word", "value": 2}
+            writer = StringIO.StringIO()
+            encoder = avio.BinaryEncoder(writer)
+            datum_writer = avio.DatumWriter(task.midschema)
+            datum_writer.write(datum, encoder)
 
-      # Call input to simulate calling reduce
-      task.input(data,1)
+            writer.seek(0)
+            data = writer.read()
 
-      task.complete()
+            # Call input to simulate calling reduce
+            task.input(data, 1)
 
-      # try a status
-      task.status("Status message")
+            task.complete()
 
-    except Exception as e:
-      raise
-    finally:
-      # close the process
-      if not(proc is None):
-        proc.kill()
+            # try a status
+            task.status("Status message")
 
-      pass
+        except Exception as e:
+            raise
+        finally:
+            # close the process
+            if not(proc is None):
+                proc.kill()
+
+            pass
+
 
 if __name__ == '__main__':
-  unittest.main()
+    unittest.main()
