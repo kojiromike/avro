@@ -28,15 +28,15 @@ from avro import datafile, io, schema
 CODECS_TO_VALIDATE = ('null', 'deflate')
 
 try:
-  import snappy
-  CODECS_TO_VALIDATE += ('snappy',)
+    import snappy
+    CODECS_TO_VALIDATE += ('snappy',)
 except ImportError:
-  print('Snappy not present, will skip generating it.')
+    print('Snappy not present, will skip generating it.')
 try:
-  import zstandard
-  CODECS_TO_VALIDATE += ('zstandard',)
+    import zstandard
+    CODECS_TO_VALIDATE += ('zstandard',)
 except ImportError:
-  print('Zstandard not present, will skip generating it.')
+    print('Zstandard not present, will skip generating it.')
 
 DATUM = {
   'intField': 12,
@@ -56,15 +56,15 @@ DATUM = {
 }
 
 if __name__ == "__main__":
-  for codec in CODECS_TO_VALIDATE:
-    interop_schema = schema.parse(open(sys.argv[1], 'r').read())
-    filename = sys.argv[2]
-    if codec != 'null':
-      base, ext = os.path.splitext(filename)
-      filename = base + "_" + codec + ext
-    writer = open(filename, 'wb')
-    datum_writer = io.DatumWriter()
-    # NB: not using compression
-    dfw = datafile.DataFileWriter(writer, datum_writer, interop_schema, codec=codec)
-    dfw.append(DATUM)
-    dfw.close()
+    for codec in CODECS_TO_VALIDATE:
+        interop_schema = schema.parse(open(sys.argv[1], 'r').read())
+        filename = sys.argv[2]
+        if codec != 'null':
+            base, ext = os.path.splitext(filename)
+            filename = base + "_" + codec + ext
+        writer = open(filename, 'wb')
+        datum_writer = io.DatumWriter()
+        # NB: not using compression
+        dfw = datafile.DataFileWriter(writer, datum_writer, interop_schema, codec=codec)
+        dfw.append(DATUM)
+        dfw.close()

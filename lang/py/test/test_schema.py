@@ -30,30 +30,30 @@ from avro.schema import AvroException, SchemaParseException
 
 
 class TestSchema(object):
-  """A proxy for a schema string that provides useful test metadata."""
+    """A proxy for a schema string that provides useful test metadata."""
 
-  def __init__(self, data, name='', comment=''):
-    if not isinstance(data, basestring):
-      data = json.dumps(data)
-    self.data = data
-    self.name = name or data  # default to data for name
-    self.comment = comment
+    def __init__(self, data, name='', comment=''):
+        if not isinstance(data, basestring):
+            data = json.dumps(data)
+        self.data = data
+        self.name = name or data  # default to data for name
+        self.comment = comment
 
-  def parse(self):
-    return schema.parse(str(self))
+    def parse(self):
+        return schema.parse(str(self))
 
-  def __str__(self):
-    return str(self.data)
+    def __str__(self):
+        return str(self.data)
 
 
 class ValidTestSchema(TestSchema):
-  """A proxy for a valid schema string that provides useful test metadata."""
-  valid = True
+    """A proxy for a valid schema string that provides useful test metadata."""
+    valid = True
 
 
 class InvalidTestSchema(ValidTestSchema):
-  """A proxy for an invalid schema string that provides useful test metadata."""
-  valid = False
+    """A proxy for an invalid schema string that provides useful test metadata."""
+    valid = False
 
 
 PRIMITIVE_EXAMPLES = ([
@@ -250,222 +250,222 @@ VALID_EXAMPLES = [e for e in EXAMPLES if e.valid]
 INVALID_EXAMPLES = [e for e in EXAMPLES if not e.valid]
 
 class TestSchema(unittest.TestCase):
-  """Miscellaneous tests for schema"""
+    """Miscellaneous tests for schema"""
 
-  def test_correct_recursive_extraction(self):
-    """A recursive reference within a schema should be the same type every time."""
-    s = schema.parse('{"type": "record", "name": "X", "fields": [{"name": "y", "type": {"type": "record", "name": "Y", "fields": [{"name": "Z", "type": "X"}]}}]}')
-    t = schema.parse(str(s.fields[0].type))
-    # If we've made it this far, the subschema was reasonably stringified; it ccould be reparsed.
-    self.assertEqual("X", t.fields[0].type.name)
+    def test_correct_recursive_extraction(self):
+        """A recursive reference within a schema should be the same type every time."""
+        s = schema.parse('{"type": "record", "name": "X", "fields": [{"name": "y", "type": {"type": "record", "name": "Y", "fields": [{"name": "Z", "type": "X"}]}}]}')
+        t = schema.parse(str(s.fields[0].type))
+        # If we've made it this far, the subschema was reasonably stringified; it ccould be reparsed.
+        self.assertEqual("X", t.fields[0].type.name)
 
-  # TODO(hammer): more tests
-  def test_fullname(self):
-    """Test schema full names
+    # TODO(hammer): more tests
+    def test_fullname(self):
+        """Test schema full names
 
-    The fullname is determined in one of the following ways:
-     * A name and namespace are both specified.  For example,
-       one might use "name": "X", "namespace": "org.foo"
-       to indicate the fullname "org.foo.X".
-     * A fullname is specified.  If the name specified contains
-       a dot, then it is assumed to be a fullname, and any
-       namespace also specified is ignored.  For example,
-       use "name": "org.foo.X" to indicate the
-       fullname "org.foo.X".
-     * A name only is specified, i.e., a name that contains no
-       dots.  In this case the namespace is taken from the most
-       tightly encosing schema or protocol.  For example,
-       if "name": "X" is specified, and this occurs
-       within a field of the record definition
-       of "org.foo.Y", then the fullname is "org.foo.X".
+        The fullname is determined in one of the following ways:
+         * A name and namespace are both specified.  For example,
+           one might use "name": "X", "namespace": "org.foo"
+           to indicate the fullname "org.foo.X".
+         * A fullname is specified.  If the name specified contains
+           a dot, then it is assumed to be a fullname, and any
+           namespace also specified is ignored.  For example,
+           use "name": "org.foo.X" to indicate the
+           fullname "org.foo.X".
+         * A name only is specified, i.e., a name that contains no
+           dots.  In this case the namespace is taken from the most
+           tightly encosing schema or protocol.  For example,
+           if "name": "X" is specified, and this occurs
+           within a field of the record definition
+           of "org.foo.Y", then the fullname is "org.foo.X".
 
-    References to previously defined names are as in the latter
-    two cases above: if they contain a dot they are a fullname, if
-    they do not contain a dot, the namespace is the namespace of
-    the enclosing definition.
+        References to previously defined names are as in the latter
+        two cases above: if they contain a dot they are a fullname, if
+        they do not contain a dot, the namespace is the namespace of
+        the enclosing definition.
 
-    Primitive type names have no namespace and their names may
-    not be defined in any namespace.  A schema may only contain
-    multiple definitions of a fullname if the definitions are
-    equivalent.
-    """
+        Primitive type names have no namespace and their names may
+        not be defined in any namespace.  A schema may only contain
+        multiple definitions of a fullname if the definitions are
+        equivalent.
+        """
 
-    # name and namespace specified
-    fullname = schema.Name('a', 'o.a.h', None).fullname
-    self.assertEqual(fullname, 'o.a.h.a')
+        # name and namespace specified
+        fullname = schema.Name('a', 'o.a.h', None).fullname
+        self.assertEqual(fullname, 'o.a.h.a')
 
-    # fullname and namespace specified
-    fullname = schema.Name('a.b.c.d', 'o.a.h', None).fullname
-    self.assertEqual(fullname, 'a.b.c.d')
+        # fullname and namespace specified
+        fullname = schema.Name('a.b.c.d', 'o.a.h', None).fullname
+        self.assertEqual(fullname, 'a.b.c.d')
 
-    # name and default namespace specified
-    fullname = schema.Name('a', None, 'b.c.d').fullname
-    self.assertEqual(fullname, 'b.c.d.a')
+        # name and default namespace specified
+        fullname = schema.Name('a', None, 'b.c.d').fullname
+        self.assertEqual(fullname, 'b.c.d.a')
 
-    # fullname and default namespace specified
-    fullname = schema.Name('a.b.c.d', None, 'o.a.h').fullname
-    self.assertEqual(fullname, 'a.b.c.d')
+        # fullname and default namespace specified
+        fullname = schema.Name('a.b.c.d', None, 'o.a.h').fullname
+        self.assertEqual(fullname, 'a.b.c.d')
 
-    # fullname, namespace, default namespace specified
-    fullname = schema.Name('a.b.c.d', 'o.a.a', 'o.a.h').fullname
-    self.assertEqual(fullname, 'a.b.c.d')
+        # fullname, namespace, default namespace specified
+        fullname = schema.Name('a.b.c.d', 'o.a.a', 'o.a.h').fullname
+        self.assertEqual(fullname, 'a.b.c.d')
 
-    # name, namespace, default namespace specified
-    fullname = schema.Name('a', 'o.a.a', 'o.a.h').fullname
-    self.assertEqual(fullname, 'o.a.a.a')
+        # name, namespace, default namespace specified
+        fullname = schema.Name('a', 'o.a.a', 'o.a.h').fullname
+        self.assertEqual(fullname, 'o.a.a.a')
 
-  def test_exception_is_not_swallowed_on_parse_error(self):
-    """A specific exception message should appear on a json parse error."""
-    try:
-        schema.parse('/not/a/real/file')
-        caught_exception = False
-    except schema.SchemaParseException as e:
-        expected_message = 'Error parsing JSON: /not/a/real/file, error = ' \
-                           'No JSON object could be decoded'
-        self.assertEqual(expected_message, e.args[0])
-        caught_exception = True
+    def test_exception_is_not_swallowed_on_parse_error(self):
+        """A specific exception message should appear on a json parse error."""
+        try:
+            schema.parse('/not/a/real/file')
+            caught_exception = False
+        except schema.SchemaParseException as e:
+            expected_message = 'Error parsing JSON: /not/a/real/file, error = ' \
+                               'No JSON object could be decoded'
+            self.assertEqual(expected_message, e.args[0])
+            caught_exception = True
 
-    self.assertTrue(caught_exception, 'Exception was not caught')
+        self.assertTrue(caught_exception, 'Exception was not caught')
 
-  def test_decimal_valid_type(self):
-    fixed_decimal_schema = ValidTestSchema({
-      "type": "fixed",
-      "logicalType": "decimal",
-      "name": "TestDecimal",
-      "precision": 4,
-      "scale": 2,
-      "size": 2})
+    def test_decimal_valid_type(self):
+        fixed_decimal_schema = ValidTestSchema({
+          "type": "fixed",
+          "logicalType": "decimal",
+          "name": "TestDecimal",
+          "precision": 4,
+          "scale": 2,
+          "size": 2})
 
-    bytes_decimal_schema = ValidTestSchema({
-      "type": "bytes",
-      "logicalType": "decimal",
-      "precision": 4})
+        bytes_decimal_schema = ValidTestSchema({
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 4})
 
-    fixed_decimal = fixed_decimal_schema.parse()
-    self.assertEqual(4, fixed_decimal.get_prop('precision'))
-    self.assertEqual(2, fixed_decimal.get_prop('scale'))
-    self.assertEqual(2, fixed_decimal.get_prop('size'))
+        fixed_decimal = fixed_decimal_schema.parse()
+        self.assertEqual(4, fixed_decimal.get_prop('precision'))
+        self.assertEqual(2, fixed_decimal.get_prop('scale'))
+        self.assertEqual(2, fixed_decimal.get_prop('size'))
 
-    bytes_decimal = bytes_decimal_schema.parse()
-    self.assertEqual(4, bytes_decimal.get_prop('precision'))
-    self.assertEqual(0, bytes_decimal.get_prop('scale'))
+        bytes_decimal = bytes_decimal_schema.parse()
+        self.assertEqual(4, bytes_decimal.get_prop('precision'))
+        self.assertEqual(0, bytes_decimal.get_prop('scale'))
 
 class SchemaParseTestCase(unittest.TestCase):
-  """Enable generating parse test cases over all the valid and invalid example schema."""
+    """Enable generating parse test cases over all the valid and invalid example schema."""
 
-  def __init__(self, test_schema):
-    """Ignore the normal signature for unittest.TestCase because we are generating
-    many test cases from this one class. This is safe as long as the autoloader
-    ignores this class. The autoloader will ignore this class as long as it has
-    no methods starting with `test_`.
-    """
-    super(SchemaParseTestCase, self).__init__(
-        'parse_valid' if test_schema.valid else 'parse_invalid')
-    self.test_schema = test_schema
+    def __init__(self, test_schema):
+        """Ignore the normal signature for unittest.TestCase because we are generating
+        many test cases from this one class. This is safe as long as the autoloader
+        ignores this class. The autoloader will ignore this class as long as it has
+        no methods starting with `test_`.
+        """
+        super(SchemaParseTestCase, self).__init__(
+            'parse_valid' if test_schema.valid else 'parse_invalid')
+        self.test_schema = test_schema
 
-  def parse_valid(self):
-    """Parsing a valid schema should not error."""
-    try:
-      self.test_schema.parse()
-    except (schema.AvroException, schema.SchemaParseException):
-      self.fail("Valid schema failed to parse: {!s}".format(self.test_schema))
+    def parse_valid(self):
+        """Parsing a valid schema should not error."""
+        try:
+            self.test_schema.parse()
+        except (schema.AvroException, schema.SchemaParseException):
+            self.fail("Valid schema failed to parse: {!s}".format(self.test_schema))
 
-  def parse_invalid(self):
-    """Parsing an invalid schema should error."""
-    try:
-      self.test_schema.parse()
-    except (schema.AvroException, schema.SchemaParseException):
-      pass
-    else:
-      self.fail("Invalid schema should not have parsed: {!s}".format(self.test_schema))
+    def parse_invalid(self):
+        """Parsing an invalid schema should error."""
+        try:
+            self.test_schema.parse()
+        except (schema.AvroException, schema.SchemaParseException):
+            pass
+        else:
+            self.fail("Invalid schema should not have parsed: {!s}".format(self.test_schema))
 
 class RoundTripParseTestCase(unittest.TestCase):
-  """Enable generating round-trip parse test cases over all the valid test schema."""
+    """Enable generating round-trip parse test cases over all the valid test schema."""
 
-  def __init__(self, test_schema):
-    """Ignore the normal signature for unittest.TestCase because we are generating
-    many test cases from this one class. This is safe as long as the autoloader
-    ignores this class. The autoloader will ignore this class as long as it has
-    no methods starting with `test_`.
-    """
-    super(RoundTripParseTestCase, self).__init__('parse_round_trip')
-    self.test_schema = test_schema
+    def __init__(self, test_schema):
+        """Ignore the normal signature for unittest.TestCase because we are generating
+        many test cases from this one class. This is safe as long as the autoloader
+        ignores this class. The autoloader will ignore this class as long as it has
+        no methods starting with `test_`.
+        """
+        super(RoundTripParseTestCase, self).__init__('parse_round_trip')
+        self.test_schema = test_schema
 
-  def parse_round_trip(self):
-    """The string of a Schema should be parseable to the same Schema."""
-    parsed = self.test_schema.parse()
-    round_trip = schema.parse(str(parsed))
-    self.assertEqual(parsed, round_trip)
+    def parse_round_trip(self):
+        """The string of a Schema should be parseable to the same Schema."""
+        parsed = self.test_schema.parse()
+        round_trip = schema.parse(str(parsed))
+        self.assertEqual(parsed, round_trip)
 
 class DocAttributesTestCase(unittest.TestCase):
-  """Enable generating document attribute test cases over all the document test schema."""
+    """Enable generating document attribute test cases over all the document test schema."""
 
-  def __init__(self, test_schema):
-    """Ignore the normal signature for unittest.TestCase because we are generating
-    many test cases from this one class. This is safe as long as the autoloader
-    ignores this class. The autoloader will ignore this class as long as it has
-    no methods starting with `test_`.
-    """
-    super(DocAttributesTestCase, self).__init__('check_doc_attributes')
-    self.test_schema = test_schema
+    def __init__(self, test_schema):
+        """Ignore the normal signature for unittest.TestCase because we are generating
+        many test cases from this one class. This is safe as long as the autoloader
+        ignores this class. The autoloader will ignore this class as long as it has
+        no methods starting with `test_`.
+        """
+        super(DocAttributesTestCase, self).__init__('check_doc_attributes')
+        self.test_schema = test_schema
 
-  def check_doc_attributes(self):
-    """Documentation attributes should be preserved."""
-    sch = self.test_schema.parse()
-    self.assertIsNotNone(sch.doc, "Failed to preserve 'doc' in schema: {!s}".format(self.test_schema))
-    if sch.type == 'record':
-      for f in sch.fields:
-        self.assertIsNotNone(f.doc, "Failed to preserve 'doc' in fields: {!s}".format(self.test_schema))
+    def check_doc_attributes(self):
+        """Documentation attributes should be preserved."""
+        sch = self.test_schema.parse()
+        self.assertIsNotNone(sch.doc, "Failed to preserve 'doc' in schema: {!s}".format(self.test_schema))
+        if sch.type == 'record':
+            for f in sch.fields:
+                self.assertIsNotNone(f.doc, "Failed to preserve 'doc' in fields: {!s}".format(self.test_schema))
 
 
 class OtherAttributesTestCase(unittest.TestCase):
-  """Enable generating attribute test cases over all the other-prop test schema."""
-  _type_map = {
-    "cp_array": list,
-    "cp_boolean": bool,
-    "cp_float": float,
-    "cp_int": int,
-    "cp_null": type(None),
-    "cp_object": dict,
-    "cp_string": basestring,
-  }
+    """Enable generating attribute test cases over all the other-prop test schema."""
+    _type_map = {
+      "cp_array": list,
+      "cp_boolean": bool,
+      "cp_float": float,
+      "cp_int": int,
+      "cp_null": type(None),
+      "cp_object": dict,
+      "cp_string": basestring,
+    }
 
-  def __init__(self, test_schema):
-    """Ignore the normal signature for unittest.TestCase because we are generating
-    many test cases from this one class. This is safe as long as the autoloader
-    ignores this class. The autoloader will ignore this class as long as it has
-    no methods starting with `test_`.
-    """
-    super(OtherAttributesTestCase, self).__init__('check_attributes')
-    self.test_schema = test_schema
+    def __init__(self, test_schema):
+        """Ignore the normal signature for unittest.TestCase because we are generating
+        many test cases from this one class. This is safe as long as the autoloader
+        ignores this class. The autoloader will ignore this class as long as it has
+        no methods starting with `test_`.
+        """
+        super(OtherAttributesTestCase, self).__init__('check_attributes')
+        self.test_schema = test_schema
 
-  def _check_props(self, props):
-    for k, v in props.items():
-      self.assertIsInstance(v, self._type_map[k])
+    def _check_props(self, props):
+        for k, v in props.items():
+            self.assertIsInstance(v, self._type_map[k])
 
-  def check_attributes(self):
-    """Other attributes and their types on a schema should be preserved."""
-    sch = self.test_schema.parse()
-    round_trip = schema.parse(str(sch))
-    self.assertEqual(sch.other_props, round_trip.other_props,
-                     "Properties were not preserved in a round-trip parse.")
-    self._check_props(sch.other_props)
-    if sch.type == "record":
-      field_props = [f.other_props for f in sch.fields if f.other_props]
-      self.assertEqual(len(field_props), len(sch.fields))
-      for p in field_props:
-        self._check_props(p)
+    def check_attributes(self):
+        """Other attributes and their types on a schema should be preserved."""
+        sch = self.test_schema.parse()
+        round_trip = schema.parse(str(sch))
+        self.assertEqual(sch.other_props, round_trip.other_props,
+                         "Properties were not preserved in a round-trip parse.")
+        self._check_props(sch.other_props)
+        if sch.type == "record":
+            field_props = [f.other_props for f in sch.fields if f.other_props]
+            self.assertEqual(len(field_props), len(sch.fields))
+            for p in field_props:
+                self._check_props(p)
 
 
 def load_tests(loader, default_tests, pattern):
-  """Generate test cases across many test schema."""
-  suite = unittest.TestSuite()
-  suite.addTests(loader.loadTestsFromTestCase(TestSchema))
-  suite.addTests(SchemaParseTestCase(ex) for ex in EXAMPLES)
-  suite.addTests(RoundTripParseTestCase(ex) for ex in VALID_EXAMPLES)
-  suite.addTests(DocAttributesTestCase(ex) for ex in DOC_EXAMPLES)
-  suite.addTests(OtherAttributesTestCase(ex) for ex in OTHER_PROP_EXAMPLES)
-  return suite
+    """Generate test cases across many test schema."""
+    suite = unittest.TestSuite()
+    suite.addTests(loader.loadTestsFromTestCase(TestSchema))
+    suite.addTests(SchemaParseTestCase(ex) for ex in EXAMPLES)
+    suite.addTests(RoundTripParseTestCase(ex) for ex in VALID_EXAMPLES)
+    suite.addTests(DocAttributesTestCase(ex) for ex in DOC_EXAMPLES)
+    suite.addTests(OtherAttributesTestCase(ex) for ex in OTHER_PROP_EXAMPLES)
+    return suite
 
 if __name__ == '__main__':
-  unittest.main()
+    unittest.main()
