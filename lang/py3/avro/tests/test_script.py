@@ -105,9 +105,9 @@ def RunScript(*args, stdin=None):
 
 
 _TEST_JSON_VALUE = {
-  'first': 'daffy',
-  'last': 'duck',
-  'type': 'duck',
+    'first': 'daffy',
+    'last': 'duck',
+    'type': 'duck',
 }
 
 

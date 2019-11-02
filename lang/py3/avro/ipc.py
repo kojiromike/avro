@@ -169,8 +169,8 @@ class BaseRequestor(object, metaclass=abc.ABCMeta):
             self._remote_protocol = self._local_protocol
 
         request_datum = {
-          'clientHash': local_hash,
-          'serverHash': self._remote_hash,
+            'clientHash': local_hash,
+            'serverHash': self._remote_hash,
         }
         if self._send_protocol:
             request_datum['clientProtocol'] = str(self._local_protocol)

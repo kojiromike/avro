@@ -314,7 +314,7 @@ class DataFileReader(object):
 
         # read header into a dict
         header = self.datum_reader.read_data(
-          META_SCHEMA, META_SCHEMA, self.raw_decoder)
+            META_SCHEMA, META_SCHEMA, self.raw_decoder)
 
         # check magic number
         if header.get('magic') != MAGIC:

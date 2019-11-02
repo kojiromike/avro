@@ -70,9 +70,9 @@ class TestTetherTask(unittest.TestCase):
             #***************************************************************
             # Test the mapper
             task.configure(
-              avro.tether.tether_task.TaskType.MAP,
-              str(task.inschema),
-              str(task.midschema)
+                avro.tether.tether_task.TaskType.MAP,
+                str(task.inschema),
+                str(task.midschema)
             )
 
             # Serialize some data so we can send it to the input function
@@ -90,9 +90,9 @@ class TestTetherTask(unittest.TestCase):
 
             # Test the reducer
             task.configure(
-              avro.tether.tether_task.TaskType.REDUCE,
-              str(task.midschema),
-              str(task.outschema)
+                avro.tether.tether_task.TaskType.REDUCE,
+                str(task.midschema),
+                str(task.outschema)
             )
 
             # Serialize some data so we can send it to the input function

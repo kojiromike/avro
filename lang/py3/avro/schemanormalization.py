@@ -158,13 +158,13 @@ _PYTHON_DIGEST_NAMES = frozenset(hashlib.algorithms_guaranteed | _CRC_64_AVRO)
 # Python implementation also supports them, so that key fingerprint
 # algorithm names can interoperate between Java and Python.
 _JAVA_TO_PYTHON_DIGEST_NAMES = {
-  'MD5': 'md5',
-  'SHA-1': 'sha1',
-  'SHA-256': 'sha256'}
+    'MD5': 'md5',
+    'SHA-1': 'sha1',
+    'SHA-256': 'sha256'}
 
 _AVAILABLE_JAVA_TO_PYTHON_DIGEST_NAMES = {
-  j: p for j, p in _JAVA_TO_PYTHON_DIGEST_NAMES.items()
-  if p in hashlib.algorithms_guaranteed}
+    j: p for j, p in _JAVA_TO_PYTHON_DIGEST_NAMES.items()
+    if p in hashlib.algorithms_guaranteed}
 
 _FINGERPRINT_ALIASES_TO_NAMES = {name: name for name in _PYTHON_DIGEST_NAMES}
 _FINGERPRINT_ALIASES_TO_NAMES.update(_AVAILABLE_JAVA_TO_PYTHON_DIGEST_NAMES)

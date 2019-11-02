@@ -117,8 +117,8 @@ class GenerateInteropDataCommand(setuptools.Command):
     """A command to generate Avro files for data interop test."""
 
     user_options = [
-      ('schema-file=', None, 'path to input Avro schema file'),
-      ('output-path=', None, 'path to output Avro data files'),
+        ('schema-file=', None, 'path to input Avro schema file'),
+        ('output-path=', None, 'path to output Avro data files'),
     ]
 
     def initialize_options(self):

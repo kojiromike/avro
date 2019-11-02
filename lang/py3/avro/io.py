@@ -92,22 +92,22 @@ class SchemaResolutionException(schema.AvroException):
 # Validate
 
 _valid = {
-  'null': lambda s, d: d is None,
-  'boolean': lambda s, d: isinstance(d, bool),
-  'string': lambda s, d: isinstance(d, str),
-  'bytes': lambda s, d: isinstance(d, bytes),
-  'int': lambda s, d: isinstance(d, int) and (INT_MIN_VALUE <= d <= INT_MAX_VALUE),
-  'long': lambda s, d: isinstance(d, int) and (LONG_MIN_VALUE <= d <= LONG_MAX_VALUE),
-  'float': lambda s, d: isinstance(d, (int, float)),
-  'fixed': lambda s, d: isinstance(d, bytes) and len(d) == s.size,
-  'enum': lambda s, d: d in s.symbols,
-  'array': lambda s, d: isinstance(d, list) and all(Validate(s.items, item) for item in d),
-  'map': lambda s, d: (isinstance(d, dict) and all(isinstance(key, str) for key in d)
-                       and all(Validate(s.values, value) for value in d.values())),
-  'union': lambda s, d: any(Validate(branch, d) for branch in s.schemas),
-  'record': lambda s, d: (isinstance(d, dict)
-                          and all(Validate(f.type, d.get(f.name)) for f in s.fields)
-                          and {f.name for f in s.fields}.issuperset(d.keys()))
+    'null': lambda s, d: d is None,
+    'boolean': lambda s, d: isinstance(d, bool),
+    'string': lambda s, d: isinstance(d, str),
+    'bytes': lambda s, d: isinstance(d, bytes),
+    'int': lambda s, d: isinstance(d, int) and (INT_MIN_VALUE <= d <= INT_MAX_VALUE),
+    'long': lambda s, d: isinstance(d, int) and (LONG_MIN_VALUE <= d <= LONG_MAX_VALUE),
+    'float': lambda s, d: isinstance(d, (int, float)),
+    'fixed': lambda s, d: isinstance(d, bytes) and len(d) == s.size,
+    'enum': lambda s, d: d in s.symbols,
+    'array': lambda s, d: isinstance(d, list) and all(Validate(s.items, item) for item in d),
+    'map': lambda s, d: (isinstance(d, dict) and all(isinstance(key, str) for key in d)
+                         and all(Validate(s.values, value) for value in d.values())),
+    'union': lambda s, d: any(Validate(branch, d) for branch in s.schemas),
+    'record': lambda s, d: (isinstance(d, dict)
+                            and all(Validate(f.type, d.get(f.name)) for f in s.fields)
+                            and {f.name for f in s.fields}.issuperset(d.keys()))
 }
 _valid['double'] = _valid['float']
 _valid['error_union'] = _valid['union']
@@ -431,11 +431,11 @@ class DatumReader(object):
     def set_writer_schema(self, writer_schema):
         self._writer_schema = writer_schema
     writer_schema = property(lambda self: self._writer_schema,
-                              set_writer_schema)
+                             set_writer_schema)
     def set_reader_schema(self, reader_schema):
         self._reader_schema = reader_schema
     reader_schema = property(lambda self: self._reader_schema,
-                              set_reader_schema)
+                             set_reader_schema)
 
     def read(self, decoder):
         if self.reader_schema is None:
@@ -450,7 +450,7 @@ class DatumReader(object):
 
         # schema resolution: reader's schema is a union, writer's schema is not
         if (writer_schema.type not in ['union', 'error_union']
-            and reader_schema.type in ['union', 'error_union']):
+                and reader_schema.type in ['union', 'error_union']):
             for s in reader_schema.schemas:
                 if DatumReader.match_schemas(writer_schema, s):
                     return self.read_data(writer_schema, s, decoder)
@@ -763,7 +763,7 @@ class DatumWriter(object):
     def set_writer_schema(self, writer_schema):
         self._writer_schema = writer_schema
     writer_schema = property(lambda self: self._writer_schema,
-                              set_writer_schema)
+                             set_writer_schema)
 
     def write(self, datum, encoder):
         # validate datum

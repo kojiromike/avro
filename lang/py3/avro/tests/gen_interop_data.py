@@ -53,7 +53,7 @@ def generate(schema_file, output_path):
         if codec != NULL_CODEC:
             filename += '_' + codec
         with Path(output_path, filename).with_suffix('.avro').open('wb') as writer, \
-          datafile.DataFileWriter(writer, datum_writer, interop_schema, codec) as dfw:
+                datafile.DataFileWriter(writer, datum_writer, interop_schema, codec) as dfw:
             dfw.append(DATUM)
 
 

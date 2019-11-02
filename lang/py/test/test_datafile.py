@@ -26,25 +26,25 @@ import set_avro_test_path
 from avro import datafile, io, schema
 
 SCHEMAS_TO_VALIDATE = (
-  ('"null"', None),
-  ('"boolean"', True),
-  ('"string"', unicode('adsfasdf09809dsf-=adsf')),
-  ('"bytes"', '12345abcd'),
-  ('"int"', 1234),
-  ('"long"', 1234),
-  ('"float"', 1234.0),
-  ('"double"', 1234.0),
-  ('{"type": "fixed", "name": "Test", "size": 1}', 'B'),
-  ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
-  ('{"type": "array", "items": "long"}', [1, 3, 2]),
-  ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
-  ('["string", "null", "long"]', None),
-  ("""\
+    ('"null"', None),
+    ('"boolean"', True),
+    ('"string"', unicode('adsfasdf09809dsf-=adsf')),
+    ('"bytes"', '12345abcd'),
+    ('"int"', 1234),
+    ('"long"', 1234),
+    ('"float"', 1234.0),
+    ('"double"', 1234.0),
+    ('{"type": "fixed", "name": "Test", "size": 1}', 'B'),
+    ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
+    ('{"type": "array", "items": "long"}', [1, 3, 2]),
+    ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
+    ('["string", "null", "long"]', None),
+    ("""\
    {"type": "record",
     "name": "Test",
     "fields": [{"name": "f", "type": "long"}]}
    """, {'f': 5}),
-  ("""\
+    ("""\
    {"type": "record",
     "name": "Lisp",
     "fields": [{"name": "value",
@@ -207,7 +207,7 @@ class TestDataFile(unittest.TestCase):
         """A reader should not fail to read a file consisting of a single empty block."""
         sample_schema = schema.parse(SCHEMAS_TO_VALIDATE[1][0])
         with datafile.DataFileWriter(open(FILENAME, 'wb'), io.DatumWriter(),
-            sample_schema) as dfw:
+                                     sample_schema) as dfw:
             dfw.flush()
             # Write an empty block
             dfw.encoder.write_long(0)

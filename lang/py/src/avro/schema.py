@@ -51,55 +51,55 @@ from avro import constants
 #
 
 PRIMITIVE_TYPES = (
-  'null',
-  'boolean',
-  'string',
-  'bytes',
-  'int',
-  'long',
-  'float',
-  'double',
+    'null',
+    'boolean',
+    'string',
+    'bytes',
+    'int',
+    'long',
+    'float',
+    'double',
 )
 
 NAMED_TYPES = (
-  'fixed',
-  'enum',
-  'record',
-  'error',
+    'fixed',
+    'enum',
+    'record',
+    'error',
 )
 
 VALID_TYPES = PRIMITIVE_TYPES + NAMED_TYPES + (
-  'array',
-  'map',
-  'union',
-  'request',
-  'error_union'
+    'array',
+    'map',
+    'union',
+    'request',
+    'error_union'
 )
 
 SCHEMA_RESERVED_PROPS = (
-  'type',
-  'name',
-  'namespace',
-  'fields',     # Record
-  'items',      # Array
-  'size',       # Fixed
-  'symbols',    # Enum
-  'values',     # Map
-  'doc',
+    'type',
+    'name',
+    'namespace',
+    'fields',     # Record
+    'items',      # Array
+    'size',       # Fixed
+    'symbols',    # Enum
+    'values',     # Map
+    'doc',
 )
 
 FIELD_RESERVED_PROPS = (
-  'default',
-  'name',
-  'doc',
-  'order',
-  'type',
+    'default',
+    'name',
+    'doc',
+    'order',
+    'type',
 )
 
 VALID_FIELD_SORT_ORDERS = (
-  'ascending',
-  'descending',
-  'ignore',
+    'ascending',
+    'descending',
+    'ignore',
 )
 
 #
@@ -378,7 +378,7 @@ class Field(object):
         self._props.update(other_props or {})
 
         if (isinstance(type, basestring) and names is not None
-            and names.has_name(type, None)):
+                and names.has_name(type, None)):
             type_schema = names.get_name(type, None)
         else:
             try:
@@ -662,7 +662,7 @@ class UnionSchema(Schema):
                     raise SchemaParseException('Union item must be a valid Avro schema: %s' % str(e))
             # check the new schema
             if (new_schema.type in VALID_TYPES and new_schema.type not in NAMED_TYPES
-                and new_schema.type in [schema.type for schema in schema_objects]):
+                    and new_schema.type in [schema.type for schema in schema_objects]):
                 raise SchemaParseException('%s type already in Union' % new_schema.type)
             elif new_schema.type == 'union':
                 raise SchemaParseException('Unions cannot contain other unions.')
@@ -722,7 +722,7 @@ class RecordSchema(NamedSchema):
                 doc = field.get('doc')
                 other_props = get_other_props(field, FIELD_RESERVED_PROPS)
                 new_field = Field(type, name, has_default, default, order, names, doc,
-                                 other_props)
+                                  other_props)
                 # make sure field name has not been used yet
                 if new_field.name in field_names:
                     fail_msg = 'Field name %s already in use.' % new_field.name
@@ -897,13 +897,13 @@ def make_bytes_decimal_schema(other_props):
 def make_logical_schema(logical_type, type_, other_props):
     """Map the logical types to the appropriate literal type and schema class."""
     logical_types = {
-      constants.DATE: ('int', DateSchema),
-      # Fixed decimal schema is handled before we get here.
-      constants.DECIMAL: ('bytes', make_bytes_decimal_schema),
-      constants.TIMESTAMP_MICROS: ('long', TimestampMicrosSchema),
-      constants.TIMESTAMP_MILLIS: ('long', TimestampMillisSchema),
-      constants.TIME_MICROS: ('long', TimeMicrosSchema),
-      constants.TIME_MILLIS: ('int', TimeMillisSchema),
+        constants.DATE: ('int', DateSchema),
+        # Fixed decimal schema is handled before we get here.
+        constants.DECIMAL: ('bytes', make_bytes_decimal_schema),
+        constants.TIMESTAMP_MICROS: ('long', TimestampMicrosSchema),
+        constants.TIMESTAMP_MILLIS: ('long', TimestampMillisSchema),
+        constants.TIME_MICROS: ('long', TimeMicrosSchema),
+        constants.TIME_MILLIS: ('int', TimeMillisSchema),
     }
     try:
         literal_type, schema_type = logical_types[logical_type]

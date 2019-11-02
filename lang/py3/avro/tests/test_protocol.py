@@ -79,10 +79,10 @@ HELLO_WORLD = ExampleProtocol("""
 """)
 
 EXAMPLES = [
-  HELLO_WORLD,
+    HELLO_WORLD,
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test",
     "protocol": "Simple",
@@ -129,8 +129,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestNamespace",
@@ -162,8 +162,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestImplicitNamespace",
@@ -204,8 +204,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestNamespaceTwo",
@@ -253,8 +253,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestValidRepeatedName",
@@ -291,8 +291,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test.namespace",
     "protocol": "TestInvalidRepeatedName",
@@ -327,10 +327,10 @@ EXAMPLES = [
     }
   }
   """,
-  valid=False),
+        valid=False),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "namespace": "org.apache.avro.test",
     "protocol": "BulkData",
@@ -348,8 +348,8 @@ EXAMPLES = [
   }
   """),
 
-  ExampleProtocol(
-  """
+    ExampleProtocol(
+        """
   {
     "protocol": "API",
     "namespace": "xyz.api",
@@ -432,10 +432,10 @@ class TestProtocol(unittest.TestCase):
                     correct += 1
 
         self.assertEqual(
-          correct,
-          len(EXAMPLES),
-          'Parse behavior correct on %d out of %d protocols.'
-          % (correct, len(EXAMPLES)))
+            correct,
+            len(EXAMPLES),
+            'Parse behavior correct on %d out of %d protocols.'
+            % (correct, len(EXAMPLES)))
 
     def testInnerNamespaceSet(self):
         proto = protocol.parse(HELLO_WORLD.protocol_string)
@@ -468,8 +468,8 @@ class TestProtocol(unittest.TestCase):
                           example.protocol_string)
             num_correct += 1
         fail_msg = (
-          'Cast to string success on %d out of %d protocols'
-          % (num_correct, len(VALID_EXAMPLES)))
+            'Cast to string success on %d out of %d protocols'
+            % (num_correct, len(VALID_EXAMPLES)))
         self.assertEqual(num_correct, len(VALID_EXAMPLES), fail_msg)
 
     def testEquivalenceAfterRoundTrip(self):

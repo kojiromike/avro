@@ -28,25 +28,25 @@ from avro import io as avro_io
 from avro import schema
 
 SCHEMAS_TO_VALIDATE = (
-  ('"null"', None),
-  ('"boolean"', True),
-  ('"string"', 'adsfasdf09809dsf-=adsf'),
-  ('"bytes"', b'12345abcd'),
-  ('"int"', 1234),
-  ('"long"', 1234),
-  ('"float"', 1234.0),
-  ('"double"', 1234.0),
-  ('{"type": "fixed", "name": "Test", "size": 1}', b'B'),
-  ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
-  ('{"type": "array", "items": "long"}', [1, 3, 2]),
-  ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
-  ('["string", "null", "long"]', None),
-  ("""\
+    ('"null"', None),
+    ('"boolean"', True),
+    ('"string"', 'adsfasdf09809dsf-=adsf'),
+    ('"bytes"', b'12345abcd'),
+    ('"int"', 1234),
+    ('"long"', 1234),
+    ('"float"', 1234.0),
+    ('"double"', 1234.0),
+    ('{"type": "fixed", "name": "Test", "size": 1}', b'B'),
+    ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
+    ('{"type": "array", "items": "long"}', [1, 3, 2]),
+    ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
+    ('["string", "null", "long"]', None),
+    ("""\
    {"type": "record",
     "name": "Test",
     "fields": [{"name": "f", "type": "long"}]}
    """, {'f': 5}),
-  ("""
+    ("""
    {
      "type": "record",
      "name": "Lisp",
@@ -68,33 +68,33 @@ SCHEMAS_TO_VALIDATE = (
 )
 
 BINARY_ENCODINGS = (
-  (0, '00'),
-  (-1, '01'),
-  (1, '02'),
-  (-2, '03'),
-  (2, '04'),
-  (-64, '7f'),
-  (64, '80 01'),
-  (8192, '80 80 01'),
-  (-8193, '81 80 01'),
+    (0, '00'),
+    (-1, '01'),
+    (1, '02'),
+    (-2, '03'),
+    (2, '04'),
+    (-64, '7f'),
+    (64, '80 01'),
+    (8192, '80 80 01'),
+    (-8193, '81 80 01'),
 )
 
 DEFAULT_VALUE_EXAMPLES = (
-  ('"null"', 'null', None),
-  ('"boolean"', 'true', True),
-  ('"string"', '"foo"', 'foo'),
-  ('"bytes"', '"\u00FF\u00FF"', '\xff\xff'),
-  ('"int"', '5', 5),
-  ('"long"', '5', 5),
-  ('"float"', '1.1', 1.1),
-  ('"double"', '1.1', 1.1),
-  ('{"type": "fixed", "name": "F", "size": 2}', '"\u00FF\u00FF"', '\xff\xff'),
-  ('{"type": "enum", "name": "F", "symbols": ["FOO", "BAR"]}', '"FOO"', 'FOO'),
-  ('{"type": "array", "items": "int"}', '[1, 2, 3]', [1, 2, 3]),
-  ('{"type": "map", "values": "int"}', '{"a": 1, "b": 2}', {'a': 1, 'b': 2}),
-  ('["int", "null"]', '5', 5),
-  ('{"type": "record", "name": "F", "fields": [{"name": "A", "type": "int"}]}',
-   '{"A": 5}', {'A': 5}),
+    ('"null"', 'null', None),
+    ('"boolean"', 'true', True),
+    ('"string"', '"foo"', 'foo'),
+    ('"bytes"', '"\u00FF\u00FF"', '\xff\xff'),
+    ('"int"', '5', 5),
+    ('"long"', '5', 5),
+    ('"float"', '1.1', 1.1),
+    ('"double"', '1.1', 1.1),
+    ('{"type": "fixed", "name": "F", "size": 2}', '"\u00FF\u00FF"', '\xff\xff'),
+    ('{"type": "enum", "name": "F", "symbols": ["FOO", "BAR"]}', '"FOO"', 'FOO'),
+    ('{"type": "array", "items": "int"}', '[1, 2, 3]', [1, 2, 3]),
+    ('{"type": "map", "values": "int"}', '{"a": 1, "b": 2}', {'a': 1, 'b': 2}),
+    ('["int", "null"]', '5', 5),
+    ('{"type": "record", "name": "F", "fields": [{"name": "A", "type": "int"}]}',
+        '{"A": 5}', {'A': 5}),
 )
 
 LONG_RECORD_SCHEMA = schema.parse("""

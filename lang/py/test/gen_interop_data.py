@@ -39,20 +39,20 @@ except ImportError:
     print('Zstandard not present, will skip generating it.')
 
 DATUM = {
-  'intField': 12,
-  'longField': 15234324,
-  'stringField': unicode('hey'),
-  'boolField': True,
-  'floatField': 1234.0,
-  'doubleField': -1234.0,
-  'bytesField': '12312adf',
-  'nullField': None,
-  'arrayField': [5.0, 0.0, 12.0],
-  'mapField': {'a': {'label': 'a'}, 'bee': {'label': 'cee'}},
-  'unionField': 12.0,
-  'enumField': 'C',
-  'fixedField': '1019181716151413',
-  'recordField': {'label': 'blah', 'children': [{'label': 'inner', 'children': []}]},
+    'intField': 12,
+    'longField': 15234324,
+    'stringField': unicode('hey'),
+    'boolField': True,
+    'floatField': 1234.0,
+    'doubleField': -1234.0,
+    'bytesField': '12312adf',
+    'nullField': None,
+    'arrayField': [5.0, 0.0, 12.0],
+    'mapField': {'a': {'label': 'a'}, 'bee': {'label': 'cee'}},
+    'unionField': 12.0,
+    'enumField': 'C',
+    'fixedField': '1019181716151413',
+    'recordField': {'label': 'blah', 'children': [{'label': 'inner', 'children': []}]},
 }
 
 if __name__ == "__main__":

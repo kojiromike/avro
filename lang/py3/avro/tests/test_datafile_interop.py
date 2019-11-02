@@ -34,7 +34,7 @@ class TestDataFileInterop(unittest.TestCase):
             if len(base_ext) < 2 or base_ext[1] in datafile.VALID_CODECS:
                 print('Reading {}'.format(avro_file))
                 with open(avro_file, 'rb') as reader, \
-                  datafile.DataFileReader(reader, datum_reader) as dfr:
+                        datafile.DataFileReader(reader, datum_reader) as dfr:
                     i = 0
                     for i, datum in enumerate(dfr, 1):
                         self.assertIsNotNone(datum)

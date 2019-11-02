@@ -63,7 +63,7 @@ class RequestStreamingProducer(object):
         # We need a buffer length header for every buffer and an additional
         # zero-length buffer as the message terminator
         self._length += (self._length / ipc.BUFFER_SIZE + 2) \
-          * ipc.BUFFER_HEADER_LENGTH
+            * ipc.BUFFER_HEADER_LENGTH
         self._total_bytes_sent = 0
         self._deferred = Deferred()
 
@@ -90,7 +90,7 @@ class RequestStreamingProducer(object):
         # Keep writing data to the consumer until we're finished,
         # paused (pauseProducing()) or stopped (stopProducing())
         while self.length - self.total_bytes_sent > 0 and \
-          not self.paused and not self.stopped:
+                not self.paused and not self.stopped:
             self.write()
         # self.write will fire this deferred once it has written
         # the entire message to the consumer
@@ -112,7 +112,7 @@ class RequestStreamingProducer(object):
         else:
             buffer_length = self.length - self.total_bytes_sent
         self.write_buffer(self.message[self.total_bytes_sent:
-                                  (self.total_bytes_sent + buffer_length)])
+                                       (self.total_bytes_sent + buffer_length)])
         self.total_bytes_sent += buffer_length
         # Make sure we wrote the entire message
         if self.total_bytes_sent == self.length and not self.stopped:
@@ -142,7 +142,7 @@ class AvroProtocol(Protocol):
         self.recvd = self.recvd + data
         while len(self.recvd) >= ipc.BUFFER_HEADER_LENGTH:
             buffer_length ,= ipc.BIG_ENDIAN_INT_STRUCT.unpack(
-              self.recvd[:ipc.BUFFER_HEADER_LENGTH])
+                self.recvd[:ipc.BUFFER_HEADER_LENGTH])
             if buffer_length == 0:
                 response = ''.join(self.message)
                 self.done = True
@@ -182,16 +182,16 @@ class TwistedHTTPTransceiver(object):
     def transceive(self, request):
         req_method = 'POST'
         req_headers = {
-          'Content-Type': ['avro/binary'],
-          'Accept-Encoding': ['identity'],
+            'Content-Type': ['avro/binary'],
+            'Accept-Encoding': ['identity'],
         }
 
         body_producer = RequestStreamingProducer(request)
         d = self.agent.request(
-          req_method,
-          self.url,
-          headers=Headers(req_headers),
-          bodyProducer=body_producer)
+            req_method,
+            self.url,
+            headers=Headers(req_headers),
+            bodyProducer=body_producer)
         return d.addCallback(self.read_framed_message)
 
 class AvroResponderResource(resource.Resource):

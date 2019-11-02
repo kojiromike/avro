@@ -34,60 +34,60 @@ except ImportError:
 
 
 SCHEMAS_TO_VALIDATE = (
-  ('"null"', None),
-  ('"boolean"', True),
-  ('"string"', unicode('adsfasdf09809dsf-=adsf')),
-  ('"bytes"', '12345abcd'),
-  ('"int"', 1234),
-  ('"long"', 1234),
-  ('"float"', 1234.0),
-  ('"double"', 1234.0),
-  ('{"type": "fixed", "name": "Test", "size": 1}', 'B'),
-  ('{"type": "fixed", "logicalType": "decimal", "name": "Test", "size": 8, "precision": 5, "scale": 4}',
-   Decimal('3.1415')),
-  ('{"type": "fixed", "logicalType": "decimal", "name": "Test", "size": 8, "precision": 5, "scale": 4}',
-   Decimal('-3.1415')),
-  ('{"type": "bytes", "logicalType": "decimal", "precision": 5, "scale": 4}', Decimal('3.1415')),
-  ('{"type": "bytes", "logicalType": "decimal", "precision": 5, "scale": 4}', Decimal('-3.1415')),
-  ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
-  ('{"type": "array", "items": "long"}', [1, 3, 2]),
-  ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
-  ('["string", "null", "long"]', None),
-  ('{"type": "int", "logicalType": "date"}', datetime.date(2000, 1, 1)),
-  ('{"type": "int", "logicalType": "time-millis"}', datetime.time(23, 59, 59, 999000)),
-  ('{"type": "int", "logicalType": "time-millis"}', datetime.time(0, 0, 0, 000000)),
-  ('{"type": "long", "logicalType": "time-micros"}', datetime.time(23, 59, 59, 999999)),
-  ('{"type": "long", "logicalType": "time-micros"}', datetime.time(0, 0, 0, 000000)),
-  (
-    '{"type": "long", "logicalType": "timestamp-millis"}',
-    datetime.datetime(1000, 1, 1, 0, 0, 0, 000000, tzinfo=timezones.utc)
-  ),
-  (
-    '{"type": "long", "logicalType": "timestamp-millis"}',
-    datetime.datetime(9999, 12, 31, 23, 59, 59, 999000, tzinfo=timezones.utc)
-  ),
-  (
-    '{"type": "long", "logicalType": "timestamp-millis"}',
-    datetime.datetime(2000, 1, 18, 2, 2, 1, 100000, tzinfo=timezones.tst)
-  ),
-  (
-    '{"type": "long", "logicalType": "timestamp-micros"}',
-    datetime.datetime(1000, 1, 1, 0, 0, 0, 000000, tzinfo=timezones.utc)
-  ),
-  (
-    '{"type": "long", "logicalType": "timestamp-micros"}',
-    datetime.datetime(9999, 12, 31, 23, 59, 59, 999999, tzinfo=timezones.utc)
-  ),
-  (
-    '{"type": "long", "logicalType": "timestamp-micros"}',
-    datetime.datetime(2000, 1, 18, 2, 2, 1, 123499, tzinfo=timezones.tst)
-  ),
-  ("""\
+    ('"null"', None),
+    ('"boolean"', True),
+    ('"string"', unicode('adsfasdf09809dsf-=adsf')),
+    ('"bytes"', '12345abcd'),
+    ('"int"', 1234),
+    ('"long"', 1234),
+    ('"float"', 1234.0),
+    ('"double"', 1234.0),
+    ('{"type": "fixed", "name": "Test", "size": 1}', 'B'),
+    ('{"type": "fixed", "logicalType": "decimal", "name": "Test", "size": 8, "precision": 5, "scale": 4}',
+        Decimal('3.1415')),
+    ('{"type": "fixed", "logicalType": "decimal", "name": "Test", "size": 8, "precision": 5, "scale": 4}',
+        Decimal('-3.1415')),
+    ('{"type": "bytes", "logicalType": "decimal", "precision": 5, "scale": 4}', Decimal('3.1415')),
+    ('{"type": "bytes", "logicalType": "decimal", "precision": 5, "scale": 4}', Decimal('-3.1415')),
+    ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
+    ('{"type": "array", "items": "long"}', [1, 3, 2]),
+    ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
+    ('["string", "null", "long"]', None),
+    ('{"type": "int", "logicalType": "date"}', datetime.date(2000, 1, 1)),
+    ('{"type": "int", "logicalType": "time-millis"}', datetime.time(23, 59, 59, 999000)),
+    ('{"type": "int", "logicalType": "time-millis"}', datetime.time(0, 0, 0, 000000)),
+    ('{"type": "long", "logicalType": "time-micros"}', datetime.time(23, 59, 59, 999999)),
+    ('{"type": "long", "logicalType": "time-micros"}', datetime.time(0, 0, 0, 000000)),
+    (
+        '{"type": "long", "logicalType": "timestamp-millis"}',
+        datetime.datetime(1000, 1, 1, 0, 0, 0, 000000, tzinfo=timezones.utc)
+    ),
+    (
+        '{"type": "long", "logicalType": "timestamp-millis"}',
+        datetime.datetime(9999, 12, 31, 23, 59, 59, 999000, tzinfo=timezones.utc)
+    ),
+    (
+        '{"type": "long", "logicalType": "timestamp-millis"}',
+        datetime.datetime(2000, 1, 18, 2, 2, 1, 100000, tzinfo=timezones.tst)
+    ),
+    (
+        '{"type": "long", "logicalType": "timestamp-micros"}',
+        datetime.datetime(1000, 1, 1, 0, 0, 0, 000000, tzinfo=timezones.utc)
+    ),
+    (
+        '{"type": "long", "logicalType": "timestamp-micros"}',
+        datetime.datetime(9999, 12, 31, 23, 59, 59, 999999, tzinfo=timezones.utc)
+    ),
+    (
+        '{"type": "long", "logicalType": "timestamp-micros"}',
+        datetime.datetime(2000, 1, 18, 2, 2, 1, 123499, tzinfo=timezones.tst)
+    ),
+    ("""\
    {"type": "record",
     "name": "Test",
     "fields": [{"name": "f", "type": "long"}]}
    """, {'f': 5}),
-  ("""\
+    ("""\
    {"type": "record",
     "name": "Lisp",
     "fields": [{"name": "value",
@@ -100,33 +100,33 @@ SCHEMAS_TO_VALIDATE = (
 )
 
 BINARY_ENCODINGS = (
-  (0, '00'),
-  (-1, '01'),
-  (1, '02'),
-  (-2, '03'),
-  (2, '04'),
-  (-64, '7f'),
-  (64, '80 01'),
-  (8192, '80 80 01'),
-  (-8193, '81 80 01'),
+    (0, '00'),
+    (-1, '01'),
+    (1, '02'),
+    (-2, '03'),
+    (2, '04'),
+    (-64, '7f'),
+    (64, '80 01'),
+    (8192, '80 80 01'),
+    (-8193, '81 80 01'),
 )
 
 DEFAULT_VALUE_EXAMPLES = (
-  ('"null"', 'null', None),
-  ('"boolean"', 'true', True),
-  ('"string"', '"foo"', u'foo'),
-  ('"bytes"', '"\u00FF\u00FF"', u'\xff\xff'),
-  ('"int"', '5', 5),
-  ('"long"', '5', 5),
-  ('"float"', '1.1', 1.1),
-  ('"double"', '1.1', 1.1),
-  ('{"type": "fixed", "name": "F", "size": 2}', '"\u00FF\u00FF"', u'\xff\xff'),
-  ('{"type": "enum", "name": "F", "symbols": ["FOO", "BAR"]}', '"FOO"', 'FOO'),
-  ('{"type": "array", "items": "int"}', '[1, 2, 3]', [1, 2, 3]),
-  ('{"type": "map", "values": "int"}', '{"a": 1, "b": 2}', {'a': 1, 'b': 2}),
-  ('["int", "null"]', '5', 5),
-  ('{"type": "record", "name": "F", "fields": [{"name": "A", "type": "int"}]}',
-   '{"A": 5}', {'A': 5}),
+    ('"null"', 'null', None),
+    ('"boolean"', 'true', True),
+    ('"string"', '"foo"', u'foo'),
+    ('"bytes"', '"\u00FF\u00FF"', u'\xff\xff'),
+    ('"int"', '5', 5),
+    ('"long"', '5', 5),
+    ('"float"', '1.1', 1.1),
+    ('"double"', '1.1', 1.1),
+    ('{"type": "fixed", "name": "F", "size": 2}', '"\u00FF\u00FF"', u'\xff\xff'),
+    ('{"type": "enum", "name": "F", "symbols": ["FOO", "BAR"]}', '"FOO"', 'FOO'),
+    ('{"type": "array", "items": "int"}', '[1, 2, 3]', [1, 2, 3]),
+    ('{"type": "map", "values": "int"}', '{"a": 1, "b": 2}', {'a': 1, 'b': 2}),
+    ('["int", "null"]', '5', 5),
+    ('{"type": "record", "name": "F", "fields": [{"name": "A", "type": "int"}]}',
+        '{"A": 5}', {'A': 5}),
 )
 
 LONG_RECORD_SCHEMA = schema.parse("""\

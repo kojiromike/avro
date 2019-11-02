@@ -109,36 +109,36 @@ def _is_timezone_aware_datetime(dt):
     return dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None
 
 _valid = {
-  'null': lambda s, d: d is None,
-  'boolean': lambda s, d: isinstance(d, bool),
-  'string': lambda s, d: isinstance(d, basestring),
-  'bytes': lambda s, d: ((isinstance(d, str)) or
-                         (isinstance(d, Decimal) and
-                          getattr(s, 'logical_type', None) == constants.DECIMAL)),
-  'int': lambda s, d: ((isinstance(d, (int, long))) and (INT_MIN_VALUE <= d <= INT_MAX_VALUE) or
-                       (isinstance(d, datetime.date) and
-                        getattr(s, 'logical_type', None) == constants.DATE) or
-                       (isinstance(d, datetime.time) and
-                        getattr(s, 'logical_type', None) == constants.TIME_MILLIS)),
-  'long': lambda s, d: ((isinstance(d, (int, long))) and (LONG_MIN_VALUE <= d <= LONG_MAX_VALUE) or
-                        (isinstance(d, datetime.time) and
-                         getattr(s, 'logical_type', None) == constants.TIME_MICROS) or
-                        (isinstance(d, datetime.date) and
-                         _is_timezone_aware_datetime(d) and
-                        getattr(s, 'logical_type', None) in (constants.TIMESTAMP_MILLIS,
-                                                             constants.TIMESTAMP_MICROS))),
-  'float': lambda s, d: isinstance(d, (int, long, float)),
-  'fixed': lambda s, d: ((isinstance(d, str) and len(d) == s.size) or
-                         (isinstance(d, Decimal) and
-                          getattr(s, 'logical_type', None) == constants.DECIMAL)),
-  'enum': lambda s, d: d in s.symbols,
-  'array': lambda s, d: isinstance(d, list) and all(validate(s.items, item) for item in d),
-  'map': lambda s, d: (isinstance(d, dict) and all(isinstance(key, basestring) for key in d)
-                       and all(validate(s.values, value) for value in d.values())),
-  'union': lambda s, d: any(validate(branch, d) for branch in s.schemas),
-  'record': lambda s, d: (isinstance(d, dict)
-                          and all(validate(f.type, d.get(f.name)) for f in s.fields)
-                          and {f.name for f in s.fields}.issuperset(d.keys())),
+    'null': lambda s, d: d is None,
+    'boolean': lambda s, d: isinstance(d, bool),
+    'string': lambda s, d: isinstance(d, basestring),
+    'bytes': lambda s, d: ((isinstance(d, str)) or
+                           (isinstance(d, Decimal) and
+                            getattr(s, 'logical_type', None) == constants.DECIMAL)),
+    'int': lambda s, d: ((isinstance(d, (int, long))) and (INT_MIN_VALUE <= d <= INT_MAX_VALUE) or
+                         (isinstance(d, datetime.date) and
+                          getattr(s, 'logical_type', None) == constants.DATE) or
+                         (isinstance(d, datetime.time) and
+                          getattr(s, 'logical_type', None) == constants.TIME_MILLIS)),
+    'long': lambda s, d: ((isinstance(d, (int, long))) and (LONG_MIN_VALUE <= d <= LONG_MAX_VALUE) or
+                          (isinstance(d, datetime.time) and
+                           getattr(s, 'logical_type', None) == constants.TIME_MICROS) or
+                          (isinstance(d, datetime.date) and
+                           _is_timezone_aware_datetime(d) and
+                           getattr(s, 'logical_type', None) in (constants.TIMESTAMP_MILLIS,
+                                                                constants.TIMESTAMP_MICROS))),
+    'float': lambda s, d: isinstance(d, (int, long, float)),
+    'fixed': lambda s, d: ((isinstance(d, str) and len(d) == s.size) or
+                           (isinstance(d, Decimal) and
+                            getattr(s, 'logical_type', None) == constants.DECIMAL)),
+    'enum': lambda s, d: d in s.symbols,
+    'array': lambda s, d: isinstance(d, list) and all(validate(s.items, item) for item in d),
+    'map': lambda s, d: (isinstance(d, dict) and all(isinstance(key, basestring) for key in d)
+                         and all(validate(s.values, value) for value in d.values())),
+    'union': lambda s, d: any(validate(branch, d) for branch in s.schemas),
+    'record': lambda s, d: (isinstance(d, dict)
+                            and all(validate(f.type, d.get(f.name)) for f in s.fields)
+                            and {f.name for f in s.fields}.issuperset(d.keys())),
 }
 _valid['double'] = _valid['float']
 _valid['error_union'] = _valid['union']
@@ -294,10 +294,10 @@ class BinaryDecoder(object):
         hours = value
 
         return datetime.time(
-          hour=hours,
-          minute=minutes,
-          second=seconds,
-          microsecond=microseconds
+            hour=hours,
+            minute=minutes,
+            second=seconds,
+            microsecond=microseconds
         )
 
     def read_time_millis_from_int(self):
@@ -663,7 +663,7 @@ class DatumReader(object):
 
         # schema resolution: reader's schema is a union, writer's schema is not
         if (writers_schema.type not in ['union', 'error_union']
-            and readers_schema.type in ['union', 'error_union']):
+                and readers_schema.type in ['union', 'error_union']):
             for s in readers_schema.schemas:
                 if DatumReader.match_schemas(writers_schema, s):
                     return self.read_data(writers_schema, s, decoder)
@@ -679,16 +679,16 @@ class DatumReader(object):
             return decoder.read_utf8()
         elif writers_schema.type == 'int':
             if (hasattr(writers_schema, 'logical_type') and
-                writers_schema.logical_type == constants.DATE):
+                    writers_schema.logical_type == constants.DATE):
                 return decoder.read_date_from_int()
             elif (hasattr(writers_schema, 'logical_type') and
-              writers_schema.logical_type == constants.TIME_MILLIS):
+                  writers_schema.logical_type == constants.TIME_MILLIS):
                 return decoder.read_time_millis_from_int()
             else:
                 return decoder.read_int()
         elif writers_schema.type == 'long':
             if (hasattr(writers_schema, 'logical_type') and
-                writers_schema.logical_type == constants.TIME_MICROS):
+                    writers_schema.logical_type == constants.TIME_MICROS):
                 return decoder.read_time_micros_from_long()
             elif (hasattr(writers_schema, 'logical_type') and
                   writers_schema.logical_type == constants.TIMESTAMP_MILLIS):
@@ -704,20 +704,20 @@ class DatumReader(object):
             return decoder.read_double()
         elif writers_schema.type == 'bytes':
             if (hasattr(writers_schema, 'logical_type') and
-                            writers_schema.logical_type == 'decimal'):
+                    writers_schema.logical_type == 'decimal'):
                 return decoder.read_decimal_from_bytes(
-                  writers_schema.get_prop('precision'),
-                  writers_schema.get_prop('scale')
+                    writers_schema.get_prop('precision'),
+                    writers_schema.get_prop('scale')
                 )
             else:
                 return decoder.read_bytes()
         elif writers_schema.type == 'fixed':
             if (hasattr(writers_schema, 'logical_type') and
-                            writers_schema.logical_type == 'decimal'):
+                    writers_schema.logical_type == 'decimal'):
                 return decoder.read_decimal_from_fixed(
-                  writers_schema.get_prop('precision'),
-                  writers_schema.get_prop('scale'),
-                  writers_schema.size
+                    writers_schema.get_prop('precision'),
+                    writers_schema.get_prop('scale'),
+                    writers_schema.size
                 )
             return self.read_fixed(writers_schema, readers_schema, decoder)
         elif writers_schema.type == 'enum':
@@ -1022,7 +1022,7 @@ class DatumWriter(object):
             encoder.write_utf8(datum)
         elif writers_schema.type == 'int':
             if (hasattr(writers_schema, 'logical_type') and
-                writers_schema.logical_type == constants.DATE):
+                    writers_schema.logical_type == constants.DATE):
                 encoder.write_date_int(datum)
             elif (hasattr(writers_schema, 'logical_type') and
                   writers_schema.logical_type == constants.TIME_MILLIS):
@@ -1031,7 +1031,7 @@ class DatumWriter(object):
                 encoder.write_int(datum)
         elif writers_schema.type == 'long':
             if (hasattr(writers_schema, 'logical_type') and
-                writers_schema.logical_type == constants.TIME_MICROS):
+                    writers_schema.logical_type == constants.TIME_MICROS):
                 encoder.write_time_micros_long(datum)
             elif (hasattr(writers_schema, 'logical_type') and
                   writers_schema.logical_type == constants.TIMESTAMP_MILLIS):
@@ -1047,17 +1047,17 @@ class DatumWriter(object):
             encoder.write_double(datum)
         elif writers_schema.type == 'bytes':
             if (hasattr(writers_schema, 'logical_type') and
-                            writers_schema.logical_type == 'decimal'):
+                    writers_schema.logical_type == 'decimal'):
                 encoder.write_decimal_bytes(datum, writers_schema.get_prop('scale'))
             else:
                 encoder.write_bytes(datum)
         elif writers_schema.type == 'fixed':
             if (hasattr(writers_schema, 'logical_type') and
-                            writers_schema.logical_type == 'decimal'):
+                    writers_schema.logical_type == 'decimal'):
                 encoder.write_decimal_fixed(
-                  datum,
-                  writers_schema.get_prop('scale'),
-                  writers_schema.get_prop('size')
+                    datum,
+                    writers_schema.get_prop('scale'),
+                    writers_schema.get_prop('size')
                 )
             else:
                 self.write_fixed(writers_schema, datum, encoder)

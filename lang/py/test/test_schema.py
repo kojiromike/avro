@@ -57,178 +57,178 @@ class InvalidTestSchema(ValidTestSchema):
 
 
 PRIMITIVE_EXAMPLES = ([
-  InvalidTestSchema('"True"'),
-  InvalidTestSchema('True'),
-  InvalidTestSchema('{"no_type": "test"}'),
-  InvalidTestSchema('{"type": "panther"}'),
+    InvalidTestSchema('"True"'),
+    InvalidTestSchema('True'),
+    InvalidTestSchema('{"no_type": "test"}'),
+    InvalidTestSchema('{"type": "panther"}'),
 ] + [ValidTestSchema('"{}"'.format(t)) for t in schema.PRIMITIVE_TYPES]
   + [ValidTestSchema({"type": t}) for t in schema.PRIMITIVE_TYPES])
 
 FIXED_EXAMPLES = [
-  ValidTestSchema({"type": "fixed", "name": "Test", "size": 1}),
-  ValidTestSchema({"type": "fixed", "name": "MyFixed", "size": 1,
-                   "namespace": "org.apache.hadoop.avro"}),
-  InvalidTestSchema({"type": "fixed", "name": "Missing size"}),
-  InvalidTestSchema({"type": "fixed", "size": 314}),
+    ValidTestSchema({"type": "fixed", "name": "Test", "size": 1}),
+    ValidTestSchema({"type": "fixed", "name": "MyFixed", "size": 1,
+                     "namespace": "org.apache.hadoop.avro"}),
+    InvalidTestSchema({"type": "fixed", "name": "Missing size"}),
+    InvalidTestSchema({"type": "fixed", "size": 314}),
 ]
 
 ENUM_EXAMPLES = [
-  ValidTestSchema({"type": "enum", "name": "Test", "symbols": ["A", "B"]}),
-  InvalidTestSchema({"type": "enum", "name": "Status", "symbols": "Normal Caution Critical"}),
-  InvalidTestSchema({"type": "enum", "name": [0, 1, 1, 2, 3, 5, 8],
-                     "symbols": ["Golden", "Mean"]}),
-  InvalidTestSchema({"type": "enum", "symbols" : ["I", "will", "fail", "no", "name"]}),
-  InvalidTestSchema({"type": "enum", "name": "Test", "symbols": ["AA", "AA"]}),
+    ValidTestSchema({"type": "enum", "name": "Test", "symbols": ["A", "B"]}),
+    InvalidTestSchema({"type": "enum", "name": "Status", "symbols": "Normal Caution Critical"}),
+    InvalidTestSchema({"type": "enum", "name": [0, 1, 1, 2, 3, 5, 8],
+                       "symbols": ["Golden", "Mean"]}),
+    InvalidTestSchema({"type": "enum", "symbols" : ["I", "will", "fail", "no", "name"]}),
+    InvalidTestSchema({"type": "enum", "name": "Test", "symbols": ["AA", "AA"]}),
 ]
 
 ARRAY_EXAMPLES = [
-  ValidTestSchema({"type": "array", "items": "long"}),
-  ValidTestSchema({"type": "array",
-                   "items": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}),
+    ValidTestSchema({"type": "array", "items": "long"}),
+    ValidTestSchema({"type": "array",
+                     "items": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}),
 ]
 
 MAP_EXAMPLES = [
-  ValidTestSchema({"type": "map", "values": "long"}),
-  ValidTestSchema({"type": "map",
-                   "values": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}),
+    ValidTestSchema({"type": "map", "values": "long"}),
+    ValidTestSchema({"type": "map",
+                     "values": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}}),
 ]
 
 UNION_EXAMPLES = [
-  ValidTestSchema(["string", "null", "long"]),
-  InvalidTestSchema(["null", "null"]),
-  InvalidTestSchema(["long", "long"]),
-  InvalidTestSchema([{"type": "array", "items": "long"},
-                     {"type": "array", "items": "string"}]),
+    ValidTestSchema(["string", "null", "long"]),
+    InvalidTestSchema(["null", "null"]),
+    InvalidTestSchema(["long", "long"]),
+    InvalidTestSchema([{"type": "array", "items": "long"},
+                       {"type": "array", "items": "string"}]),
 ]
 
 RECORD_EXAMPLES = [
-  ValidTestSchema({"type": "record", "name": "Test", "fields": [{"name": "f", "type": "long"}]}),
-  ValidTestSchema({"type": "error", "name": "Test", "fields": [{"name": "f", "type": "long"}]}),
-  ValidTestSchema({"type": "record", "name": "Node",
-                   "fields": [
-                     {"name": "label", "type": "string"},
-                     {"name": "children", "type": {"type": "array", "items": "Node"}}]}),
-  ValidTestSchema({"type": "record", "name": "Lisp",
-                   "fields": [{"name": "value",
-                               "type": ["null", "string",
-                                        {"type": "record", "name": "Cons",
-                                         "fields": [{"name": "car", "type": "Lisp"},
-                                                    {"name": "cdr", "type": "Lisp"}]}]}]}),
-  ValidTestSchema({"type": "record", "name": "HandshakeRequest",
-                   "namespace": "org.apache.avro.ipc",
-                   "fields": [{"name": "clientHash",
-                               "type": {"type": "fixed", "name": "MD5", "size": 16}},
-                              {"name": "clientProtocol", "type": ["null", "string"]},
-                              {"name": "serverHash", "type": "MD5"},
-                              {"name": "meta",
-                               "type": ["null", {"type": "map", "values": "bytes"}]}]}),
-  ValidTestSchema({"type": "record", "name": "HandshakeResponse",
-                   "namespace": "org.apache.avro.ipc",
-                   "fields": [{"name": "match",
-                               "type": {"type": "enum", "name": "HandshakeMatch",
-                                        "symbols": ["BOTH", "CLIENT", "NONE"]}},
-                              {"name": "serverProtocol", "type": ["null", "string"]},
-                              {"name": "serverHash",
-                               "type": ["null", {"name": "MD5", "size": 16, "type": "fixed"}]},
-                              {"name": "meta",
-                               "type": ["null", {"type": "map", "values": "bytes"}]}]}),
-  ValidTestSchema({"type": "record",
-                   "name": "Interop",
-                   "namespace": "org.apache.avro",
-                   "fields": [{"name": "intField", "type": "int"},
-                              {"name": "longField", "type": "long"},
-                              {"name": "stringField", "type": "string"},
-                              {"name": "boolField", "type": "boolean"},
-                              {"name": "floatField", "type": "float"},
-                              {"name": "doubleField", "type": "double"},
-                              {"name": "bytesField", "type": "bytes"},
-                              {"name": "nullField", "type": "null"},
-                              {"name": "arrayField", "type": {"type": "array", "items": "double"}},
-                              {"name": "mapField",
-                               "type": {"type": "map",
-                                        "values": {"name": "Foo",
-                                                   "type": "record",
-                                                   "fields": [{"name": "label", "type": "string"}]}}},
-                              {"name": "unionField",
-                               "type": ["boolean", "double", {"type": "array", "items": "bytes"}]},
-                              {"name": "enumField",
-                               "type": {"type": "enum", "name": "Kind", "symbols": ["A", "B", "C"]}},
-                              {"name": "fixedField",
-                               "type": {"type": "fixed", "name": "MD5", "size": 16}},
-                              {"name": "recordField",
-                               "type": {"type": "record", "name": "Node",
-                                        "fields": [{"name": "label", "type": "string"},
-                                                   {"name": "children",
-                                                    "type": {"type": "array",
-                                                             "items": "Node"}}]}}]}),
-  ValidTestSchema({"type": "record", "name": "ipAddr",
-                   "fields": [{"name": "addr", "type": [{"name": "IPv6", "type": "fixed", "size": 16},
-                                                        {"name": "IPv4", "type": "fixed", "size": 4}]}]}),
-  InvalidTestSchema({"type": "record", "name": "Address",
-                     "fields": [{"type": "string"}, {"type": "string", "name": "City"}]}),
-  InvalidTestSchema({"type": "record", "name": "Event",
-                     "fields": [{"name": "Sponsor"}, {"name": "City", "type": "string"}]}),
-  InvalidTestSchema({"type": "record", "name": "Rainer",
-                     "fields": "His vision, from the constantly passing bars"}),
-  InvalidTestSchema({"name": ["Tom", "Jerry"], "type": "record",
-                     "fields": [{"name": "name", "type": "string"}]}),
+    ValidTestSchema({"type": "record", "name": "Test", "fields": [{"name": "f", "type": "long"}]}),
+    ValidTestSchema({"type": "error", "name": "Test", "fields": [{"name": "f", "type": "long"}]}),
+    ValidTestSchema({"type": "record", "name": "Node",
+                     "fields": [
+                         {"name": "label", "type": "string"},
+                         {"name": "children", "type": {"type": "array", "items": "Node"}}]}),
+    ValidTestSchema({"type": "record", "name": "Lisp",
+                     "fields": [{"name": "value",
+                                 "type": ["null", "string",
+                                          {"type": "record", "name": "Cons",
+                                           "fields": [{"name": "car", "type": "Lisp"},
+                                                      {"name": "cdr", "type": "Lisp"}]}]}]}),
+    ValidTestSchema({"type": "record", "name": "HandshakeRequest",
+                     "namespace": "org.apache.avro.ipc",
+                     "fields": [{"name": "clientHash",
+                                 "type": {"type": "fixed", "name": "MD5", "size": 16}},
+                                {"name": "clientProtocol", "type": ["null", "string"]},
+                                {"name": "serverHash", "type": "MD5"},
+                                {"name": "meta",
+                                 "type": ["null", {"type": "map", "values": "bytes"}]}]}),
+    ValidTestSchema({"type": "record", "name": "HandshakeResponse",
+                     "namespace": "org.apache.avro.ipc",
+                     "fields": [{"name": "match",
+                                 "type": {"type": "enum", "name": "HandshakeMatch",
+                                          "symbols": ["BOTH", "CLIENT", "NONE"]}},
+                                {"name": "serverProtocol", "type": ["null", "string"]},
+                                {"name": "serverHash",
+                                 "type": ["null", {"name": "MD5", "size": 16, "type": "fixed"}]},
+                                {"name": "meta",
+                                 "type": ["null", {"type": "map", "values": "bytes"}]}]}),
+    ValidTestSchema({"type": "record",
+                     "name": "Interop",
+                     "namespace": "org.apache.avro",
+                     "fields": [{"name": "intField", "type": "int"},
+                                {"name": "longField", "type": "long"},
+                                {"name": "stringField", "type": "string"},
+                                {"name": "boolField", "type": "boolean"},
+                                {"name": "floatField", "type": "float"},
+                                {"name": "doubleField", "type": "double"},
+                                {"name": "bytesField", "type": "bytes"},
+                                {"name": "nullField", "type": "null"},
+                                {"name": "arrayField", "type": {"type": "array", "items": "double"}},
+                                {"name": "mapField",
+                                 "type": {"type": "map",
+                                          "values": {"name": "Foo",
+                                                     "type": "record",
+                                                     "fields": [{"name": "label", "type": "string"}]}}},
+                                {"name": "unionField",
+                                 "type": ["boolean", "double", {"type": "array", "items": "bytes"}]},
+                                {"name": "enumField",
+                                 "type": {"type": "enum", "name": "Kind", "symbols": ["A", "B", "C"]}},
+                                {"name": "fixedField",
+                                 "type": {"type": "fixed", "name": "MD5", "size": 16}},
+                                {"name": "recordField",
+                                 "type": {"type": "record", "name": "Node",
+                                          "fields": [{"name": "label", "type": "string"},
+                                                     {"name": "children",
+                                                      "type": {"type": "array",
+                                                               "items": "Node"}}]}}]}),
+    ValidTestSchema({"type": "record", "name": "ipAddr",
+                     "fields": [{"name": "addr", "type": [{"name": "IPv6", "type": "fixed", "size": 16},
+                                                          {"name": "IPv4", "type": "fixed", "size": 4}]}]}),
+    InvalidTestSchema({"type": "record", "name": "Address",
+                       "fields": [{"type": "string"}, {"type": "string", "name": "City"}]}),
+    InvalidTestSchema({"type": "record", "name": "Event",
+                       "fields": [{"name": "Sponsor"}, {"name": "City", "type": "string"}]}),
+    InvalidTestSchema({"type": "record", "name": "Rainer",
+                       "fields": "His vision, from the constantly passing bars"}),
+    InvalidTestSchema({"name": ["Tom", "Jerry"], "type": "record",
+                       "fields": [{"name": "name", "type": "string"}]}),
 ]
 
 DOC_EXAMPLES = [
-  ValidTestSchema({"type": "record", "name": "TestDoc", "doc": "Doc string",
-                   "fields": [{"name": "name", "type": "string", "doc" : "Doc String"}]}),
-  ValidTestSchema({"type": "enum", "name": "Test", "symbols": ["A", "B"], "doc": "Doc String"}),
+    ValidTestSchema({"type": "record", "name": "TestDoc", "doc": "Doc string",
+                     "fields": [{"name": "name", "type": "string", "doc" : "Doc String"}]}),
+    ValidTestSchema({"type": "enum", "name": "Test", "symbols": ["A", "B"], "doc": "Doc String"}),
 ]
 
 OTHER_PROP_EXAMPLES = [
-  ValidTestSchema({"type": "record", "name": "TestRecord", "cp_string": "string",
-                   "cp_int": 1, "cp_array": [1, 2, 3, 4],
-                   "fields": [{"name": "f1", "type": "string", "cp_object": {"a": 1,"b": 2}},
-                              {"name": "f2", "type": "long", "cp_null": None}]}),
-  ValidTestSchema({"type": "map", "values": "long", "cp_boolean": True}),
-  ValidTestSchema({"type": "enum", "name": "TestEnum",
-                   "symbols": ["one", "two", "three"], "cp_float": 1.0}),
+    ValidTestSchema({"type": "record", "name": "TestRecord", "cp_string": "string",
+                     "cp_int": 1, "cp_array": [1, 2, 3, 4],
+                     "fields": [{"name": "f1", "type": "string", "cp_object": {"a": 1,"b": 2}},
+                                {"name": "f2", "type": "long", "cp_null": None}]}),
+    ValidTestSchema({"type": "map", "values": "long", "cp_boolean": True}),
+    ValidTestSchema({"type": "enum", "name": "TestEnum",
+                     "symbols": ["one", "two", "three"], "cp_float": 1.0}),
 ]
 
 DECIMAL_LOGICAL_TYPE = [
-  ValidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": 4, "size": 10, "scale": 2}),
-  ValidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": 4, "scale": 2}),
-  InvalidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": 2, "scale": -2}),
-  InvalidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": -2, "scale": 2}),
-  InvalidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": 2, "scale": 3}),
-  InvalidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": -10, "scale": 2, "size": 5}),
-  InvalidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": 2, "scale": 3, "size": 2}),
-  InvalidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": 2, "scale": 2, "size": -2}),
+    ValidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": 4, "size": 10, "scale": 2}),
+    ValidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": 4, "scale": 2}),
+    InvalidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": 2, "scale": -2}),
+    InvalidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": -2, "scale": 2}),
+    InvalidTestSchema({"type": "bytes", "logicalType": "decimal", "precision": 2, "scale": 3}),
+    InvalidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": -10, "scale": 2, "size": 5}),
+    InvalidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": 2, "scale": 3, "size": 2}),
+    InvalidTestSchema({"type": "fixed", "logicalType": "decimal", "name": "TestDecimal", "precision": 2, "scale": 2, "size": -2}),
 ]
 
 DATE_LOGICAL_TYPE = [
-  ValidTestSchema({"type": "int", "logicalType": "date"}),
-  InvalidTestSchema({"type": "int", "logicalType": "date1"}),
-  InvalidTestSchema({"type": "long", "logicalType": "date"}),
+    ValidTestSchema({"type": "int", "logicalType": "date"}),
+    InvalidTestSchema({"type": "int", "logicalType": "date1"}),
+    InvalidTestSchema({"type": "long", "logicalType": "date"}),
 ]
 
 TIMEMILLIS_LOGICAL_TYPE = [
-  ValidTestSchema({"type": "int", "logicalType": "time-millis"}),
-  InvalidTestSchema({"type": "int", "logicalType": "time-milis"}),
-  InvalidTestSchema({"type": "long", "logicalType": "time-millis"}),
+    ValidTestSchema({"type": "int", "logicalType": "time-millis"}),
+    InvalidTestSchema({"type": "int", "logicalType": "time-milis"}),
+    InvalidTestSchema({"type": "long", "logicalType": "time-millis"}),
 ]
 
 TIMEMICROS_LOGICAL_TYPE = [
-  ValidTestSchema({"type": "long", "logicalType": "time-micros"}),
-  InvalidTestSchema({"type": "long", "logicalType": "time-micro"}),
-  InvalidTestSchema({"type": "int", "logicalType": "time-micros"}),
+    ValidTestSchema({"type": "long", "logicalType": "time-micros"}),
+    InvalidTestSchema({"type": "long", "logicalType": "time-micro"}),
+    InvalidTestSchema({"type": "int", "logicalType": "time-micros"}),
 ]
 
 TIMESTAMPMILLIS_LOGICAL_TYPE = [
-  ValidTestSchema({"type": "long", "logicalType": "timestamp-millis"}),
-  InvalidTestSchema({"type": "long", "logicalType": "timestamp-milis"}),
-  InvalidTestSchema({"type": "int", "logicalType": "timestamp-millis"}),
+    ValidTestSchema({"type": "long", "logicalType": "timestamp-millis"}),
+    InvalidTestSchema({"type": "long", "logicalType": "timestamp-milis"}),
+    InvalidTestSchema({"type": "int", "logicalType": "timestamp-millis"}),
 ]
 
 TIMESTAMPMICROS_LOGICAL_TYPE = [
-  ValidTestSchema({"type": "long", "logicalType": "timestamp-micros"}),
-  InvalidTestSchema({"type": "long", "logicalType": "timestamp-micro"}),
-  InvalidTestSchema({"type": "int", "logicalType": "timestamp-micros"}),
+    ValidTestSchema({"type": "long", "logicalType": "timestamp-micros"}),
+    InvalidTestSchema({"type": "long", "logicalType": "timestamp-micro"}),
+    InvalidTestSchema({"type": "int", "logicalType": "timestamp-micros"}),
 ]
 
 EXAMPLES = PRIMITIVE_EXAMPLES
@@ -329,17 +329,17 @@ class TestSchema(unittest.TestCase):
 
     def test_decimal_valid_type(self):
         fixed_decimal_schema = ValidTestSchema({
-          "type": "fixed",
-          "logicalType": "decimal",
-          "name": "TestDecimal",
-          "precision": 4,
-          "scale": 2,
-          "size": 2})
+            "type": "fixed",
+            "logicalType": "decimal",
+            "name": "TestDecimal",
+            "precision": 4,
+            "scale": 2,
+            "size": 2})
 
         bytes_decimal_schema = ValidTestSchema({
-          "type": "bytes",
-          "logicalType": "decimal",
-          "precision": 4})
+            "type": "bytes",
+            "logicalType": "decimal",
+            "precision": 4})
 
         fixed_decimal = fixed_decimal_schema.parse()
         self.assertEqual(4, fixed_decimal.get_prop('precision'))
@@ -421,13 +421,13 @@ class DocAttributesTestCase(unittest.TestCase):
 class OtherAttributesTestCase(unittest.TestCase):
     """Enable generating attribute test cases over all the other-prop test schema."""
     _type_map = {
-      "cp_array": list,
-      "cp_boolean": bool,
-      "cp_float": float,
-      "cp_int": int,
-      "cp_null": type(None),
-      "cp_object": dict,
-      "cp_string": basestring,
+        "cp_array": list,
+        "cp_boolean": bool,
+        "cp_float": float,
+        "cp_int": int,
+        "cp_null": type(None),
+        "cp_object": dict,
+        "cp_string": basestring,
     }
 
     def __init__(self, test_schema):

@@ -41,30 +41,30 @@ except ImportError:
 
 
 SCHEMAS_TO_VALIDATE = (
-  ('"null"', None),
-  ('"boolean"', True),
-  ('"string"', 'adsfasdf09809dsf-=adsf'),
-  ('"bytes"', b'12345abcd'),
-  ('"int"', 1234),
-  ('"long"', 1234),
-  ('"float"', 1234.0),
-  ('"double"', 1234.0),
-  ('{"type": "fixed", "name": "Test", "size": 1}', b'B'),
-  ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
-  ('{"type": "array", "items": "long"}', [1, 3, 2]),
-  ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
-  ('["string", "null", "long"]', None),
+    ('"null"', None),
+    ('"boolean"', True),
+    ('"string"', 'adsfasdf09809dsf-=adsf'),
+    ('"bytes"', b'12345abcd'),
+    ('"int"', 1234),
+    ('"long"', 1234),
+    ('"float"', 1234.0),
+    ('"double"', 1234.0),
+    ('{"type": "fixed", "name": "Test", "size": 1}', b'B'),
+    ('{"type": "enum", "name": "Test", "symbols": ["A", "B"]}', 'B'),
+    ('{"type": "array", "items": "long"}', [1, 3, 2]),
+    ('{"type": "map", "values": "long"}', {'a': 1, 'b': 3, 'c': 2}),
+    ('["string", "null", "long"]', None),
 
-  ("""
+    ("""
    {
      "type": "record",
      "name": "Test",
      "fields": [{"name": "f", "type": "long"}]
    }
    """,
-   {'f': 5}),
+        {'f': 5}),
 
-  ("""
+    ("""
    {
      "type": "record",
      "name": "Lisp",
@@ -83,7 +83,7 @@ SCHEMAS_TO_VALIDATE = (
      }]
    }
    """,
-   {'value': {'car': {'value': 'head'}, 'cdr': {'value': None}}}),
+        {'value': {'car': {'value': 'head'}, 'cdr': {'value': None}}}),
 )
 
 def get_codecs_to_validate():

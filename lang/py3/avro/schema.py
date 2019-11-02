@@ -75,59 +75,59 @@ REQUEST = 'request'
 ERROR_UNION = 'error_union'
 
 PRIMITIVE_TYPES = frozenset([
-  NULL,
-  BOOLEAN,
-  STRING,
-  BYTES,
-  INT,
-  LONG,
-  FLOAT,
-  DOUBLE,
+    NULL,
+    BOOLEAN,
+    STRING,
+    BYTES,
+    INT,
+    LONG,
+    FLOAT,
+    DOUBLE,
 ])
 
 NAMED_TYPES = frozenset([
-  FIXED,
-  ENUM,
-  RECORD,
-  ERROR,
+    FIXED,
+    ENUM,
+    RECORD,
+    ERROR,
 ])
 
 VALID_TYPES = frozenset.union(
-  PRIMITIVE_TYPES,
-  NAMED_TYPES,
-  [
-    ARRAY,
-    MAP,
-    UNION,
-    REQUEST,
-    ERROR_UNION,
-  ],
+    PRIMITIVE_TYPES,
+    NAMED_TYPES,
+    [
+        ARRAY,
+        MAP,
+        UNION,
+        REQUEST,
+        ERROR_UNION,
+    ],
 )
 
 SCHEMA_RESERVED_PROPS = frozenset([
-  'type',
-  'name',
-  'namespace',
-  'fields',     # Record
-  'items',      # Array
-  'size',       # Fixed
-  'symbols',    # Enum
-  'values',     # Map
-  'doc',
+    'type',
+    'name',
+    'namespace',
+    'fields',     # Record
+    'items',      # Array
+    'size',       # Fixed
+    'symbols',    # Enum
+    'values',     # Map
+    'doc',
 ])
 
 FIELD_RESERVED_PROPS = frozenset([
-  'default',
-  'name',
-  'doc',
-  'order',
-  'type',
+    'default',
+    'name',
+    'doc',
+    'order',
+    'type',
 ])
 
 VALID_FIELD_SORT_ORDERS = frozenset([
-  'ascending',
-  'descending',
-  'ignore',
+    'ascending',
+    'descending',
+    'ignore',
 ])
 
 
@@ -701,7 +701,7 @@ class EnumSchema(NamedSchema):
         symbols = tuple(symbols)
         symbol_set = frozenset(symbols)
         if (len(symbol_set) != len(symbols)
-            or not all(map(lambda symbol: isinstance(symbol, str), symbols))):
+                or not all(map(lambda symbol: isinstance(symbol, str), symbols))):
             raise AvroException(
                 'Invalid symbols for enum schema: %r.' % (symbols,))
 
@@ -1187,9 +1187,9 @@ def _SchemaFromJSONObject(json_object, names):
 
 # Parsers for the JSON data types:
 _JSONDataParserTypeMap = {
-  str: _SchemaFromJSONString,
-  list: _SchemaFromJSONArray,
-  dict: _SchemaFromJSONObject,
+    str: _SchemaFromJSONString,
+    list: _SchemaFromJSONArray,
+    dict: _SchemaFromJSONObject,
 }
 
 

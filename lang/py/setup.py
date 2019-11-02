@@ -31,7 +31,7 @@ import setuptools
 def _get_version():
     curdir = os.getcwd()
     version_file = ("VERSION.txt" if os.path.isfile("VERSION.txt")
-      else os.path.join(curdir[:curdir.index("lang/py")], "share/VERSION.txt"))
+                    else os.path.join(curdir[:curdir.index("lang/py")], "share/VERSION.txt"))
     with open(version_file) as verfile:
         # To follow the naming convention defined by PEP 440
         # in the case that the version is like "x.y.z-SNAPSHOT"
@@ -62,31 +62,31 @@ class LintCommand(setuptools.Command):
 
 
 setuptools.setup(
-  name = 'avro',
-  version = _get_version(),
-  packages = ['avro'],
-  package_dir = {'': 'src'},
-  scripts = ["./scripts/avro"],
-  setup_requires = [
-    'isort',
-    'pycodestyle',
-  ],
-  cmdclass={
-      "lint": LintCommand,
-  },
+    name = 'avro',
+    version = _get_version(),
+    packages = ['avro'],
+    package_dir = {'': 'src'},
+    scripts = ["./scripts/avro"],
+    setup_requires = [
+        'isort',
+        'pycodestyle',
+    ],
+    cmdclass={
+        "lint": LintCommand,
+    },
 
-  #include_package_data=True,
-  package_data={'avro': ['LICENSE', 'NOTICE']},
+    #include_package_data=True,
+    package_data={'avro': ['LICENSE', 'NOTICE']},
 
-  # metadata for upload to PyPI
-  author = 'Apache Avro',
-  author_email = 'dev@avro.apache.org',
-  description = 'Avro is a serialization and RPC framework.',
-  license = 'Apache License 2.0',
-  keywords = 'avro serialization rpc',
-  url = 'https://avro.apache.org/',
-  extras_require = {
-    'snappy': ['python-snappy'],
-    'zstandard': ['zstandard'],
-  },
+    # metadata for upload to PyPI
+    author = 'Apache Avro',
+    author_email = 'dev@avro.apache.org',
+    description = 'Avro is a serialization and RPC framework.',
+    license = 'Apache License 2.0',
+    keywords = 'avro serialization rpc',
+    url = 'https://avro.apache.org/',
+    extras_require = {
+        'snappy': ['python-snappy'],
+        'zstandard': ['zstandard'],
+    },
 )

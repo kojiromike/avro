@@ -172,7 +172,7 @@ class BaseRequestor(object):
             if self.send_protocol:
                 raise schema.AvroException('Handshake failure.')
             self.remote_protocol = protocol.parse(
-                                   handshake_response.get('serverProtocol'))
+                handshake_response.get('serverProtocol'))
             self.remote_hash = handshake_response.get('serverHash')
             self.send_protocol = False
             return True
@@ -180,7 +180,7 @@ class BaseRequestor(object):
             if self.send_protocol:
                 raise schema.AvroException('Handshake failure.')
             self.remote_protocol = protocol.parse(
-                                   handshake_response.get('serverProtocol'))
+                handshake_response.get('serverProtocol'))
             self.remote_hash = handshake_response.get('serverHash')
             self.send_protocol = True
             return False

@@ -63,15 +63,15 @@ def MakePrimitiveExamples():
     return examples
 
 PRIMITIVE_EXAMPLES = MakePrimitiveExamples() + [
-  ExampleSchema('"True"', valid=False),
-  ExampleSchema('True', valid=False),
-  ExampleSchema('{"no_type": "test"}', valid=False),
-  ExampleSchema('{"type": "panther"}', valid=False),
+    ExampleSchema('"True"', valid=False),
+    ExampleSchema('True', valid=False),
+    ExampleSchema('{"no_type": "test"}', valid=False),
+    ExampleSchema('{"type": "panther"}', valid=False),
 ]
 
 FIXED_EXAMPLES = [
-  ExampleSchema('{"type": "fixed", "name": "Test", "size": 1}', valid=True),
-  ExampleSchema("""
+    ExampleSchema('{"type": "fixed", "name": "Test", "size": 1}', valid=True),
+    ExampleSchema("""
     {
       "type": "fixed",
       "name": "MyFixed",
@@ -79,117 +79,117 @@ FIXED_EXAMPLES = [
       "size": 1
     }
     """,
-    valid=True),
-  ExampleSchema("""
+                  valid=True),
+    ExampleSchema("""
     {
       "type": "fixed",
       "name": "Missing size"
     }
     """,
-    valid=False),
-  ExampleSchema("""
+                  valid=False),
+    ExampleSchema("""
     {
       "type": "fixed",
       "size": 314
     }
     """,
-    valid=False),
+                  valid=False),
 ]
 
 ENUM_EXAMPLES = [
-  ExampleSchema(
-    '{"type": "enum", "name": "Test", "symbols": ["A", "B"]}',
-    valid=True),
-  ExampleSchema("""
+    ExampleSchema(
+        '{"type": "enum", "name": "Test", "symbols": ["A", "B"]}',
+        valid=True),
+    ExampleSchema("""
     {
       "type": "enum",
       "name": "Status",
       "symbols": "Normal Caution Critical"
     }
     """,
-    valid=False),
-  ExampleSchema("""
+                  valid=False),
+    ExampleSchema("""
     {
       "type": "enum",
       "name": [0, 1, 1, 2, 3, 5, 8],
       "symbols": ["Golden", "Mean"]
     }
     """,
-    valid=False),
-  ExampleSchema("""
+                  valid=False),
+    ExampleSchema("""
     {
       "type": "enum",
       "symbols": ["I", "will", "fail", "no", "name"]
     }
     """,
-    valid=False),
-  ExampleSchema("""
+                  valid=False),
+    ExampleSchema("""
     {
       "type": "enum",
       "name": "Test"
       "symbols": ["AA", "AA"]
     }
     """,
-    valid=False),
+                  valid=False),
 ]
 
 ARRAY_EXAMPLES = [
-  ExampleSchema('{"type": "array", "items": "long"}', valid=True),
-  ExampleSchema("""
+    ExampleSchema('{"type": "array", "items": "long"}', valid=True),
+    ExampleSchema("""
     {
       "type": "array",
       "items": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}
     }
     """,
-    valid=True),
+                  valid=True),
 ]
 
 MAP_EXAMPLES = [
-  ExampleSchema('{"type": "map", "values": "long"}', True),
-  ExampleSchema("""
+    ExampleSchema('{"type": "map", "values": "long"}', True),
+    ExampleSchema("""
     {
       "type": "map",
       "values": {"type": "enum", "name": "Test", "symbols": ["A", "B"]}
     }
     """,
-    valid=True,
-  ),
+                  valid=True,
+                  ),
 ]
 
 UNION_EXAMPLES = [
-  ExampleSchema('["string", "null", "long"]', valid=True),
-  ExampleSchema('["null", "null"]', valid=False),
-  ExampleSchema('["long", "long"]', valid=False),
-  ExampleSchema("""
+    ExampleSchema('["string", "null", "long"]', valid=True),
+    ExampleSchema('["null", "null"]', valid=False),
+    ExampleSchema('["long", "long"]', valid=False),
+    ExampleSchema("""
     [
       {"type": "array", "items": "long"},
       {"type": "array", "items": "string"}
     ]
     """,
-    valid=False,
-  ),
+                  valid=False,
+                  ),
 ]
 
 RECORD_EXAMPLES = [
-  ExampleSchema("""
+    ExampleSchema("""
     {
       "type": "record",
       "name": "Test",
       "fields": [{"name": "f", "type": "long"}]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "error",
       "name": "Test",
       "fields": [{"name": "f", "type": "long"}]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "Node",
@@ -199,9 +199,9 @@ RECORD_EXAMPLES = [
       ]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "Lisp",
@@ -220,9 +220,9 @@ RECORD_EXAMPLES = [
       }]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "HandshakeRequest",
@@ -241,9 +241,9 @@ RECORD_EXAMPLES = [
       ]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "HandshakeResponse",
@@ -267,9 +267,9 @@ RECORD_EXAMPLES = [
           "type": ["null", {"type": "map", "values": "bytes"}]}]
         }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "Interop",
@@ -317,9 +317,9 @@ RECORD_EXAMPLES = [
       ]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "ipAddr",
@@ -332,9 +332,9 @@ RECORD_EXAMPLES = [
       }]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "Address",
@@ -344,9 +344,9 @@ RECORD_EXAMPLES = [
       ]
     }
     """,
-    valid=False,
-  ),
-  ExampleSchema("""
+                  valid=False,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "name": "Event",
@@ -356,30 +356,30 @@ RECORD_EXAMPLES = [
       ]
     }
     """,
-    valid=False,
-  ),
-  ExampleSchema("""
+                  valid=False,
+                  ),
+    ExampleSchema("""
     {
       "type": "record",
       "fields": "His vision, from the constantly passing bars,"
       "name", "Rainer"
     }
     """,
-    valid=False,
-  ),
-  ExampleSchema("""
+                  valid=False,
+                  ),
+    ExampleSchema("""
     {
       "name": ["Tom", "Jerry"],
       "type": "record",
       "fields": [{"name": "name", "type": "string"}]
     }
     """,
-    valid=False,
-  ),
+                  valid=False,
+                  ),
 ]
 
 DOC_EXAMPLES = [
-  ExampleSchema("""
+    ExampleSchema("""
     {
       "type": "record",
       "name": "TestDoc",
@@ -387,17 +387,17 @@ DOC_EXAMPLES = [
       "fields": [{"name": "name", "type": "string", "doc": "Doc String"}]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {"type": "enum", "name": "Test", "symbols": ["A", "B"], "doc": "Doc String"}
     """,
-    valid=True,
-  ),
+                  valid=True,
+                  ),
 ]
 
 OTHER_PROP_EXAMPLES = [
-  ExampleSchema("""
+    ExampleSchema("""
     {
       "type": "record",
       "name": "TestRecord",
@@ -410,13 +410,13 @@ OTHER_PROP_EXAMPLES = [
       ]
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema(
-    '{"type": "map", "values": "long", "cp_boolean": true}',
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema(
+        '{"type": "map", "values": "long", "cp_boolean": true}',
+        valid=True,
+    ),
+    ExampleSchema("""
     {
       "type": "enum",
       "name": "TestEnum",
@@ -424,13 +424,13 @@ OTHER_PROP_EXAMPLES = [
       "cp_float": 1.0
     }
     """,
-    valid=True,
-  ),
-  ExampleSchema("""
+                  valid=True,
+                  ),
+    ExampleSchema("""
     {"type": "long", "date": "true"}
     """,
-    valid=True,
-  ),
+                  valid=True,
+                  ),
 ]
 
 EXAMPLES = PRIMITIVE_EXAMPLES
@@ -477,9 +477,9 @@ class TestSchema(unittest.TestCase):
         raise AttributeError when you try
         to access their name."""
         cases = [
-          '{"type": "array", "items": "int"}',
-          '{"type": "map", "values": "int"}',
-          '["null", "int"]',
+            '{"type": "array", "items": "int"}',
+            '{"type": "map", "values": "int"}',
+            '["null", "int"]',
         ]
         for case in (schema.parse(case) for case in cases):
             self.assertRaises(AttributeError, lambda: case.name)
@@ -532,7 +532,7 @@ class TestSchema(unittest.TestCase):
             correct += 1
 
         fail_msg = "Cast to string success on %d out of %d schemas" % \
-          (correct, len(VALID_EXAMPLES))
+            (correct, len(VALID_EXAMPLES))
         self.assertEqual(correct, len(VALID_EXAMPLES), fail_msg)
 
     def testEquivalenceAfterRoundTrip(self):
@@ -556,7 +556,7 @@ class TestSchema(unittest.TestCase):
                     % (example.name, original_schema, str(original_schema)))
 
         fail_msg = "Round trip success on %d out of %d schemas" % \
-          (correct, len(VALID_EXAMPLES))
+            (correct, len(VALID_EXAMPLES))
         self.assertEqual(correct, len(VALID_EXAMPLES), fail_msg)
 
     def testFullname(self):
