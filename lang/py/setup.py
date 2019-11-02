@@ -62,12 +62,12 @@ class LintCommand(setuptools.Command):
 
 
 setuptools.setup(
-  name = 'avro',
-  version = _get_version(),
-  packages = ['avro'],
-  package_dir = {'': 'src'},
-  scripts = ["./scripts/avro"],
-  setup_requires = [
+  name='avro',
+  version=_get_version(),
+  packages=['avro'],
+  package_dir={'': 'src'},
+  scripts=["./scripts/avro"],
+  setup_requires=[
     'isort',
     'pycodestyle',
   ],
@@ -75,17 +75,17 @@ setuptools.setup(
       "lint": LintCommand,
   },
 
-  #include_package_data=True,
+  # include_package_data=True,
   package_data={'avro': ['LICENSE', 'NOTICE']},
 
   # metadata for upload to PyPI
-  author = 'Apache Avro',
-  author_email = 'dev@avro.apache.org',
-  description = 'Avro is a serialization and RPC framework.',
-  license = 'Apache License 2.0',
-  keywords = 'avro serialization rpc',
-  url = 'https://avro.apache.org/',
-  extras_require = {
+  author='Apache Avro',
+  author_email='dev@avro.apache.org',
+  description='Avro is a serialization and RPC framework.',
+  license='Apache License 2.0',
+  keywords='avro serialization rpc',
+  url='https://avro.apache.org/',
+  extras_require={
     'snappy': ['python-snappy'],
     'zstandard': ['zstandard'],
   },

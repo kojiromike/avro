@@ -49,7 +49,7 @@ _OUT_SCHEMA = """{
 class TestTetherWordCount(unittest.TestCase):
   """unittest for a python tethered map-reduce job."""
 
-  def _write_lines(self,lines,fname):
+  def _write_lines(self, lines, fname):
     """
     Write the lines to an avro file named fname
 
@@ -79,14 +79,14 @@ class TestTetherWordCount(unittest.TestCase):
         shutil.rmtree(base_dir)
 
       inpath = os.path.join(base_dir, "in")
-      infile=os.path.join(inpath, "lines.avro")
-      lines=["the quick brown fox jumps over the lazy dog",
+      infile = os.path.join(inpath, "lines.avro")
+      lines = ["the quick brown fox jumps over the lazy dog",
              "the cow jumps over the moon",
              "the rain in spain falls mainly on the plains"]
 
       if not os.path.exists(inpath):
         os.makedirs(inpath)
-      self._write_lines(lines,infile)
+      self._write_lines(lines, infile)
 
       self.assertTrue(os.path.exists(infile), "Missing the input file {}".format(infile))
 
@@ -106,26 +106,26 @@ class TestTetherWordCount(unittest.TestCase):
 
       # Create a shell script to act as the program we want to execute
       # We do this so we can set the python path appropriately
-      script="""#!/bin/bash
+      script = """#!/bin/bash
 export PYTHONPATH={0}
 python -m avro.tether.tether_task_runner word_count_task.WordCountTask
 """
       # We need to make sure avro is on the path
       # getsourcefile(avro) returns .../avro/__init__.py
       asrc = avro.__file__
-      apath=asrc.rsplit(os.sep,2)[0]
+      apath = asrc.rsplit(os.sep, 2)[0]
 
       # path to where the tests lie
-      tpath=os.path.split(__file__)[0]
+      tpath = os.path.split(__file__)[0]
 
       with tempfile.NamedTemporaryFile(mode='wb',
                                        prefix="exec_word_count_",
                                        delete=False) as exhf:
-        exhf.write(script.format((os.pathsep).join([apath,tpath]),srcfile))
-      exfile=exhf.name
+        exhf.write(script.format((os.pathsep).join([apath, tpath]), srcfile))
+      exfile = exhf.name
 
       # make it world executable
-      os.chmod(exfile,0o755)
+      os.chmod(exfile, 0o755)
 
       jar_path = os.path.abspath("@TOPDIR@/../java/tools/target/avro-tools-@AVRO_VERSION@.jar")
       args = ("java", "-jar", jar_path, "tether",
@@ -151,5 +151,5 @@ python -m avro.tether.tether_task_runner word_count_task.WordCountTask
       if exfile is not None and os.path.exists(exfile):
         os.remove(exfile)
 
-if __name__== "__main__":
+if __name__ == "__main__":
   unittest.main()

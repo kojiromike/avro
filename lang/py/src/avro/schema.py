@@ -343,14 +343,14 @@ class DecimalLogicalSchema(LogicalSchema):
                                 is %s.""" % precision)
     elif precision > max_precision:
       raise SchemaParseException("Cannot store precision digits. Max is %s"
-                                 %(max_precision))
+                                 % (max_precision))
 
     if not isinstance(scale, int) or scale < 0:
       raise SchemaParseException("Scale %s must be a positive Integer." % scale)
 
     elif scale > precision:
       raise SchemaParseException("Invalid DECIMAL scale %s. Cannot be greater than precision %s"
-                                 %(scale, precision))
+                                 % (scale, precision))
 
     super(DecimalLogicalSchema, self).__init__('decimal')
 
@@ -360,7 +360,7 @@ class DecimalLogicalSchema(LogicalSchema):
 
 class Field(object):
   def __init__(self, type, name, has_default, default=None,
-               order=None,names=None, doc=None, other_props=None):
+               order=None, names=None, doc=None, other_props=None):
     # Ensure valid ctor args
     if not name:
       fail_msg = 'Fields must have a non-empty name.'
@@ -608,7 +608,7 @@ class ArraySchema(Schema):
 class MapSchema(Schema):
   def __init__(self, values, names=None, other_props=None):
     # Call parent ctor
-    Schema.__init__(self, 'map',other_props)
+    Schema.__init__(self, 'map', other_props)
 
     # Add class members
     if isinstance(values, basestring) and names.has_name(values, None):
@@ -779,7 +779,7 @@ class RecordSchema(NamedSchema):
       names = Names()
     # Request records don't have names
     if self.type == 'request':
-      return [ f.to_json(names) for f in self.fields ]
+      return [f.to_json(names) for f in self.fields]
 
     if self.fullname in names.names:
       return self.name_ref(names)
@@ -787,7 +787,7 @@ class RecordSchema(NamedSchema):
       names.names[self.fullname] = self
 
     to_dump = names.prune_namespace(self.props.copy())
-    to_dump['fields'] = [ f.to_json(names) for f in self.fields ]
+    to_dump['fields'] = [f.to_json(names) for f in self.fields]
     return to_dump
 
   def __eq__(self, that):

@@ -291,7 +291,7 @@ class DataFileWriter(object):
       compressed_data_length = len(compressed_data)
     elif codec == SNAPPY_CODEC:
       compressed_data = snappy.compress(uncompressed_data)
-      compressed_data_length = len(compressed_data) + 4 # crc32
+      compressed_data_length = len(compressed_data) + 4  # crc32
     elif codec == XZ_CODEC:
       compressed_data = lzma.compress(uncompressed_data)
       compressed_data_length = len(compressed_data)
@@ -370,7 +370,7 @@ class DataFileReader(object):
     """
     self._reader = reader
     self._raw_decoder = avro_io.BinaryDecoder(reader)
-    self._datum_decoder = None # Maybe reset at every block.
+    self._datum_decoder = None  # Maybe reset at every block.
     self._datum_reader = datum_reader
 
     # read the header: magic, meta, sync

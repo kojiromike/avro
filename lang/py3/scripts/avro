@@ -63,14 +63,14 @@ def print_csv(row):
 
 def select_printer(format):
   return {
-      'json' : print_json,
-      'json-pretty' : print_json_pretty,
-      'csv' : print_csv
+      'json': print_json,
+      'json-pretty': print_json_pretty,
+      'csv': print_csv
   }[format]
 
 
 def record_match(expr, record):
-  return eval(expr, None, {'r' : record})
+  return eval(expr, None, {'r': record})
 
 
 def parse_fields(fields):
@@ -145,8 +145,8 @@ def cat(opts, args):
 def _open(filename, mode):
   if filename == '-':
     return {
-        'rt' : sys.stdin,
-        'wb' : sys.stdout.buffer,
+        'rt': sys.stdin,
+        'wb': sys.stdout.buffer,
     }[mode]
 
   return open(filename, mode)
@@ -162,15 +162,15 @@ def convert(value, field):
     return convert_union(value, field)
 
   return  {
-      'int' : int,
-      'long' : int,
-      'float' : float,
-      'double' : float,
-      'string' : str,
-      'bytes' : bytes,
-      'boolean' : bool,
-      'null' : lambda _: None,
-      'union' : lambda v: convert_union(v, field),
+      'int': int,
+      'long': int,
+      'float': float,
+      'double': float,
+      'string': str,
+      'bytes': bytes,
+      'boolean': bool,
+      'null': lambda _: None,
+      'union': lambda v: convert_union(v, field),
   }[type](value)
 
 
@@ -326,7 +326,7 @@ def main(argv=None):
     else:
       raise AvroError('Unknown command - %s' % command)
   except AvroError as e:
-    parser.error('%s' % e) # Will exit
+    parser.error('%s' % e)  # Will exit
   except Exception as e:
     traceback.print_exc()
     raise SystemExit('panic: %s' % e)

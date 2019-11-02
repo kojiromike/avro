@@ -252,7 +252,7 @@ class BinaryDecoder(object):
       for offset in range(size):
         unscaled_datum <<= 8
         unscaled_datum += ord(datum[offset])
-      unscaled_datum += pow(-2, (size*8) - 1)
+      unscaled_datum += pow(-2, (size * 8) - 1)
     else:
       for offset in range(size):
         unscaled_datum <<= 8
@@ -288,7 +288,7 @@ class BinaryDecoder(object):
 
   def _build_time_object(self, value, scale_to_micro):
     value = value * scale_to_micro
-    value, microseconds =  value // 1000000, value % 1000000
+    value, microseconds = value // 1000000, value % 1000000
     value, seconds = value // 60, value % 60
     value, minutes = value // 60, value % 60
     hours = value
@@ -457,7 +457,7 @@ class BinaryEncoder(object):
 
     bytes_req += 1 if (bytes_req << 3) < bits_req else 0
     self.write_long(bytes_req)
-    for index in range(bytes_req-1, -1, -1):
+    for index in range(bytes_req - 1, -1, -1):
       bits_to_write = packed_bits >> (8 * index)
       self.write(chr(bits_to_write & 0xff))
 
@@ -492,13 +492,13 @@ class BinaryEncoder(object):
     if sign:
       unscaled_datum = (1 << bits_req) - unscaled_datum
       unscaled_datum = mask | unscaled_datum
-      for index in range(size-1, -1, -1):
+      for index in range(size - 1, -1, -1):
         bits_to_write = unscaled_datum >> (8 * index)
         self.write(chr(bits_to_write & 0xff))
     else:
       for i in range(offset_bits // 8):
         self.write(chr(0))
-      for index in range(bytes_req-1, -1, -1):
+      for index in range(bytes_req - 1, -1, -1):
         bits_to_write = unscaled_datum >> (8 * index)
         self.write(chr(bits_to_write & 0xff))
 
@@ -537,7 +537,7 @@ class BinaryEncoder(object):
     Encode python time object as int.
     It stores the number of milliseconds from midnight, 00:00:00.000
     """
-    milliseconds = datum.hour*3600000 + datum.minute * 60000 + datum.second * 1000 + datum.microsecond // 1000
+    milliseconds = datum.hour * 3600000 + datum.minute * 60000 + datum.second * 1000 + datum.microsecond // 1000
     self.write_int(milliseconds)
 
   def write_time_micros_long(self, datum):
@@ -545,7 +545,7 @@ class BinaryEncoder(object):
     Encode python time object as long.
     It stores the number of microseconds from midnight, 00:00:00.000000
     """
-    microseconds = datum.hour*3600000000 + datum.minute * 60000000 + datum.second * 1000000 + datum.microsecond
+    microseconds = datum.hour * 3600000000 + datum.minute * 60000000 + datum.second * 1000000 + datum.microsecond
     self.write_long(microseconds)
 
   def _timedelta_total_microseconds(self, timedelta):

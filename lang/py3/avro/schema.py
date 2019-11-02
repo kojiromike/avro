@@ -51,24 +51,24 @@ logger = logging.getLogger(__name__)
 # Constants
 
 # Log level more verbose than DEBUG=10, INFO=20, etc.
-DEBUG_VERBOSE=5
+DEBUG_VERBOSE = 5
 
 
-NULL    = 'null'
+NULL = 'null'
 BOOLEAN = 'boolean'
-STRING  = 'string'
-BYTES   = 'bytes'
-INT     = 'int'
-LONG    = 'long'
-FLOAT   = 'float'
-DOUBLE  = 'double'
-FIXED   = 'fixed'
-ENUM    = 'enum'
-RECORD  = 'record'
-ERROR   = 'error'
-ARRAY   = 'array'
-MAP     = 'map'
-UNION   = 'union'
+STRING = 'string'
+BYTES = 'bytes'
+INT = 'int'
+LONG = 'long'
+FLOAT = 'float'
+DOUBLE = 'double'
+FIXED = 'fixed'
+ENUM = 'enum'
+RECORD = 'record'
+ERROR = 'error'
+ARRAY = 'array'
+MAP = 'map'
+UNION = 'union'
 
 # Request and error unions are part of Avro protocols:
 REQUEST = 'request'

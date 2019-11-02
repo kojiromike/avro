@@ -65,7 +65,7 @@ def select_printer(format):
     }[format]
 
 def record_match(expr, record):
-    return eval(expr, None, {"r" : record})
+    return eval(expr, None, {"r": record})
 
 def parse_fields(fields):
     fields = fields or ''
@@ -132,8 +132,8 @@ def cat(opts, args):
 def _open(filename, mode):
     if filename == "-":
         return {
-            "rb" : stdin,
-            "wb" : stdout
+            "rb": stdin,
+            "wb": stdout
         }[mode]
 
     return open(filename, mode)
@@ -147,15 +147,15 @@ def convert(value, field):
         return convert_union(value, field)
 
     return  {
-        "int" : int,
-        "long" : long,
-        "float" : float,
-        "double" : float,
-        "string" : str,
-        "bytes" : str,
-        "boolean" : bool,
-        "null" : lambda _: None,
-        "union" : lambda v: convert_union(v, field),
+        "int": int,
+        "long": long,
+        "float": float,
+        "double": float,
+        "string": str,
+        "bytes": str,
+        "boolean": bool,
+        "null": lambda _: None,
+        "union": lambda v: convert_union(v, field),
     }[type](value)
 
 def convert_union(value, field):
@@ -199,7 +199,7 @@ def write(opts, files):
 
     writer = DataFileWriter(out, DatumWriter(), schema)
 
-    iter_records = {"json" : iter_json, "csv" : iter_csv}[input_type]
+    iter_records = {"json": iter_json, "csv": iter_csv}[input_type]
     for filename in (files or ["-"]):
         info = _open(filename, "rb")
         for record in iter_records(info, schema):
@@ -258,7 +258,7 @@ def main(argv=None):
         else:
             raise AvroError("Unknown command - %s" % command)
     except AvroError, e:
-        parser.error("%s" % e) # Will exit
+        parser.error("%s" % e)  # Will exit
     except Exception, e:
         raise SystemExit("panic: %s" % e)
 

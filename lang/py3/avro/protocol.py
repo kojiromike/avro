@@ -215,7 +215,7 @@ class Protocol(object):
     if self.namespace:
       to_dump['namespace'] = self.namespace
     if self.types:
-      to_dump['types'] = [ t.to_json(names) for t in self.types ]
+      to_dump['types'] = [t.to_json(names) for t in self.types]
     if self.messages:
       messages_dict = {}
       for name, body in self.message_map.items():
@@ -287,7 +287,7 @@ class Message(object):
     }
     return schema.SchemaFromJSONData(error_union_desc, names=names)
 
-  def __init__(self,  name, request, response, errors=None):
+  def __init__(self, name, request, response, errors=None):
     self._name = name
 
     self._props = {}
