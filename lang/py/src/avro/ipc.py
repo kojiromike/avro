@@ -21,11 +21,16 @@
 
 from __future__ import absolute_import, division, print_function
 
-import httplib
 import io
 
 import avro.io
 from avro import protocol, schema
+
+try:
+  from http.client import HTTPConnection
+except ImportError:
+  from httplib import HTTPConnection
+
 
 #
 # Constants
@@ -443,7 +448,7 @@ class HTTPTransceiver(object):
   """
   def __init__(self, host, port, req_resource='/'):
     self.req_resource = req_resource
-    self.conn = httplib.HTTPConnection(host, port)
+    self.conn = HTTPConnection(host, port)
     self.conn.connect()
     self.remote_name = self.conn.sock.getsockname()
 

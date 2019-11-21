@@ -24,11 +24,16 @@ import sys
 import threading
 import traceback
 import weakref
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 import avro.tether.tether_task
 import avro.tether.util
 from avro import ipc
+
+try:
+  from http.server import BaseHTTPRequestHandler, HTTPServer
+except ImportError:
+  from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
 
 __all__ = ["TaskRunner"]
 

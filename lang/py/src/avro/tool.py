@@ -28,12 +28,16 @@ from __future__ import absolute_import, division, print_function
 import os.path
 import sys
 import threading
-import urlparse
 import warnings
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import avro.io
 from avro import datafile, ipc, protocol
+
+try:
+  from urllib.parse import urlparse
+except ImportError:
+  import urlparse
 
 
 class GenericResponder(ipc.Responder):
@@ -69,7 +73,7 @@ class GenericHandler(BaseHTTPRequestHandler):
       quitter.start()
 
 def run_server(uri, proto, msg, datum):
-  url_obj = urlparse.urlparse(uri)
+  url_obj = urlparse(uri)
   server_addr = (url_obj.hostname, url_obj.port)
   global responder
   global server_should_shutdown
@@ -83,7 +87,7 @@ def run_server(uri, proto, msg, datum):
   server.serve_forever()
 
 def send_message(uri, proto, msg, datum):
-  url_obj = urlparse.urlparse(uri)
+  url_obj = urlparse(uri)
   client = ipc.HTTPTransceiver(url_obj.hostname, url_obj.port)
   proto_json = file(proto, 'r').read()
   requestor = ipc.Requestor(protocol.parse(proto_json), client)

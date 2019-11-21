@@ -115,19 +115,19 @@ _valid = {
   'bytes': lambda s, d: ((isinstance(d, str)) or
                          (isinstance(d, Decimal) and
                           getattr(s, 'logical_type', None) == constants.DECIMAL)),
-  'int': lambda s, d: ((isinstance(d, (int, long))) and (INT_MIN_VALUE <= d <= INT_MAX_VALUE) or
+  'int': lambda s, d: ((isinstance(d, int)) and (INT_MIN_VALUE <= d <= INT_MAX_VALUE) or
                        (isinstance(d, datetime.date) and
                         getattr(s, 'logical_type', None) == constants.DATE) or
                        (isinstance(d, datetime.time) and
                         getattr(s, 'logical_type', None) == constants.TIME_MILLIS)),
-  'long': lambda s, d: ((isinstance(d, (int, long))) and (LONG_MIN_VALUE <= d <= LONG_MAX_VALUE) or
+  'long': lambda s, d: ((isinstance(d, int)) and (LONG_MIN_VALUE <= d <= LONG_MAX_VALUE) or
                         (isinstance(d, datetime.time) and
                          getattr(s, 'logical_type', None) == constants.TIME_MICROS) or
                         (isinstance(d, datetime.date) and
                          _is_timezone_aware_datetime(d) and
                         getattr(s, 'logical_type', None) in (constants.TIMESTAMP_MILLIS,
                                                              constants.TIMESTAMP_MICROS))),
-  'float': lambda s, d: isinstance(d, (int, long, float)),
+  'float': lambda s, d: isinstance(d, (int, int, float)),
   'fixed': lambda s, d: ((isinstance(d, str) and len(d) == s.size) or
                          (isinstance(d, Decimal) and
                           getattr(s, 'logical_type', None) == constants.DECIMAL)),
@@ -275,7 +275,7 @@ class BinaryDecoder(object):
     A string is encoded as a long followed by
     that many bytes of UTF-8 encoded character data.
     """
-    return unicode(self.read_bytes(), "utf-8")
+    return self.read_bytes().decode("utf-8")
 
   def read_date_from_int(self):
     """
@@ -559,8 +559,8 @@ class BinaryEncoder(object):
     """
     datum = datum.astimezone(tz=timezones.utc)
     timedelta = datum - datetime.datetime(1970, 1, 1, 0, 0, 0, 0, tzinfo=timezones.utc)
-    milliseconds = self._timedelta_total_microseconds(timedelta) / 1000
-    self.write_long(long(milliseconds))
+    milliseconds = self._timedelta_total_microseconds(timedelta) // 1000
+    self.write_long(milliseconds)
 
   def write_timestamp_micros_long(self, datum):
     """
@@ -570,7 +570,7 @@ class BinaryEncoder(object):
     datum = datum.astimezone(tz=timezones.utc)
     timedelta = datum - datetime.datetime(1970, 1, 1, 0, 0, 0, 0, tzinfo=timezones.utc)
     microseconds = self._timedelta_total_microseconds(timedelta)
-    self.write_long(long(microseconds))
+    self.write_long(int(microseconds))
 
 
 #
@@ -963,7 +963,7 @@ class DatumReader(object):
     elif field_schema.type == 'int':
       return int(default_value)
     elif field_schema.type == 'long':
-      return long(default_value)
+      return int(default_value)
     elif field_schema.type in ['float', 'double']:
       return float(default_value)
     elif field_schema.type in ['enum', 'fixed', 'string', 'bytes']:

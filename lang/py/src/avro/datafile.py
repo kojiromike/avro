@@ -373,7 +373,7 @@ class DataFileReader(object):
       return False
     return True
 
-  def next(self):
+  def __next__(self):
     """Return the next datum in the file."""
     while self.block_count == 0:
       if self.is_EOF() or (self._skip_sync() and self.is_EOF()):
@@ -383,6 +383,8 @@ class DataFileReader(object):
     datum = self.datum_reader.read(self.datum_decoder)
     self.block_count -= 1
     return datum
+
+  next = __next__
 
   def close(self):
     """Close this reader."""

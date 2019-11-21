@@ -21,12 +21,16 @@ from __future__ import absolute_import, division, print_function
 
 import socket
 import sys
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 import avro.tether.tether_task
 import avro.tether.util
 import set_avro_test_path
 from avro import ipc, protocol
+
+try:
+  from http.server import BaseHTTPRequestHandler, HTTPServer
+except ImportError:
+  from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 SERVER_ADDRESS = ('localhost', avro.tether.util.find_port())
 

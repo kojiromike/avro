@@ -41,7 +41,7 @@ except ImportError:
 DATUM = {
   'intField': 12,
   'longField': 15234324,
-  'stringField': unicode('hey'),
+  'stringField': 'hey',
   'boolField': True,
   'floatField': 1234.0,
   'doubleField': -1234.0,

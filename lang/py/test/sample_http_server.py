@@ -19,7 +19,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from avro import ipc, protocol
 

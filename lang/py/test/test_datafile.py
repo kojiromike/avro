@@ -28,7 +28,7 @@ from avro import datafile, io, schema
 SCHEMAS_TO_VALIDATE = (
   ('"null"', None),
   ('"boolean"', True),
-  ('"string"', unicode('adsfasdf09809dsf-=adsf')),
+  ('"string"', 'adsfasdf09809dsf-=adsf'),
   ('"bytes"', '12345abcd'),
   ('"int"', 1234),
   ('"long"', 1234),
