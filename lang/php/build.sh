@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,70 +17,72 @@
 
 set -e
 
-cd `dirname "$0"`
+cd "${0%/*}"
 
 dist_dir="../../dist/php"
 build_dir="pkg"
-version=$(cat ../../share/VERSION.txt)
+read -r version < ../../share/VERSION.txt
 libname="avro-php-$version"
 lib_dir="$build_dir/$libname"
 tarball="$libname.tar.bz2"
 
 test_tmp_dir="test/tmp"
 
-function clean {
-    rm -rf "$test_tmp_dir"
-    rm -rf "$build_dir"
+clean() {
+  rm -rf "$test_tmp_dir" "$build_dir"
 }
 
-function dist {
-    mkdir -p "$build_dir/$libname" "$lib_dir/examples"
-    cp -pr lib "$lib_dir"
-    cp -pr examples/*.php "$lib_dir/examples"
-    cp README.txt LICENSE NOTICE "$lib_dir"
-    cd "$build_dir"
-    tar -cjf "$tarball" "$libname"
-    mkdir -p "../$dist_dir"
-    cp "$tarball" "../$dist_dir"
+dist() {
+  mkdir -p "$build_dir/$libname" "$lib_dir/examples"
+  cp -pr lib "$lib_dir"
+  cp -pr examples/*.php "$lib_dir/examples"
+  cp README.txt LICENSE NOTICE "$lib_dir"
+  cd "$build_dir"
+  tar -cjf "$tarball" "$libname"
+  mkdir -p "../$dist_dir"
+  cp "$tarball" "../$dist_dir"
 }
 
-for target in "$@"
-do
-  case "$target" in
-    interop-data-generate)
-      php test/generate_interop_data.php
-      ;;
+interop_data_generate() {
+  php test/generate_interop_data.php
+}
 
-    test-interop)
-      phpunit test/InterOpTest.php
-      ;;
+interop_data_test() {
+  phpunit test/InterOpTest.php
+}
 
-    lint)
-      echo 'This is a stub where someone can provide linting.'
-      ;;
+lint() {
+  echo 'This is a stub where someone can provide linting.'
+}
 
-    test)
-      phpunit -v test/AllTests.php
+test_() {
+  phpunit -v test/AllTests.php
 
-      # Check backward compatibility with PHP 5.x if both PHP 5.6 and PHPUnit 5.7 are installed.
-      # TODO: remove this check when we drop PHP 5.x support in the future
-      if command -v php5.6 > /dev/null && phpunit --version | grep -q 'PHPUnit 5.7'; then
-        echo 'Checking backward compatibility with PHP 5.x'
-        php5.6 $(which phpunit) -v test/AllTests.php
-      fi
-      ;;
+  # Check backward compatibility with PHP 5.x if both PHP 5.6 and PHPUnit 5.7 are installed.
+  # TODO: remove this check when we drop PHP 5.x support in the future
+  if command -v php5.6 > /dev/null && phpunit --version | grep -q 'PHPUnit 5.7'; then
+    echo 'Checking backward compatibility with PHP 5.x'
+    php5.6 "$(command -v phpunit)" -v test/AllTests.php
+  fi
+}
 
-    dist)
-      dist
-      ;;
+usage() {
+  echo "Usage: $0 {interop-data-generate|test-interop|lint|test|dist|clean}" >&2
+  exit 1
+}
 
-    clean)
-      clean
-      ;;
+main() {
+  for target; do
+    case "$target" in
+      interop-data-generate) interop_data_generate;;
+      interop-data-test|test-interop) interop_data_test;;
+      lint) lint;;
+      test) test_;;
+      dist) dist;;
+      clean) clean;;
+      *) usage;;
+    esac
+  done
+}
 
-    *)
-      echo "Usage: $0 {interop-data-generate|test-interop|lint|test|dist|clean}"
-  esac
-done
-
-exit 0
+main "$@"

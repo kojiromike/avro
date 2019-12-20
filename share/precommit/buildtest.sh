@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -16,10 +16,8 @@
 
 add_test_type buildtest
 
-VERBOSE=false
-
 # files that we want to kick off
-BUILD_FILES=( build.sh )
+BUILD_FILES='build.sh'
 
 
 buildtest_usage() {
@@ -38,20 +36,19 @@ buildtest_usage() {
 # }
 
 buildtest_postcompile() {
-  for file in "${BUILD_FILES[@]}"; do
-
+  for file in $BUILD_FILES; do
     big_console_header "Running ${file}"
 
     #shellcheck disable=SC2001
-    sanitized_filename=$(echo "${file}" | sed -e 's,[/\.],-,g')
+    sanitized_filename=$(echo "${file}" | tr /\. -)
 
     # Write both to stdout and the file using tee
-    (cd ${BASEDIR} && ./${file} test) | tee -a ${PATCH_DIR}/build-${sanitized_filename}.txt
-    result=${PIPESTATUS[0]}
+    (cd "${BASEDIR}" && "./${file}" test) | tee -a "${PATCH_DIR}/build-${sanitized_filename}.txt"
+    result=$?
 
     yetus_debug "Process exited with ${result}"
 
-    if  (( result != 0 )); then
+    if [ "$result" -ne 0 ]; then
       add_vote_table -1 buildtest "The testsuite failed, please check the output"
       add_footer_table buildtest "@@BASE@@/build-${sanitized_filename}.txt"
       return 1
@@ -62,5 +59,5 @@ buildtest_postcompile() {
 }
 
 buildtest_docker_support() {
-  DOCKER_EXTRAARGS+=("--env" "JAVA=$JAVA")
+  DOCKER_EXTRAARGS="${DOCKER_EXTRAARGS} --env JAVA=$JAVA"
 }

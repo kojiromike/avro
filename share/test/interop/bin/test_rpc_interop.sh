@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -19,7 +19,7 @@ set -ex
 
 cd "${0%/*}/../../../.."
 
-VERSION=$(<share/VERSION.txt)
+read -r VERSION < share/VERSION.txt
 
 java_tool() {
   java -jar "lang/java/tools/target/avro-tools-$VERSION.jar" "$@"
@@ -50,22 +50,23 @@ cleanup() {
 
 trap 'cleanup' EXIT
 
-for server in {java,py,py3,ruby}_tool; do
+for server in java_tool py_tool py3_tool ruby_tool; do
   for msgDir in share/test/interop/rpc/*; do
     msg="${msgDir##*/}"
     for c in "$msgDir/"*; do
       echo "TEST: $c"
-      for client in {java,py,py3,ruby}_tool; do
+      for client in java_tool py_tool py3_tool ruby_tool; do
         rm -rf "$portfile"
         "$server" rpcreceive 'http://127.0.0.1:0/' "$proto" "$msg" \
           -file "$c/response.avro" > "$portfile" &
         count=0
-        until [[ -s "$portfile" ]]; do
+        until [ -s "$portfile" ]; do
           sleep 1
-          if (( count++ >= 10 )); then
+          if [ "$count" -ge 10 ]; then
             echo "$server did not start." >&2
             exit 1
           fi
+          count=$(( count + 1 ))
         done
         read -r _ port < "$portfile"
         "$client" rpcsend "http://127.0.0.1:$port" "$proto" "$msg" \

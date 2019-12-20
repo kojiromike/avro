@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,7 +18,7 @@
 set -e
 
 # connect to avro ruby root directory
-cd `dirname "$0"`
+cd "${0%/*}"
 
 # maintain our gems here
 export GEM_HOME=.gem/
@@ -28,28 +28,38 @@ export PATH="$PATH:.gem/bin"
 gem install --no-document -v 1.17.3 bundler
 bundle install
 
-for target in "$@"
-do
-  case "$target" in
-    lint)
-      rubocop --lint
-      ;;
+lint() {
+  rubocop --lint
+}
 
-    test)
-      bundle exec rake test
-      ;;
+test_() {
+  bundle exec rake test
+}
 
-    dist)
-      bundle exec rake dist
-      ;;
+dist() {
+  bundle exec rake dist
+}
 
-    clean)
-      bundle exec rake clean
-      rm -rf tmp avro.gemspec data.avr
-      ;;
+clean() {
+  bundle exec rake clean
+  rm -rf tmp avro.gemspec data.avr
+}
 
-    *)
-      echo "Usage: $0 {lint|test|dist|clean}"
-      exit 1
-  esac
-done
+usage() {
+  echo "Usage: $0 {lint|test|dist|clean}"
+  exit 1
+}
+
+main() {
+  for target; do
+    case "$target" in
+      lint) lint;;
+      test) test_;;
+      dist) dist;;
+      clean) clean;;
+      *) usage;;
+    esac
+  done
+}
+
+main "$@"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -19,14 +19,11 @@ set -e # exit on error
 
 usage() {
   echo "Usage: $0 {isort|lint|test|dist|clean}"
+  exit 1
 }
 
 main() {
-  local target
-  if (( $# == 0 )); then
-    usage
-    return 1
-  fi
+  [ "$1" ] || usage
   for target; do
     case "$target" in
       lint) set -- isort "$@";;

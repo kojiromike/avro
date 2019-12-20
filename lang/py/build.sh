@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -38,12 +38,12 @@ dist() {
   ./setup.py dist
 }
 
-interop-data-generate() {
+interop_data_generate() {
   ./setup.py generate_interop_data
   cp -r avro/test/interop/data ../../build/interop
 }
 
-interop-data-test() {
+interop_data_test() {
   mkdir -p avro/test/interop ../../build/interop/data
   cp -r ../../build/interop/data avro/test/interop
   python -m unittest avro.test.test_datafile_interop
@@ -58,13 +58,13 @@ test_() {
 }
 
 main() {
-  (( $# )) || usage
+  [ "$1" ] || usage
   for target; do
     case "$target" in
       clean) clean;;
       dist) dist;;
-      interop-data-generate) interop-data-generate;;
-      interop-data-test) interop-data-test;;
+      interop-data-generate) interop_data_generate;;
+      interop-data-test) interop_data_test;;
       lint) lint;;
       test) test_;;
       *) usage;;

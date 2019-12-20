@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -22,28 +22,35 @@ usage() {
   exit 1
 }
 
+
+
+lint() {
+  mvn -B spotless:apply
+}
+
+test_() {
+  mvn -B test
+  # Test the modules that depend on hadoop using Hadoop 3
+  mvn -B test -Phadoop3
+}
+
+dist() {
+  mvn -P dist package -DskipTests javadoc:aggregate
+}
+
+clean() {
+  mvn clean
+}
+
 main() {
-  local target
-  (( $# )) || usage
+  [ "$1" ] || usage
   for target; do
     case "$target" in
-      lint)
-        mvn -B spotless:apply
-        ;;
-      test)
-        mvn -B test
-        # Test the modules that depend on hadoop using Hadoop 3
-        mvn -B test -Phadoop3
-        ;;
-      dist)
-        mvn -P dist package -DskipTests javadoc:aggregate
-        ;;
-      clean)
-        mvn clean
-        ;;
-      *)
-        usage
-        ;;
+      lint) lint;;
+      test) test_;;
+      dist) dist;;
+      clean) clean;;
+      *) usage;;
     esac
   done
 }

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,35 +17,53 @@
 
 set -e
 
-cd `dirname "$0"`
+cd "${0%/*}"
 
-for target in "$@"
-do
-  case "$target" in
-    lint)
-      npm install
-      npm run lint
-      ;;
-    test)
-      npm install
-      npm run cover
-      ;;
-    dist)
-      npm pack
-      mkdir -p ../../dist/js
-      mv avro-js-*.tgz ../../dist/js
-      ;;
-    clean)
-      rm -rf coverage
-      ;;
-    interop-data-generate)
-      npm run interop-data-generate
-      ;;
-    interop-data-test)
-      npm run interop-data-test
-      ;;
-    *)
-      echo "Usage: $0 {lint|test|dist|clean}" >&2
-      exit 1
-  esac
-done
+usage() {
+  echo "Usage: $0 {lint|test|dist|clean}" >&2
+  exit 1
+}
+
+lint() {
+  npm install
+  npm run lint
+}
+
+test_() {
+  npm install
+  npm run cover
+}
+
+dist() {
+  npm pack
+  mkdir -p ../../dist/js
+  mv avro-js-*.tgz ../../dist/js
+}
+
+clean() {
+  rm -rf coverage
+}
+
+interop_data_generate() {
+  npm run interop-data-generate
+}
+
+interop_data_test() {
+  npm run interop-data-test
+}
+
+main() {
+  for target; do
+    case "$target" in
+      lint) lint;;
+      test) test_;;
+      dist) dist;;
+      clean) clean;;
+      interop-data-generate) interop_data_generate;;
+      interop-data-test) interop_data_test;;
+      *) usage;;
+    esac
+  done
+}
+
+main "$@"

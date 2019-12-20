@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,9 +17,9 @@
 
 set -ex
 
-function usage {
-  echo "`basename $0` --help"
-  echo "`basename $0` [--min] [--out-dir D] [--iters N] [--skip-one]\\"
+usage() {
+  echo "${0##*/} --help"
+  echo "${0##*/} [--min] [--out-dir D] [--iters N] [--skip-one]\\"
   echo "    [--only-combine] [--perf-args STRING] [-Dkey=value]* \\"
   echo "    [--] [-Dkey=value]* branch_1[:name_1] .. [-Dkey=value]* branch_n[:name_n]"
   echo
@@ -44,7 +44,7 @@ function usage {
   echo "of times (controllable by the --iters flag), and takes either the"
   echo "average or minimum of those.  The result of all this is the results"
   echo "of a single 'trial.'"
-  echo 
+  echo
   echo "The basic model is that there is a 'baseline' trial plus any"
   echo "number of 'treatment' trials.  The goal is to compare the"
   echo "performance of each treatment against the baseline.  The main"
@@ -61,15 +61,15 @@ function usage {
   echo
   echo "By default, the running times of cycles are averaged together."
   echo "The --min flag changes that to taking the minimum."
-  echo 
+  echo
   echo "By default, output is written to the current working directory."
   echo "However, lots of intermediate files are generated, so it's recommended"
   echo "that the --out-dir argument is used to redirect the output to"
   echo "a different working directory."
-  echo 
+  echo
   echo "By default, the number of iterations in a trial is 4, but this can"
   echo "be changed with the --iters flag."
-  echo 
+  echo
   echo "Perf.java takes a number of command-line arguments, and can be"
   echo "influenced by system properties.  Command-line arguments can be"
   echo "passed using the --perf-args flag.  When using this switch, pass"
@@ -80,7 +80,7 @@ function usage {
   echo "branch are passed to all trials. System properties that come after"
   echo "the '--' switch and/or first branch are passed to the branch that"
   echo "follows them.  Commonly used system properties include:"
-  echo 
+  echo
   echo "     org.apache.avro.io.perf.count -- the number of elements"
   echo "generated for the inner-most loop of the performance test.  Defaults"
   echo "to 250K.  Must be a multple of 4."
@@ -88,7 +88,7 @@ function usage {
   echo "     org.apache.avro.io.perf.cycles -- the number of times the inner-"
   echo "most loop is called within an invocation of Perf.java.  Defaults"
   echo " to 800."
-  echo 
+  echo
   echo "     org.apache.avro.io.perf.use-direct -- use DirectBinaryEncoder instead"
   echo "of BufferedBinaryEncoder for write tests.  It is slower, but performance-wise"
   echo "it can be more consistent, which helps when trying to detect small performance"
@@ -97,7 +97,7 @@ function usage {
   echo "     org.apache.avro.specific.use_custom_coders -- flag that turns on"
   echo " the use of the custom-coder optimization in the SpecificRecord tests."
   echo "Defaults to 'false;' set to 'true' to turn them on."
-  echo 
+  echo
   echo "Trials, as indicated, are branches in git.  The branch_i arguments"
   echo " indicate which what branches make up a trial.  The first of these"
   echo "(branch_1) is considered the \"baseline\" trial: it's the trial"
@@ -134,150 +134,149 @@ function usage {
   echo "for Perf.java to be run a bunch of times."
 }
 
-if [[ "$1" == "--help" ]]; then
+if [ "$1" = "--help" ]; then
   usage
   exit 0
 fi
 
-if [[ ! `pwd` =~ java/ipc ]]; then
-  echo "Must be run from lang/java/ipc"
-  echo "Type `basename $0` --help for help"
-  exit 1
-fi
+case "$PWD" in
+  *java/ipc) :;;
+  *)
+    echo "Must be run from lang/java/ipc"
+    echo "Type ${0##*/} --help for help"
+    exit 1
+    ;;
+esac
 
 TEST="-c nt"
 EXTRA_CLI=""
 OUT="."
 SKIP_ONE="false"
-STATIC_SYSPROPS=()
+STATIC_SYSPROPS=
 ITERS=4
 
 # DBG=echo
 
-function Perf_java {
-  local fname=$1
+Perf_java() {
+  fname=$1
   shift
 
-  if [[ "$DBG" != "" ]]; then
+  if [ -n "$DBG" ]; then
     $DBG MAVEN_OPTS=-server mvn exec:java -Dexec.classpathScope=test \
-      -Dexec.mainClass=org.apache.avro.io.Perf ${STATIC_SYSPROPS[@]} \
+      -Dexec.mainClass=org.apache.avro.io.Perf $STATIC_SYSPROPS \
       -Dexec.args="${TEST} -o ${fname} ${EXTRA_CLI}" \
-      $@
+      "$@"
   else
     mvn exec:java -Dexec.classpathScope=test \
-      -Dexec.mainClass=org.apache.avro.io.Perf ${STATIC_SYSPROPS[@]} \
+      -Dexec.mainClass=org.apache.avro.io.Perf $STATIC_SYSPROPS \
       -Dexec.args="${TEST} -o ${fname} ${EXTRA_CLI}" \
-      $@
+      "$@"
   fi
 }
 
-function run_trial {
-  local lastbranch=$1
-  local thisbranch=$2
-  local thistrialname=$3
+run_trial() {
+  lastbranch=$1
+  thisbranch=$2
+  thistrialname=$3
   shift 3
 
-  if [[ "$thisbranch" != "$lastbranch" ]]; then
-    $DBG git checkout $thisbranch
-    (cd ..; $DBG mvn clean && $DBG mvn -pl "avro,compiler,maven-plugin,ipc" install -DskipTests)
+  if [ "$thisbranch" != "$lastbranch" ]; then
+    git checkout "$thisbranch"
+    (
+      cd .. &&
+        "$DBG" mvn clean &&
+        "$DBG" mvn -pl "avro,compiler,maven-plugin,ipc" install -DskipTests
+    )
   fi
-  for i in $(seq 1 ${ITERS}); do Perf_java ${OUT}/${thistrialname}${i}.csv $@; done
-}
-
-function run_trials {
-  local -a allprops=( )
-
-  while (( "$#" )); do
-    case "$1" in
-      --)
-        break;
-        ;;
-      *)
-        allprops+=( $1 )
-        shift
-        ;;
-    esac
-  done
-
-  local -a thisprops=( )
-  local lastbranch=""
-  local thisbranch
-  local thistrialname
-
-  while (( "$#" )); do
-    case "$1" in
-      --) # Ignore these
-        shift
-        ;;
-      -D*)
-        thisprops+=( $1 )
-        shift
-        ;;
-      *)
-        thisbranch=$1
-        thistrialname=$2
-        git rev-parse --verify $thisbranch
-        run_trial "$lastbranch" $thisbranch $thistrialname ${allprops[@]} ${thisprops[@]}
-        lastbranch=$thisbranch
-        thisprops=( )
-        shift 2
-        ;;
-    esac
+  i=0
+  while [ $i -lt "$ITERS" ]; do
+    Perf_java "${OUT}/${thistrialname}${i}.csv" "$@"
+    i=$(( i+1 ))
   done
 }
 
-function join_results {
-  pushd ${OUT}
-  local header="TestName"
-  for b in $@; do
-    for i in $(seq 1 ${ITERS}); do
-      header="${header},${b}${i}"
-    done
+run_trials() {
+  allprops=
+  thisprops=
+  while [ "$1" ]; do
+    [ "$1" = -- ] && break
+    allprops="${allprops} $1"
+    shift
   done
-#  echo $header > results.csv
-  if [[ "$SKIP_ONE" == "true" ]]; then shift; fi
-  cut -d , -f 1,2 ${1}1.csv | sort >> results.csv
-  if [[ 1 < "${ITERS}" ]]; then
-    for i in $(seq 2 ${ITERS}); do
-      cut -d , -f 1,2 ${1}$i.csv | sort | join -t , results.csv - > tmp.csv
-      mv tmp.csv results.csv
-    done
-  fi
   shift
-  for b in $@; do
-    for i in $(seq 1 ${ITERS}); do
-      cut -d , -f 1,2 ${b}$i.csv | sort | join -t , results.csv - > tmp.csv
-      mv tmp.csv results.csv
-    done
+
+  lastbranch=
+  thisbranch
+  thistrialname
+
+  while [ "$1" ]; do
+    case "$1" in
+      --) : ;;  # Ignore these
+      -D*) thisprops="${thisprops} $1";;
+      *) thisbranch=$1
+         thistrialname=$2
+         git rev-parse --verify "$thisbranch"
+         run_trial "$lastbranch" "$thisbranch" "$thistrialname" $allprops $thisprops
+         lastbranch=$thisbranch
+         thisprops=
+         shift
+         ;;
+    esac
   done
-  popd
+}
+
+join_results() {
+  (
+    cd "${OUT}"
+    header="TestName"
+    for b; do
+      for i in $(seq 1 ${ITERS}); do
+        header="${header},${b}${i}"
+      done
+    done
+  #  echo $header > results.csv
+    [ "$SKIP_ONE" = true ] && shift
+    cut -d , -f 1,2 "${1}1.csv" | sort >> results.csv
+    if [ 1 -lt "$ITERS" ]; then
+      for i in $(seq 2 ${ITERS}); do
+        cut -d , -f 1,2 "${1}$i.csv" | sort | join -t , results.csv - > tmp.csv
+        mv tmp.csv results.csv
+      done
+    fi
+    shift
+    for b; do
+      for i in $(seq 1 ${ITERS}); do
+        cut -d , -f 1,2 "${b}$i.csv" | sort | join -t , results.csv - > tmp.csv
+        mv tmp.csv results.csv
+      done
+    done
+  )
 }
 
 AVG='BEGIN { RS=" "; } { s += $1; n += 1; } END { printf "%f", s/n; }'
 MIN='BEGIN { RS=" "; m = 10000000000; } { if ($1 < m) m = $1; } END { printf "%f", m; }'
 PERCENT='{ printf "%f", 100*($1-$2)/$1; }'
 
-function print_line {
-  local line=$1
+print_line() {
+  line=$1
   shift
-  local awks
-  if [[ "$TEST" == "-c nt" ]]; then awks="$AVG"; else awks="$MIN"; fi
+  awks
+  if [ "$TEST" = "-c nt" ]; then awks="$AVG"; else awks="$MIN"; fi
 
   local -a results=( )
-  for t in ${trials[*]}; do
-    local result=""
+  for t in "${trials[@]}"; do
+    result=""
     for i in $(seq 1 $ITERS); do
       result="$result $1"
       shift
     done
-    result=$(echo $result | awk "$awks")
+    result=$(echo "$result" | awk "$awks")
     results+=( $result )
     line="${line},${result}"
   done
 
-  local baseline=0
-  if [[ "$SKIP_ONE" == "true" ]]; then start=1; fi
-  for i in $(seq `expr ${baseline} + 1` `expr ${#trials[*]} - 1`); do
+  baseline=0
+  for i in $(seq $(expr ${baseline} + 1) $(expr ${#trials[*]} - 1)); do
     result=$(echo "${results[$baseline]} ${results[$i]}" | awk "$PERCENT")
     line="${line},${result}"
   done

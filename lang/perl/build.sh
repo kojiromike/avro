@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,73 +17,57 @@
 
 set -e # exit on error
 
-function usage {
+usage() {
   echo "Usage: $0 {lint|test|dist|clean|interop-data-generate|interop-data-test}"
   exit 1
 }
 
-if [ $# -eq 0 ]
-then
-  usage
-fi
+[ "$#" -gt 0 ] || usage
 
-if [ -f VERSION.txt ]
-then
-  VERSION=`cat VERSION.txt`
-else
-  VERSION=`cat ../../share/VERSION.txt`
-fi
 
-for target in "$@"
-do
-
-function do_clean(){
-  [ ! -f Makefile ] || make clean
-  rm -f  Avro-*.tar.gz META.yml Makefile.old
-  rm -rf lang/perl/inc/
+clean() {
+  [ -f Makefile ] && make clean
+  rm -rf Avro-*.tar.gz META.yml Makefile.old lang/perl/inc/
 }
 
-function do_lint(){
-  local failures=0
+lint() {
+  failures=0
   for i in $(find lib t xt -name '*.p[lm]' -or -name '*.t'); do
-    if ! perlcritic --verbose 1 ${i}; then
-      ((failures=failures+1))
-    fi
+    perlcritic --verbose 1 "$i" || failures=$(( failures + 1 ))
   done
   if [ ${failures} -gt 0 ]; then
     return 1
   fi
 }
 
-case "$target" in
-  lint)
-    do_lint
-    ;;
+test_() {
+  perl ./Makefile.PL && make test
+}
 
-  test)
-    perl ./Makefile.PL && make test
-    ;;
+dist() {
+  perl ./Makefile.PL && make dist
+}
 
-  dist)
-    perl ./Makefile.PL && make dist
-    ;;
+interop_data_generate() {
+  perl -Ilib share/interop-data-generate
+}
 
-  clean)
-    do_clean
-    ;;
+interop_data_test() {
+  prove -Ilib xt/interop.t
+}
 
-  interop-data-generate)
-    perl -Ilib share/interop-data-generate
-    ;;
+main() {
+  for target; do
+    case "$target" in
+      lint) lint;;
+      test) test_;;
+      dist) dist;;
+      clean) clean;;
+      interop-data-generate) interop_data_generate;;
+      interop-data-test) interop_data_test;;
+      *) usage;;
+    esac
+  done
+}
 
-  interop-data-test)
-    prove -Ilib xt/interop.t
-    ;;
-
-  *)
-    usage
-esac
-
-done
-
-exit 0
+main "$@"

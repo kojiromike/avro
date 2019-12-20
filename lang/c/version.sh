@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -41,41 +41,46 @@ libavro_interface_age=0
 libavro_binary_age=0
 
 # IGNORE EVERYTHING ELSE FROM HERE DOWN.........
-if test $# != 1; then
+if [ $# != 1 ]; then
   echo "USAGE: $0 CMD"
-    echo "  where CMD is one of: project, libtool, libcurrent, librevision, libage"
+  echo "  where CMD is one of: project, libtool, libcurrent, librevision, libage"
   exit 1
 fi
 
 # https://www.sourceware.org/autobook/autobook/autobook_91.html
 # 'Current' is the most recent interface number that this library implements
-libcurrent=$(($libavro_micro_version - $libavro_interface_age))
+libcurrent=$(( libavro_micro_version - libavro_interface_age ))
 # The implementation number of the 'current' interface
 librevision=$libavro_interface_age
 # The difference between the newest and oldest interfaces that this library implements
 # In other words, the library implements all the interface numbers in the range from
 # number 'current - age' to current
-libage=$(($libavro_binary_age - $libavro_interface_age))
+libage=$(( libavro_binary_age - libavro_interface_age ))
 
-if test "$1" = "project"; then
-  project_ver="undef"
-  version_file="VERSION.txt"
-  if test -f $version_file; then
-    project_ver=$(cat $version_file)
-  else
-    version_file="../../share/VERSION.txt"
-    if test -f $version_file; then
-      project_ver=$(cat $version_file)
+case "$1" in
+  project)
+    project_ver="undef"
+    if [ -f VERSION.txt ]; then
+      version_file=VERSION.txt
+    elif [ -f ../../share/VERSION.txt ]; then
+      version_file=../../share/VERSION.txt
+    else
+      echo 'VERSION.txt not found' >&2
     fi
-  fi
-  printf "%s" $project_ver
-elif test "$1" = "libtool"; then
-  # useful for the -version-info flag for libtool
-  printf "%d:%d:%d" $libcurrent $librevision $libage
-elif test "$1" = "libcurrent"; then
-  printf "%d" $libcurrent
-elif test "$1" = "librevision"; then
-  printf "%d" $librevision
-elif test "$1" = "libage"; then
-  printf "%d" $libage
-fi
+    read -r project_ver < "$version_file"
+    printf "%s" "$project_ver"
+    ;;
+  libtool)
+    # useful for the -version-info flag for libtool
+    printf "%d:%d:%d" $libcurrent $librevision $libage
+    ;;
+  libcurrent)
+    printf "%d" "$libcurrent"
+    ;;
+  librevision)
+    printf "%d" "$librevision"
+    ;;
+  libage)
+    printf "%d" "$libage"
+    ;;
+esac

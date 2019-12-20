@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -24,24 +24,20 @@ COMMIT_MSG_FILE=$1
 echo "=========================="
 echo "Doing basic commit validation"
 
-echo -n "= Single line commit message: "
-COMMIT_LINES=$(cat ${COMMIT_MSG_FILE} | wc -l)
-if [ ${COMMIT_LINES} -eq 1 ];
-then
+printf '%s' "= Single line commit message: "
+COMMIT_LINES=$(wc -l < "${COMMIT_MSG_FILE}")
+if [ "${COMMIT_LINES}" -eq 1 ]; then
   echo "Ok"
 else
-  echo "Fail: Found ${COMMIT_LINES} lines"
+  echo "Fail: Found ${COMMIT_LINES} lines" >&2
   exit 1
 fi
 
-echo -n "= Commit message format: "
-if grep -q "${LOGMESSAGE_FORMAT}" ${COMMIT_MSG_FILE}
-then
+printf '%s' "= Commit message format: "
+if grep -q "${LOGMESSAGE_FORMAT}" "${COMMIT_MSG_FILE}"; then
     echo "Ok"
 else
-    echo "Fail: Must be in this format: ${LOGMESSAGE_FORMAT}"
+    echo "Fail: Must be in this format: ${LOGMESSAGE_FORMAT}" >&2
     exit 1
 fi
 echo "=========================="
-
-exit 0
