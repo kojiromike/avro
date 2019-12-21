@@ -28,6 +28,11 @@ import warnings
 from avro import schema
 
 try:
+  from typing import List, Optional
+except ImportError:
+  pass
+
+try:
   unicode
 except NameError:
   unicode = str
@@ -40,6 +45,7 @@ except NameError:
 
 class TestSchema(object):
   """A proxy for a schema string that provides useful test metadata."""
+  valid = None  # type: Optional[bool]
 
   def __init__(self, data, name='', comment='', warnings=None):
     if not isinstance(data, basestring):
@@ -65,14 +71,13 @@ class InvalidTestSchema(ValidTestSchema):
   """A proxy for an invalid schema string that provides useful test metadata."""
   valid = False
 
-
-PRIMITIVE_EXAMPLES = ([
-  InvalidTestSchema('"True"'),
-  InvalidTestSchema('True'),
-  InvalidTestSchema('{"no_type": "test"}'),
-  InvalidTestSchema('{"type": "panther"}'),
-] + [ValidTestSchema('"{}"'.format(t)) for t in schema.PRIMITIVE_TYPES]
-  + [ValidTestSchema({"type": t}) for t in schema.PRIMITIVE_TYPES])
+PRIMITIVE_EXAMPLES = []  # type: List[TestSchema]
+PRIMITIVE_EXAMPLES.append(InvalidTestSchema('"True"'))
+PRIMITIVE_EXAMPLES.append(InvalidTestSchema('True'))
+PRIMITIVE_EXAMPLES.append(InvalidTestSchema('{"no_type": "test"}'))
+PRIMITIVE_EXAMPLES.append(InvalidTestSchema('{"type": "panther"}'))
+PRIMITIVE_EXAMPLES.extend([ValidTestSchema('"{}"'.format(t)) for t in schema.PRIMITIVE_TYPES])
+PRIMITIVE_EXAMPLES.extend([ValidTestSchema({"type": t}) for t in schema.PRIMITIVE_TYPES])
 
 FIXED_EXAMPLES = [
   ValidTestSchema({"type": "fixed", "name": "Test", "size": 1}),

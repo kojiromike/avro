@@ -54,6 +54,7 @@ lint() {
 }
 
 test_() {
+  python3 -m mypy avro
   tox
 }
 

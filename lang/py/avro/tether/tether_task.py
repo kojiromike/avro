@@ -30,6 +30,7 @@ import traceback
 import avro.io
 from avro import ipc, protocol, schema
 
+
 __all__ = ["TetherTask", "TaskType", "inputProtocol", "outputProtocol", "HTTPRequestor"]
 
 # create protocol objects for the input and output protocols
@@ -52,7 +53,7 @@ if (inputProtocol is None):
 
   # use a named tuple to represent the tasktype enumeration
   taskschema=inputProtocol.types_dict["TaskType"]
-  _ttype=collections.namedtuple("_tasktype",taskschema.symbols)
+  _ttype = collections.namedtuple("_tasktype", ['MAP', 'REDUCE'])
   TaskType=_ttype(*taskschema.symbols)
 
 if (outputProtocol is None):
@@ -347,7 +348,7 @@ class TetherTask(object):
       estr= traceback.format_exc()
       self.fail(estr)
 
-  def get_partitions():
+  def get_partitions(self):
     """ Return the number of map output partitions of this job."""
     return self._partitions
 

@@ -30,6 +30,8 @@ except NameError:
   unicode = str
 
 
+CODECS_TO_VALIDATE = tuple(datafile.VALID_CODECS)
+
 SCHEMAS_TO_VALIDATE = (
   ('"null"', None),
   ('"boolean"', True),
@@ -64,17 +66,6 @@ SCHEMAS_TO_VALIDATE = (
 )
 
 FILENAME = 'test_datafile.out'
-CODECS_TO_VALIDATE = ('null', 'deflate')
-try:
-  import snappy
-  CODECS_TO_VALIDATE += ('snappy',)
-except ImportError:
-  print('Snappy not present, will skip testing it.')
-try:
-  import zstandard
-  CODECS_TO_VALIDATE += ('zstandard',)
-except ImportError:
-  print('Zstandard not present, will skip testing it.')
 
 class TestDataFile(unittest.TestCase):
   def test_round_trip(self):

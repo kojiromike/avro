@@ -456,8 +456,7 @@ class PrimitiveSchema(Schema):
   def to_json(self, names=None):
     if len(self.props) == 1:
       return self.fullname
-    else:
-      return self.props
+    return self.props
 
   def __eq__(self, that):
     return self.props == that.props
@@ -799,15 +798,6 @@ class RecordSchema(NamedSchema):
   def __eq__(self, that):
     to_cmp = json.loads(str(self))
     return to_cmp == json.loads(str(that))
-
-
-#
-# Logical Type
-#
-
-class LogicalSchema(object):
-   def __init__(self, logical_type):
-     self.logical_type = logical_type
 
 
 #

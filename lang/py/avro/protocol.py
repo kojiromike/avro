@@ -115,8 +115,11 @@ class Protocol(object):
   # read-only properties
   name = property(lambda self: self.get_prop('name'))
   namespace = property(lambda self: self.get_prop('namespace'))
-  fullname = property(lambda self:
-                      avro.schema.Name(self.name, self.namespace).fullname)
+
+  @property
+  def fullname(self):
+    return avro.schema.Name(self.name, self.namespace).fullname
+
   types = property(lambda self: self.get_prop('types'))
   types_dict = property(lambda self: dict([(type.name, type)
                                            for type in self.types]))

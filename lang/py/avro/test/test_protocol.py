@@ -28,6 +28,11 @@ import avro.protocol
 import avro.schema
 
 try:
+  from typing import Optional
+except ImportError:
+  pass
+
+try:
   unicode
 except NameError:
   unicode = str
@@ -40,7 +45,7 @@ except NameError:
 
 class TestProtocol(object):
   """A proxy for a protocol string that provides useful test metadata."""
-
+  valid = None  # type: Optional[bool]
   def __init__(self, data, name='', comment=''):
     if not isinstance(data, basestring):
       data = json.dumps(data)
