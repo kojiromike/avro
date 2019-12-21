@@ -30,7 +30,6 @@ import traceback
 import avro.io
 from avro import ipc, protocol, schema
 
-
 __all__ = ["TetherTask", "TaskType", "inputProtocol", "outputProtocol", "HTTPRequestor"]
 
 # create protocol objects for the input and output protocols
