@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -47,13 +47,13 @@ fi
 
 # https://www.sourceware.org/autobook/autobook/autobook_91.html
 # 'Current' is the most recent interface number that this library implements
-libcurrent=$(($libavro_micro_version - $libavro_interface_age))
+libcurrent=$((libavro_micro_version - libavro_interface_age))
 # The implementation number of the 'current' interface
 librevision=$libavro_interface_age
 # The difference between the newest and oldest interfaces that this library implements
 # In other words, the library implements all the interface numbers in the range from
 # number 'current - age' to current
-libage=$(($libavro_binary_age - $libavro_interface_age))
+libage=$((libavro_binary_age - libavro_interface_age))
 
 if test "$1" = "project"; then
   project_ver="undef"
@@ -66,7 +66,7 @@ if test "$1" = "project"; then
       project_ver=$(cat $version_file)
     fi
   fi
-  printf "%s" $project_ver
+  printf '%s' "$project_ver"
 elif test "$1" = "libtool"; then
   # useful for the -version-info flag for libtool
   printf "%d:%d:%d" $libcurrent $librevision $libage

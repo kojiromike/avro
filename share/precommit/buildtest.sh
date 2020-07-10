@@ -16,7 +16,7 @@
 
 add_test_type buildtest
 
-VERBOSE=false
+export VERBOSE=${VERBOSE:-false}
 
 # files that we want to kick off
 BUILD_FILES=( build.sh )
@@ -46,7 +46,8 @@ buildtest_postcompile() {
     sanitized_filename=$(echo "${file}" | sed -e 's,[/\.],-,g')
 
     # Write both to stdout and the file using tee
-    (cd ${BASEDIR} && ./${file} test) | tee -a ${PATCH_DIR}/build-${sanitized_filename}.txt
+    (cd "${BASEDIR:?}" && "./${file}" test) |
+      tee -a "${PATCH_DIR:?}/build-${sanitized_filename}.txt"
     result=${PIPESTATUS[0]}
 
     yetus_debug "Process exited with ${result}"

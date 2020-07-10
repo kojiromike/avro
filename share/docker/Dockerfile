@@ -65,6 +65,7 @@ RUN apt-get -qqy update \
                                                  rake \
                                                  ruby \
                                                  ruby-dev \
+                                                 shellcheck \
                                                  source-highlight \
                                                  subversion \
                                                  valgrind \

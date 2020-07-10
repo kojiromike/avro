@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,33 +17,33 @@
 
 set -e # exit on error
 
-function usage {
+usage() {
   echo "Usage: $0 {lint|test|dist|clean|interop-data-generate|interop-data-test}"
   exit 1
 }
 
-if [ $# -eq 0 ]
-then
+if (( $# == 0 )); then
   usage
 fi
 
-for target in "$@"
-do
-
-function do_clean(){
-  [ ! -f Makefile ] || make clean
+do_clean() {
+  [[ ! -f Makefile ]] || make clean
   rm -f  Avro-*.tar.gz META.yml Makefile.old
   rm -rf lang/perl/inc/
 }
+for target; do
+
 
 function do_lint(){
   local failures=0
-  for i in $(find lib t xt -name '*.p[lm]' -or -name '*.t'); do
-    if ! perlcritic --verbose 1 ${i}; then
+  shopt -s globstar
+  shopt -s nullglob
+  for i in {lib,t,xt}/**/*.{p[lm],t}; do
+    if ! perlcritic --verbose 1 "${i}"; then
       ((failures=failures+1))
     fi
   done
-  if [ ${failures} -gt 0 ]; then
+  if (( failures > 0 )); then
     return 1
   fi
 }
@@ -79,5 +79,3 @@ case "$target" in
 esac
 
 done
-
-exit 0

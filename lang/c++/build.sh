@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,21 +17,17 @@
 
 set -e # exit on error
 
-function usage {
+usage() {
   echo "Usage: $0 {lint|test|dist|clean|install|doc}"
   exit 1
 }
 
-if [ $# -eq 0 ]
-then
-  usage
-fi
+(( $# == 0 )) && usage
 
-if [ -f VERSION.txt ]
-then
-  VERSION=`cat VERSION.txt`
+if [[ -f VERSION.txt ]]; then
+  VERSION=$(<VERSION.txt)
 else
-  VERSION=`cat ../../share/VERSION.txt`
+  VERSION=$(<../../share/VERSION.txt)
 fi
 
 BUILD=../../build
@@ -44,88 +40,79 @@ DOC_CPP=$BUILD/$AVRO_DOC/api/cpp
 DIST_DIR=../../dist/cpp
 TARFILE=../dist/cpp/$AVRO_CPP.tar.gz
 
-function do_doc() {
+do_doc() {
   doxygen
-  if [ -d doc ]
-  then
-    mkdir -p $DOC_CPP
-    cp -R doc/* $DOC_CPP
-  else
-    exit 1
-  fi
+  [[ -d doc ]] || exit
+  mkdir -p "$DOC_CPP"
+  cp -R doc/* "$DOC_CPP"
 }
 
-function do_dist() {
-  rm -rf $BUILD_CPP/
-  mkdir -p $BUILD_CPP
+do_dist() {
+  rm -rf "${BUILD_CPP:?}/"
+  mkdir -p "$BUILD_CPP"
   cp -r api AUTHORS build.sh CMakeLists.txt ChangeLog \
     LICENSE NOTICE impl jsonschemas NEWS parser README scripts test examples \
-    $BUILD_CPP
-  find $BUILD_CPP -name '.svn' | xargs rm -rf
-  cp ../../share/VERSION.txt $BUILD_CPP
-  mkdir -p $DIST_DIR
-  (cd $BUILD_DIR; tar cvzf $TARFILE $AVRO_CPP && cp $TARFILE $AVRO_CPP )
-  if [ ! -f $DIST_FILE ]
-  then
-    exit 1
-  fi
+    "$BUILD_CPP"
+  find "$BUILD_CPP" -name '.svn' -execdir rm -rf {} +
+  cp ../../share/VERSION.txt "$BUILD_CPP"
+  mkdir -p "$DIST_DIR"
+  (
+    cd "$BUILD_DIR" &&
+      tar cvzf "$TARFILE" "$AVRO_CPP" &&
+      cp "$TARFILE" "$AVRO_CPP" )
+  [[ -f ${DIST_FILE?} ]] || exit
 }
 
-(mkdir -p build; cd build; cmake -G "Unix Makefiles" ..)
-for target in "$@"
-do
+(mkdir -p build && cd build && cmake -G "Unix Makefiles" ..)
+for target; do
+  case "$target" in
+    lint)
+      # some versions of cppcheck seem to require an explicit
+      # "--error-exitcode" option to return non-zero code
+      cppcheck --error-exitcode=1 --inline-suppr -f -q -x c++ .
+      ;;
 
-case "$target" in
-  lint)
-    # some versions of cppcheck seem to require an explicit
-    # "--error-exitcode" option to return non-zero code
-    cppcheck --error-exitcode=1 --inline-suppr -f -q -x c++ .
-    ;;
+    test)
+      (cd build && cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug -D AVRO_ADD_PROTECTOR_FLAGS=1 .. && make && cd .. \
+        && ./build/buffertest \
+        && ./build/unittest \
+        && ./build/CodecTests \
+        && ./build/CompilerTests \
+        && ./build/StreamTests \
+        && ./build/SpecificTests \
+        && ./build/AvrogencppTests \
+        && ./build/DataFileTests   \
+        && ./build/SchemaTests)
+      ;;
 
-  test)
-    (cd build && cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug -D AVRO_ADD_PROTECTOR_FLAGS=1 .. && make && cd .. \
-      && ./build/buffertest \
-      && ./build/unittest \
-      && ./build/CodecTests \
-      && ./build/CompilerTests \
-      && ./build/StreamTests \
-      && ./build/SpecificTests \
-      && ./build/AvrogencppTests \
-      && ./build/DataFileTests   \
-      && ./build/SchemaTests)
-    ;;
+    xcode-test)
+      mkdir -p build.xcode
+      (cd build.xcode \
+          && cmake -G Xcode .. \
+          && xcodebuild -configuration Release \
+          && ctest -C Release)
+      ;;
 
-  xcode-test)
-    mkdir -p build.xcode
-    (cd build.xcode \
-        && cmake -G Xcode .. \
-        && xcodebuild -configuration Release \
-        && ctest -C Release)
-    ;;
+    dist)
+      (cd build && cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=Release ..)
+      do_dist
+      do_doc
+      ;;
 
-  dist)
-    (cd build && cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=Release ..)
-    do_dist
-    do_doc
-    ;;
+    doc)
+      do_doc
+      ;;
 
-  doc)
-    do_doc
-    ;;
+    clean)
+      (cd build && make clean)
+      rm -rf doc test.avro test?.df test_skip.df
+      ;;
 
-  clean)
-    (cd build && make clean)
-    rm -rf doc test.avro test?.df test_skip.df
-    ;;
+    install)
+      (cd build && cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=Release .. && make install)
+      ;;
 
-  install)
-    (cd build && cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=Release .. && make install)
-    ;;
-
-  *)
-    usage
-esac
-
+    *)
+      usage
+  esac
 done
-
-exit 0

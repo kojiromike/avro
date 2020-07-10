@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -34,8 +34,17 @@ change_java_version() {
   java -version
 }
 
+shell_lint() {
+  shellcheck --version
+  git ls-files . |
+    xargs file |
+    awk -F: '/shell script/{print $1}' |
+    xargs shellcheck
+}
+
+
 # Stop here if sourcing for functions
-[[ "$0" == *"bash" ]] && return 0
+[[ $0 = *bash ]] && return 0
 
 # ===========================================================================
 
@@ -43,7 +52,8 @@ set -xe
 cd "${0%/*}"
 
 VERSION=$(<share/VERSION.txt)
-DOCKER_XTRA_ARGS=""
+DOCKER_XTRA_ARGS=()
+JAVA=${JAVA:-unset}
 
 usage() {
   echo "Usage: $0 {lint|test|dist|sign|clean|veryclean|docker [--args \"docker-args\"]|rat|githooks|docker-test}"
@@ -52,8 +62,7 @@ usage() {
 
 (( $# == 0 )) && usage
 
-while (( "$#" ))
-do
+while (( "$#" )); do
   target="$1"
   shift
 
@@ -61,21 +70,20 @@ do
   # This only occurs when the JAVA environment variable is set and a Java environment exists in
   # the "standard" location (defined by the openjdk docker images).  This will typically occur in CI
   # builds.  In all other cases, the Java version is taken from the current installation for the user.
-  case "$target" in
-    lint|test|dist|clean|veryclean|rat)
+  [[ $JAVA != unset && $target = @(clean|dist|lint|rat|test|veryclean) ]] &&
     change_java_version "$JAVA"
-    ;;
-  esac
 
   case "$target" in
-
     lint)
+      shell_lint
       for lang_dir in lang/*; do
         (cd "$lang_dir" && ./build.sh lint)
       done
       ;;
 
     test)
+      shell_lint
+
       # run lang-specific tests
       (cd lang/java; ./build.sh test)
 
@@ -180,23 +188,20 @@ do
       ;;
 
     sign)
-      set +x
-
-      echo -n "Enter password: "
-      stty -echo
-      read -r password
-      stty echo
-
-      for f in $(find dist -type f \
-        \! -name '*.md5' \! -name '*.sha1' \
-        \! -name '*.sha512' \! -name '*.sha256' \
-        \! -name '*.asc' \! -name '*.txt' );
-      do
-        (cd "${f%/*}" && shasum -a 512 "${f##*/}") > "$f.sha512"
-        gpg --passphrase "$password" --armor --output "$f.asc" --detach-sig "$f"
+      read -srp 'Enter password: ' password
+      shopt -s globstar
+      for d in dist/**/; do
+        ( cd "$d" &&
+          for f in *; do
+            [[ -d $f || $f = *(.asc|.md5|.sha1|.sha256|.sha512|.txt) ]] &&
+              continue
+            shasum -a 512 "$f" > "$f.sha512"
+            set +x
+            gpg --passphrase "$password" --armor --output "$f.asc" --detach-sig "$f"
+          done
+        )
       done
-
-      set -x
+      shopt -u globstar
       ;;
 
     clean)
@@ -280,7 +285,7 @@ do
 
     docker)
       if [[ $1 =~ ^--args ]]; then
-        DOCKER_XTRA_ARGS=$2
+        DOCKER_XTRA_ARGS+=("$2")
         shift 2
       fi
       if [[ "$(uname -s)" = Linux ]]; then
@@ -315,10 +320,10 @@ do
         --env "JAVA=${JAVA:-8}" \
         --user "${USER_NAME}" \
         --volume "${HOME}/.gnupg:/home/${USER_NAME}/.gnupg" \
-        --volume "${HOME}/.m2:/home/${USER_NAME}/.m2${DOCKER_MOUNT_FLAG}" \
+        --volume "${HOME}/.m2:/home/${USER_NAME}/.m2${DOCKER_MOUNT_FLAG?}" \
         --volume "${PWD}:/home/${USER_NAME}/avro${DOCKER_MOUNT_FLAG}" \
         --workdir "/home/${USER_NAME}/avro" \
-        ${DOCKER_XTRA_ARGS} \
+        "${DOCKER_XTRA_ARGS[@]}" \
         "avro-build-${USER_NAME}" bash
       ;;
 

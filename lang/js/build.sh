@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,10 +17,9 @@
 
 set -e
 
-cd `dirname "$0"`
+cd "${0%/*}"
 
-for target in "$@"
-do
+for target; do
   case "$target" in
     lint)
       npm install

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -15,13 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e                # exit on error
+set -e  # exit on error
 set -x
 
-cd `dirname "$0"`                  # connect to root
+cd "${0%/*}"
 
 ROOT=../..
-VERSION=`cat $ROOT/share/VERSION.txt`
+VERSION=$(<"$ROOT/share/VERSION.txt")
 
 for target in "$@"
 do
@@ -61,12 +61,12 @@ do
 
       # build the tarball
       mkdir -p ${ROOT}/dist/csharp
-      (cd build; tar czf ${ROOT}/../dist/csharp/avro-csharp-${VERSION}.tar.gz main codegen LICENSE NOTICE)
+      (cd build; tar czf "${ROOT}/../dist/csharp/avro-csharp-${VERSION}.tar.gz" main codegen LICENSE NOTICE)
 
       # build documentation
       doxygen Avro.dox
-      mkdir -p ${ROOT}/build/avro-doc-${VERSION}/api/csharp
-      cp -pr build/doc/* ${ROOT}/build/avro-doc-${VERSION}/api/csharp
+      mkdir -p "${ROOT}/build/avro-doc-${VERSION}/api/csharp"
+      cp -pr build/doc/* "${ROOT}/build/avro-doc-${VERSION}/api/csharp"
       ;;
 
     interop-data-generate)
