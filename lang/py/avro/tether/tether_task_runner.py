@@ -25,6 +25,7 @@ import threading
 import traceback
 import weakref
 
+import avro.errors
 import avro.tether.tether_task
 import avro.tether.util
 from avro import ipc
@@ -32,7 +33,7 @@ from avro import ipc
 try:
     import BaseHTTPServer as http_server  # type: ignore
 except ImportError:
-    import http.server as http_server  # type: ignore
+    from http import server as http_server  # type: ignore
 
 __all__ = ["TaskRunner"]
 
@@ -152,8 +153,8 @@ class TaskRunner(object):
 
         self.log = logging.getLogger("TaskRunner:")
 
-        if not(isinstance(task, avro.tether.tether_task.TetherTask)):
-            raise ValueError("task must be an instance of tether task")
+        if not isinstance(task, avro.tether.tether_task.TetherTask):
+            raise avro.errors.AvroError("task must be an instance of tether task")
         self.task = task
 
         self.server = None
@@ -217,7 +218,7 @@ if __name__ == '__main__':
 
     if (len(sys.argv) <= 1):
         print("Error: tether_task_runner.__main__: Usage: tether_task_runner task_package.task_module.TaskClass")
-        raise ValueError("Usage: tether_task_runner task_package.task_module.TaskClass")
+        raise avro.errors.AvroError("Usage: tether_task_runner task_package.task_module.TaskClass")
 
     fullcls = sys.argv[1]
     mod, cname = fullcls.rsplit(".", 1)
