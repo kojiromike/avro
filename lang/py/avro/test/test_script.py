@@ -100,11 +100,8 @@ class TestCat(unittest.TestCase):
         if os.path.isfile(self.avro_file):
             os.unlink(self.avro_file)
 
-    def _run(self, *args, **kw):
-        out = subprocess.check_output([sys.executable, SCRIPT, "cat", self.avro_file] + list(args)).decode()
-        if kw.get("raw"):
-            return out
-        return out.splitlines()
+    def _run(self, *args):
+        return subprocess.check_output([sys.executable, SCRIPT, "cat", self.avro_file] + list(args)).decode()
 
     def test_print(self):
         return len(self._run()) == NUM_RECORDS
@@ -117,18 +114,18 @@ class TestCat(unittest.TestCase):
         return len(self._run("--skip", str(skip))) == NUM_RECORDS - skip
 
     def test_csv(self):
-        reader = csv.reader(io.StringIO(self._run("-f", "csv", raw=True)))
+        reader = csv.reader(io.StringIO(self._run("-f", "csv")))
         assert len(list(reader)) == NUM_RECORDS
 
     def test_csv_header(self):
         r = {"type": "duck", "last": "duck", "first": "daffy"}
-        out = self._run("-f", "csv", "--header", raw=True)
+        out = self._run("-f", "csv", "--header")
         io_ = io.StringIO(out)
         reader = csv.DictReader(io_)
         assert next(reader) == r
 
     def test_print_schema(self):
-        out = self._run("--print-schema", raw=True)
+        out = self._run("--print-schema")
         assert json.loads(out)["namespace"] == "test.avro"
 
     def test_help(self):
@@ -137,7 +134,7 @@ class TestCat(unittest.TestCase):
         self._run("--help")
 
     def test_json_pretty(self):
-        out = self._run("--format", "json-pretty", "-n", "1", raw=1)
+        out = self._run("--format", "json-pretty", "-n", "1")
         self.assertEqual(out.strip(), _JSON_PRETTY.strip())
 
     def test_version(self):

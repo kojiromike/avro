@@ -27,20 +27,19 @@ import os
 import sys
 import threading
 import traceback
+from typing import Optional
 
 import avro.errors
 import avro.io
 import avro.ipc
 import avro.protocol
 import avro.schema
-
-__all__ = ["TetherTask", "TaskType", "inputProtocol", "outputProtocol", "HTTPRequestor"]
+import avro.types
 
 # create protocol objects for the input and output protocols
 # The build process should copy InputProtocol.avpr and OutputProtocol.avpr
 # into the same directory as this module
 
-TaskType = None
 pfile = os.path.split(__file__)[0] + os.sep + "InputProtocol.avpr"
 with open(pfile, 'r') as hf:
     prototxt = hf.read()
@@ -51,8 +50,8 @@ inputProtocol = avro.protocol.parse(prototxt)
 taskschema = inputProtocol.types_dict["TaskType"]
 # Mypy cannot statically type check a dynamically constructed named tuple.
 # Since InputProtocol.avpr is hard-coded here, we can hard-code the symbols.
-_ttype = collections.namedtuple("_tasktype", ("MAP", "REDUCE"))
-TaskType = _ttype(*taskschema.symbols)
+TaskTypeType = collections.namedtuple("TaskType", ("MAP", "REDUCE"))
+TaskType = TaskTypeType(*taskschema.symbols)
 
 pfile = os.path.split(__file__)[0] + os.sep + "OutputProtocol.avpr"
 
@@ -132,7 +131,7 @@ class HTTPRequestor:
     SocketTransciever so that we can seamlessly switch between the two.
     """
 
-    def __init__(self, server, port, protocol):
+    def __init__(self, server: str, port: int, protocol: avro.protocol.Protocol) -> None:
         """
         Instantiate the class.
 
@@ -147,10 +146,10 @@ class HTTPRequestor:
         self.port = port
         self.protocol = protocol
 
-    def request(self, *args, **param):
+    def request(self, message_name: str, request_datum: avro.types.AvroAny) -> avro.types.AvroAny:
         transciever = avro.ipc.HTTPTransceiver(self.server, self.port)
         requestor = avro.ipc.Requestor(self.protocol, transciever)
-        return requestor.request(*args, **param)
+        return requestor.request(message_name, request_datum)
 
 
 class TetherTask(abc.ABC):
@@ -266,7 +265,7 @@ class TetherTask(abc.ABC):
             estr = traceback.format_exc()
             self.fail(estr)
 
-    def configure(self, taskType, inSchemaText, outSchemaText):
+    def configure(self, taskType: TaskTypeType, inSchemaText: str, outSchemaText: str) -> None:
         """
 
         Parameters
@@ -314,7 +313,7 @@ class TetherTask(abc.ABC):
     def partitions(self, npartitions):
         self._partitions = npartitions
 
-    def input(self, data, count):
+    def input(self, data: bytes, count: int) -> None:
         """ Recieve input from the server
 
         Parameters
@@ -353,7 +352,7 @@ class TetherTask(abc.ABC):
             self.log.warning("failing: " + estr)
             self.fail(estr)
 
-    def complete(self):
+    def complete(self) -> None:
         """
         Process the complete request
         """
@@ -409,7 +408,7 @@ class TetherTask(abc.ABC):
         record - the last record on which reduce was invoked.
         """
 
-    def status(self, message):
+    def status(self, message: str) -> None:
         """
         Called to update task status
         """

@@ -21,6 +21,7 @@
 
 """Support for inter-process calls."""
 
+import abc
 import http.client
 import io
 import os
@@ -68,7 +69,7 @@ BUFFER_SIZE = 8192
 #
 
 
-class BaseRequestor:
+class BaseRequestor(abc.ABC):
     """Base class for the client side of a protocol interaction."""
 
     def __init__(self, local_protocol, transceiver):
@@ -78,9 +79,13 @@ class BaseRequestor:
         self._remote_hash = None
         self._send_protocol = None
 
-    # read-only properties
-    local_protocol = property(lambda self: self._local_protocol)
-    transceiver = property(lambda self: self._transceiver)
+    @property
+    def local_protocol(self):
+        return self._local_protocol
+
+    @property
+    def transceiver(self):
+        return self._transceiver
 
     # read/write properties
     def set_remote_protocol(self, new_remote_protocol):
@@ -111,6 +116,10 @@ class BaseRequestor:
         # send the handshake and call request; block until call response
         call_request = buffer_writer.getvalue()
         return self.issue_request(call_request, message_name, request_datum)
+
+    @abc.abstractmethod
+    def issue_request(self, call_request, message_name, request_datum):
+        pass
 
     def write_handshake_request(self, encoder):
         local_hash = self.local_protocol.md5
@@ -238,10 +247,17 @@ class Responder:
         self._protocol_cache = {}
         self.set_protocol_cache(self.local_hash, self.local_protocol)
 
-    # read-only properties
-    local_protocol = property(lambda self: self._local_protocol)
-    local_hash = property(lambda self: self._local_hash)
-    protocol_cache = property(lambda self: self._protocol_cache)
+    @property
+    def local_protocol(self):
+        return self._local_protocol
+
+    @property
+    def local_hash(self):
+        return self._local_hash
+
+    @property
+    def protocol_cache(self):
+        return self._protocol_cache
 
     # utility functions to manipulate protocol cache
     def get_protocol_cache(self, hash):
@@ -346,9 +362,8 @@ class Responder:
 
     def invoke(self, local_message, request):
         """
-        Aactual work done by server: cf. handler in thrift.
+        Actual work done by server: cf. handler in thrift.
         """
-        pass
 
     def read_request(self, writers_schema, readers_schema, decoder):
         datum_reader = avro.io.DatumReader(writers_schema, readers_schema)

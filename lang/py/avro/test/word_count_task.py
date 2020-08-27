@@ -19,6 +19,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 
 import avro.tether.tether_task
@@ -26,27 +27,27 @@ import avro.tether.tether_task
 __all__ = ["WordCountTask"]
 
 
-# TODO::Make the logging level a parameter we can set
-# logging.basicConfig(level=logging.INFO)
+INSCHEMA = json.dumps({"type": "string"})
+OUTSCHEMA = MIDSCHEMA = (
+    json.dumps({"type": "record",
+                "name": "Pair",
+                "namespace": "org.apache.avro.mapred",
+                "fields": [
+                    {"name": "key", "type": "string"},
+                    {"name": "value", "type": "long", "order": "ignore"},
+                ]})
+)
+
+
 class WordCountTask(avro.tether.tether_task.TetherTask):
+
     """
     Implements the mapper and reducer for the word count example
     """
+    psum = 0  # keep track of the partial sums of the counts
 
     def __init__(self):
-        """
-        """
-
-        inschema = """{"type":"string"}"""
-        midschema = """{"type":"record", "name":"Pair","namespace":"org.apache.avro.mapred","fields":[
-              {"name":"key","type":"string"},
-              {"name":"value","type":"long","order":"ignore"}]
-              }"""
-        outschema = midschema
-        avro.tether.tether_task.TetherTask.__init__(self, inschema, midschema, outschema)
-
-        # keep track of the partial sums of the counts
-        self.psum = 0
+        super().__init__(INSCHEMA, MIDSCHEMA, OUTSCHEMA)
 
     def map(self, record, collector):
         """Implement the mapper for the word count example

@@ -19,12 +19,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+from http.server import BaseHTTPRequestHandler
+from typing import Dict
 
-import avro
+import avro.ipc
+import avro.protocol
 
+class MockParentResponder(avro.ipc.Responder):
+    def invoke(self, message: avro.protocol.Protocol, request: Dict[str, str]) -> str:
+        ...
 
-class TestVersion(unittest.TestCase):
-
-    def test_import_version(self):
-        self.assertTrue(hasattr(avro, '__version__'))
+class MockParentHandler(BaseHTTPRequestHandler):
+    def do_POST(self) -> None:
+        ...

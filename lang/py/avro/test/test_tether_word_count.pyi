@@ -20,11 +20,19 @@
 # limitations under the License.
 
 import unittest
+from typing import Sequence
 
-import avro
+def _version() -> str:
+    ...
 
 
-class TestVersion(unittest.TestCase):
+def _has_java() -> bool:
+    ...
 
-    def test_import_version(self):
-        self.assertTrue(hasattr(avro, '__version__'))
+
+class TestTetherWordCount(unittest.TestCase):
+    def _write_lines(self, lines: Sequence[str], fname: str) -> None:
+        ...
+
+    def test_tether_word_count(self) -> None:
+        ...

@@ -19,12 +19,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+import datetime
 
-import avro
+class UTCTzinfo(datetime.tzinfo):
+    ...
 
 
-class TestVersion(unittest.TestCase):
-
-    def test_import_version(self):
-        self.assertTrue(hasattr(avro, '__version__'))
+class TSTTzinfo(datetime.tzinfo):
+    ...

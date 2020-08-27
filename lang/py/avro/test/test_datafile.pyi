@@ -19,12 +19,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import contextlib
 import unittest
+from typing import Generator, Optional
 
-import avro
+import avro.datafile
+import avro.schema
+
+@contextlib.contextmanager
+def writer(path: str,
+           schema: Optional[avro.schema.Schema],
+           codec: str,
+           mode: str) -> Generator[avro.datafile.DataFileWriter, None, None]:
+    ...
 
 
-class TestVersion(unittest.TestCase):
+@contextlib.contextmanager
+def reader(path: str, mode: str) -> Generator[avro.datafile.DataFileReader, None, None]:
+    ...
 
-    def test_import_version(self):
-        self.assertTrue(hasattr(avro, '__version__'))
+
+class TestDataFile(unittest.TestCase):
+    def tempfile(self) -> str:
+        ...
+
+    def test_append(self) -> None:
+        ...
+
+    def test_round_trip(self) -> None:
+        ...
+
+    def test_context_manager(self) -> None:
+        ...
+
+    def test_metadata(self) -> None:
+        ...
+
+    def test_empty_datafile(self) -> None:
+        ...

@@ -36,10 +36,6 @@ class MockParentResponder(avro.ipc.Responder):
     """
     The responder for the mocked parent
     """
-
-    def __init__(self):
-        avro.ipc.Responder.__init__(self, avro.tether.tether_task.outputProtocol)
-
     def invoke(self, message, request):
         if message.name == 'configure':
             print("MockParentResponder: Received 'configure': inputPort={0}".format(request["port"]))
@@ -58,11 +54,10 @@ class MockParentResponder(avro.ipc.Responder):
 
 
 class MockParentHandler(http.server.BaseHTTPRequestHandler):
-    """Create a handler for the parent.
-    """
+    """Create a handler for the parent."""
 
     def do_POST(self):
-        self.responder = MockParentResponder()
+        self.responder = MockParentResponder(avro.tether.tether_task.outputProtocol)
         call_request_reader = avro.ipc.FramedReader(self.rfile)
         call_request = call_request_reader.read_framed_message()
         resp_body = self.responder.respond(call_request)

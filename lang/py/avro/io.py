@@ -432,8 +432,9 @@ class BinaryEncoder:
         """
         self._writer = writer
 
-    # read-only properties
-    writer = property(lambda self: self._writer)
+    @property
+    def writer(self):
+        return self._writer
 
     def write(self, datum):
         """Write an arbitrary datum."""
@@ -443,7 +444,6 @@ class BinaryEncoder:
         """
         null is written as zero bytes
         """
-        pass
 
     def write_boolean(self, datum):
         """
@@ -991,11 +991,13 @@ class DatumWriter:
     def __init__(self, writers_schema=None):
         self._writers_schema = writers_schema
 
-    # read/write properties
-    def set_writers_schema(self, writers_schema):
-        self._writers_schema = writers_schema
-    writers_schema = property(lambda self: self._writers_schema,
-                              set_writers_schema)
+    @property
+    def writers_schema(self):
+        return self._writers_schema
+
+    @writers_schema.setter
+    def writers_schema(self, schema):
+        self._writers_schema = schema
 
     def write(self, datum, encoder):
         validate(self.writers_schema, datum, raise_on_error=True)

@@ -51,7 +51,7 @@ DATUM = {
 }
 
 
-def generate(schema_path, output_path):
+def generate(schema_path: str, output_path: str) -> None:
     with open(schema_path, 'r') as schema_file:
         interop_schema = avro.schema.parse(schema_file.read())
     for codec in CODECS_TO_VALIDATE:
@@ -61,7 +61,7 @@ def generate(schema_path, output_path):
             filename = base + "_" + codec + ext
         with avro.datafile.DataFileWriter(open(filename, 'wb'), avro.io.DatumWriter(),
                                           interop_schema, codec=codec) as dfw:
-            dfw.append(DATUM)
+            dfw.append(DATUM)  # type: ignore
 
 
 if __name__ == "__main__":

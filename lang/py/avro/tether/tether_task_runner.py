@@ -25,6 +25,7 @@ import sys
 import threading
 import traceback
 import weakref
+from typing import TYPE_CHECKING, Optional, cast
 
 import avro.errors
 import avro.ipc
@@ -141,7 +142,7 @@ class TaskRunner:
     server = None
     sthread = None
 
-    def __init__(self, task):
+    def __init__(self, task: avro.tether.tether_task.TetherTask) -> None:
         """
         Construct the runner
 
@@ -150,11 +151,9 @@ class TaskRunner:
         task - An instance of tether task
         """
         self.log = logging.getLogger("TaskRunner:")
-        if not isinstance(task, avro.tether.tether_task.TetherTask):
-            raise avro.errors.AvroException("task must be an instance of tether task")
         self.task = task
 
-    def start(self, outputport=None, join=True):
+    def start(self, outputport=None, join=True) -> None:
         """
         Start the server
 
@@ -164,7 +163,7 @@ class TaskRunner:
                      for requests from the task.
                    - This will typically be supplied by an environment variable
                      we allow it to be supplied as an argument mainly for debugging
-        join       - (optional) If set to fault then we don't issue a join to block
+        join       - (optional) If set to False then we don't issue a join to block
                      until the thread excecuting the server terminates.
                     This is mainly for debugging. By setting it to false,
                     we can resume execution in this thread so that we can do additional
@@ -180,6 +179,8 @@ class TaskRunner:
 
         # create a separate thread for the http server
         sthread = threading.Thread(target=thread_run, kwargs={"task_runner": self})
+        if TYPE_CHECKING:
+            self.server = cast(http.server.HTTPServer, self.server)
         sthread.start()
 
         self.sthread = sthread

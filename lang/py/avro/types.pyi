@@ -19,12 +19,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+"""
+Types that Avro knows about.
 
-import avro
+Python doesn't support recursive types, so we emulate it
+with an arbitrarily deep nested type. This only gets evaluated
+during type checking, not during run time.
 
+Avro should eventually support more flexible python duck typing.
+But at the time type hints are being added, it does not.
+We keep a strict list of types that avro really "understands",
+so that we can keep our typing straight as we make it better.
+"""
 
-class TestVersion(unittest.TestCase):
+from typing import *
 
-    def test_import_version(self):
-        self.assertTrue(hasattr(avro, '__version__'))
+AvroAny = Union[None, bytes, float, int, str,
+        Dict[str, Union[None, bytes, float, int, str]],
+        List[Union[None, bytes, float, int, str]]]

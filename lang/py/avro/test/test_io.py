@@ -156,13 +156,6 @@ def avro_hexlify(reader):
     return b' '.join(b)
 
 
-def print_test_name(test_name):
-    print('')
-    print(test_name)
-    print('=' * len(test_name))
-    print('')
-
-
 def write_datum(datum, writers_schema):
     writer = io.BytesIO()
     encoder = avro.io.BinaryEncoder(writer)
@@ -179,7 +172,6 @@ def read_datum(buffer, writers_schema, readers_schema=None):
 
 
 def check_binary_encoding(number_type):
-    print_test_name('TEST BINARY %s ENCODING' % number_type.upper())
     correct = 0
     for datum, hex_encoding in BINARY_ENCODINGS:
         print('Datum: %d' % datum)
@@ -198,7 +190,6 @@ def check_binary_encoding(number_type):
 
 
 def check_skip_number(number_type):
-    print_test_name('TEST SKIP %s' % number_type.upper())
     correct = 0
     for value_to_skip, hex_encoding in BINARY_ENCODINGS:
         VALUE_TO_READ = 6253
@@ -231,7 +222,6 @@ class TestIO(unittest.TestCase):
     #
 
     def test_validate(self):
-        print_test_name('TEST VALIDATE')
         passed = 0
         for example_schema, datum in SCHEMAS_TO_VALIDATE:
             print('Schema: %s' % example_schema)
@@ -243,7 +233,6 @@ class TestIO(unittest.TestCase):
         self.assertEqual(passed, len(SCHEMAS_TO_VALIDATE))
 
     def test_round_trip(self):
-        print_test_name('TEST ROUND TRIP')
         correct = 0
         for example_schema, datum in SCHEMAS_TO_VALIDATE:
             print('Schema: %s' % example_schema)
@@ -288,7 +277,6 @@ class TestIO(unittest.TestCase):
     #
 
     def test_schema_promotion(self):
-        print_test_name('TEST SCHEMA PROMOTION')
         # note that checking writers_schema.type in read_data
         # allows us to handle promotion correctly
         promotable_schemas = ['"int"', '"long"', '"float"', '"double"']
@@ -307,7 +295,6 @@ class TestIO(unittest.TestCase):
         self.assertEqual(incorrect, 0)
 
     def test_unknown_symbol(self):
-        print_test_name('TEST UNKNOWN SYMBOL')
         writers_schema = avro.schema.parse("""\
       {"type": "enum", "name": "Test",
        "symbols": ["FOO", "BAR"]}""")
@@ -324,7 +311,6 @@ class TestIO(unittest.TestCase):
         self.assertRaises(avro.errors.SchemaResolutionException, datum_reader.read, decoder)
 
     def test_default_value(self):
-        print_test_name('TEST DEFAULT VALUE')
         writers_schema = LONG_RECORD_SCHEMA
         datum_to_write = LONG_RECORD_DATUM
 
@@ -344,7 +330,6 @@ class TestIO(unittest.TestCase):
         self.assertEqual(correct, len(DEFAULT_VALUE_EXAMPLES))
 
     def test_no_default_value(self):
-        print_test_name('TEST NO DEFAULT VALUE')
         writers_schema = LONG_RECORD_SCHEMA
         datum_to_write = LONG_RECORD_DATUM
 
@@ -359,7 +344,6 @@ class TestIO(unittest.TestCase):
         self.assertRaises(avro.errors.SchemaResolutionException, datum_reader.read, decoder)
 
     def test_projection(self):
-        print_test_name('TEST PROJECTION')
         writers_schema = LONG_RECORD_SCHEMA
         datum_to_write = LONG_RECORD_DATUM
 
@@ -375,7 +359,6 @@ class TestIO(unittest.TestCase):
         self.assertEqual(datum_to_read, datum_read)
 
     def test_field_order(self):
-        print_test_name('TEST FIELD ORDER')
         writers_schema = LONG_RECORD_SCHEMA
         datum_to_write = LONG_RECORD_DATUM
 
@@ -391,7 +374,6 @@ class TestIO(unittest.TestCase):
         self.assertEqual(datum_to_read, datum_read)
 
     def test_type_exception(self):
-        print_test_name('TEST TYPE EXCEPTION')
         writers_schema = avro.schema.parse("""\
       {"type": "record", "name": "Test",
        "fields": [{"name": "F", "type": "int"},

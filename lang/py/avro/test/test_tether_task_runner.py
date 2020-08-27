@@ -24,8 +24,10 @@ import logging
 import os
 import subprocess
 import sys
+import threading
 import time
 import unittest
+from typing import cast
 
 import avro.io
 import avro.test.mock_tether_parent
@@ -62,9 +64,10 @@ class TestTetherTaskRunner(unittest.TestCase):
 
             runner.start(outputport=parent_port, join=False)
             for _ in range(12):
-                if runner.server is not None:
-                    break
-                time.sleep(1)
+                if runner.server is None:
+                    time.sleep(1)
+                    continue
+                break
             else:
                 raise RuntimeError("Server never started")
 
@@ -103,11 +106,10 @@ class TestTetherTaskRunner(unittest.TestCase):
             )
 
             # Serialize some data so we can send it to the input function
-            datum = {"key": "word", "value": 2}
             writer = io.BytesIO()
             encoder = avro.io.BinaryEncoder(writer)
             datum_writer = avro.io.DatumWriter(runner.task.midschema)
-            datum_writer.write(datum, encoder)
+            datum_writer.write({"key": "word", "value": 2}, encoder)
 
             writer.seek(0)
             data = writer.read()
@@ -128,7 +130,7 @@ class TestTetherTaskRunner(unittest.TestCase):
             time.sleep(1)
 
             # make sure the other thread terminated
-            self.assertFalse(sthread.isAlive())
+            self.assertFalse(cast(threading.Thread, sthread).isAlive())
 
             # shutdown the logging
             logging.shutdown()

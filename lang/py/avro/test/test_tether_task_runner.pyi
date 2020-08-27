@@ -19,12 +19,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+from unittest import TestCase
 
-import avro
-
-
-class TestVersion(unittest.TestCase):
-
-    def test_import_version(self):
-        self.assertTrue(hasattr(avro, '__version__'))
+class TestTetherTaskRunner(TestCase):
+    def test1(self) -> None:
+        ...
+    def test2(self) -> None:
+        ...

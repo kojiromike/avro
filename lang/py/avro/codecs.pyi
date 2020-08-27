@@ -19,12 +19,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+"""
+Contains Codecs for Python Avro.
 
-import avro
+Note that the word "codecs" means "compression/decompression algorithms" in the
+Avro world (https://avro.apache.org/docs/current/spec.html#Object+Container+Files),
+so don't confuse it with the Python's "codecs", which is a package mainly for
+converting charsets (https://docs.python.org/3/library/codecs.html).
+"""
+
+import abc
+from typing import List
+
+import avro.io
+
+class Codec(abc.ABC):
+    """Abstract base class for all Avro codec classes."""
+
+    def compress(self, data: bytes) -> bytes:
+        ...
+
+    def decompress(self, readers_decoder: avro.io.BinaryDecoder) -> avro.io.BinaryDecoder:
+        ...
 
 
-class TestVersion(unittest.TestCase):
+class SnappyCodec(Codec):
 
-    def test_import_version(self):
-        self.assertTrue(hasattr(avro, '__version__'))
+    def check_crc32(self, bytes_: bytes, checksum: bytes) -> None:
+        ...
+
+
+def get_codec(codec_name: str) -> Codec:
+    ...
+
+
+def supported_codec_names() -> List[str]:
+    ...

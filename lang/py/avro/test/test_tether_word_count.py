@@ -90,12 +90,6 @@ def _has_java():
 class TestTetherWordCount(unittest.TestCase):
     """unittest for a python tethered map-reduce job."""
 
-    _base_dir = None
-    _script_path = None
-    _input_path = None
-    _output_path = None
-    _output_schema_path = None
-
     def setUp(self):
         """Create temporary files for testing."""
         prefix, _ = os.path.splitext(os.path.basename(__file__))
@@ -158,7 +152,7 @@ class TestTetherWordCount(unittest.TestCase):
         outfile = os.path.join(self._output_path, "part-00000.avro")
         expected_counts = collections.Counter(' '.join(_LINES).split())
         with avro.datafile.DataFileReader(open(outfile, 'rb'), datum_reader) as reader:
-            actual_counts = {r["key"]: r["value"] for r in reader}
+            actual_counts = {r["key"]: r["value"] for r in reader}  # type: ignore
         self.assertDictEqual(actual_counts, expected_counts)
 
 

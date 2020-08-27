@@ -366,10 +366,17 @@ class NamedSchema(Schema):
     def name_ref(self, names):
         return self.name if self.namespace == names.default_namespace else self.fullname
 
-    # read-only properties
-    name = property(lambda self: self.get_prop('name'))
-    namespace = property(lambda self: self.get_prop('namespace'))
-    fullname = property(lambda self: self._fullname)
+    @property
+    def name(self):
+        return self.get_prop('name')
+
+    @property
+    def namespace(self):
+        return self.get_prop('namespace')
+
+    @property
+    def fullname(self):
+        return self._fullname
 
 #
 # Logical type class
@@ -447,18 +454,32 @@ class Field:
         if doc is not None:
             self.set_prop('doc', doc)
 
-    # read-only properties
-    default = property(lambda self: self.get_prop('default'))
-    has_default = property(lambda self: self._has_default)
-    order = property(lambda self: self.get_prop('order'))
-    doc = property(lambda self: self.get_prop('doc'))
-    props = property(lambda self: self._props)
+    @property
+    def default(self):
+        return self.get_prop('default')
 
-    # Read-only property dict. Non-reserved properties
-    other_props = property(lambda self: get_other_props(self._props, FIELD_RESERVED_PROPS),
-                           doc="dictionary of non-reserved properties")
+    @property
+    def has_default(self):
+        return self._has_default
 
-# utility functions to manipulate properties dict
+    @property
+    def order(self):
+        return self.get_prop('order')
+
+    @property
+    def doc(self):
+        return self.get_prop('doc')
+
+    @property
+    def props(self):
+        return self._props
+
+    @property
+    def other_props(self):
+        """dictionary of non-reserved properties"""
+        return get_other_props(self._props, FIELD_RESERVED_PROPS),
+
+    # utility functions to manipulate properties dict
     def get_prop(self, key):
         return self._props.get(key)
 
@@ -550,9 +571,13 @@ class BytesDecimalSchema(PrimitiveSchema, DecimalLogicalSchema):
         self.set_prop('precision', precision)
         self.set_prop('scale', scale)
 
-    # read-only properties
-    precision = property(lambda self: self.get_prop('precision'))
-    scale = property(lambda self: self.get_prop('scale'))
+    @property
+    def precision(self):
+        return self.get_prop('precision')
+
+    @property
+    def scale(self):
+        return self.get_prop('scale')
 
     def to_json(self, names=None):
         return self.props
@@ -581,8 +606,9 @@ class FixedSchema(NamedSchema):
         # Add class members
         self.set_prop('size', size)
 
-    # read-only properties
-    size = property(lambda self: self.get_prop('size'))
+    @property
+    def size(self):
+        return self.get_prop('size')
 
     def match(self, writer):
         """Return True if the current schema (as reader) matches the writer schema.
@@ -621,9 +647,13 @@ class FixedDecimalSchema(FixedSchema, DecimalLogicalSchema):
         self.set_prop('precision', precision)
         self.set_prop('scale', scale)
 
-    # read-only properties
-    precision = property(lambda self: self.get_prop('precision'))
-    scale = property(lambda self: self.get_prop('scale'))
+    @property
+    def precision(self):
+        return self.get_prop('precision')
+
+    @property
+    def scale(self):
+        return self.get_prop('scale')
 
     def to_json(self, names=None):
         return self.props
@@ -660,9 +690,13 @@ class EnumSchema(NamedSchema):
         if doc is not None:
             self.set_prop('doc', doc)
 
-    # read-only properties
-    symbols = property(lambda self: self.get_prop('symbols'))
-    doc = property(lambda self: self.get_prop('doc'))
+    @property
+    def symbols(self):
+        return self.get_prop('symbols')
+
+    @property
+    def doc(self):
+        return self.get_prop('doc')
 
     def match(self, writer):
         """Return True if the current schema (as reader) matches the writer schema.
@@ -710,8 +744,9 @@ class ArraySchema(Schema):
 
         self.set_prop('items', items_schema)
 
-    # read-only properties
-    items = property(lambda self: self.get_prop('items'))
+    @property
+    def items(self):
+        return self.get_prop('items')
 
     def match(self, writer):
         """Return True if the current schema (as reader) matches the writer schema.
@@ -756,8 +791,9 @@ class MapSchema(Schema):
 
         self.set_prop('values', values_schema)
 
-    # read-only properties
-    values = property(lambda self: self.get_prop('values'))
+    @property
+    def values(self):
+        return self.get_prop('values')
 
     def match(self, writer):
         """Return True if the current schema (as reader) matches the writer schema.
@@ -817,8 +853,9 @@ class UnionSchema(Schema):
                 schema_objects.append(new_schema)
         self._schemas = schema_objects
 
-    # read-only properties
-    schemas = property(lambda self: self._schemas)
+    @property
+    def schemas(self):
+        return self._schemas
 
     def match(self, writer):
         """Return True if the current schema (as reader) matches the writer schema.
@@ -936,9 +973,13 @@ class RecordSchema(NamedSchema):
         if schema_type == 'record':
             names.default_namespace = old_default
 
-    # read-only properties
-    fields = property(lambda self: self.get_prop('fields'))
-    doc = property(lambda self: self.get_prop('doc'))
+    @property
+    def fields(self):
+        return self.get_prop('fields')
+
+    @property
+    def doc(self):
+        return self.get_prop('doc')
 
     @property
     def fields_dict(self):
