@@ -141,27 +141,30 @@ class TestCat(unittest.TestCase):
         subprocess.check_output([sys.executable, SCRIPT, "cat", "--version"])
 
     def test_files(self):
-        out = self._run(self.avro_file)
+        out = self._run(self.avro_file).splitlines()
         assert len(out) == 2 * NUM_RECORDS
 
-    def test_fields(self):
-        # One field selection (no comma)
-        out = self._run('--fields', 'last')
-        assert json.loads(out[0]) == {'last': 'duck'}
+    def test_fields_last(self):
+        """One field selection (no comma)"""
+        out = self._run('--fields', 'last').split('\n', 1)[0]
+        assert json.loads(out) == {'last': 'duck'}
 
-        # Field selection (with comma and space)
-        out = self._run('--fields', 'first, last')
-        assert json.loads(out[0]) == {'first': 'daffy', 'last': 'duck'}
+    def test_fields_first_last(self):
+        """Field selection (with comma and space)"""
+        out = self._run('--fields', 'first, last').split('\n', 1)[0]
+        assert json.loads(out) == {'first': 'daffy', 'last': 'duck'}
 
-        # Empty fields should get all
-        out = self._run('--fields', '')
-        assert json.loads(out[0]) == \
+    def test_fields_all(self):
+        """Empty fields should get all"""
+        out = self._run('--fields', '').split('\n', 1)[0]
+        assert json.loads(out) == \
             {'first': 'daffy', 'last': 'duck',
              'type': 'duck'}
 
-        # Non existing fields are ignored
-        out = self._run('--fields', 'first,last,age')
-        assert json.loads(out[0]) == {'first': 'daffy', 'last': 'duck'}
+    def test_nonexistent_fields(self):
+        """Non existing fields are ignored"""
+        out = self._run('--fields', 'first,last,age').split('\n', 1)[0]
+        assert json.loads(out) == {'first': 'daffy', 'last': 'duck'}
 
 
 class TestWrite(unittest.TestCase):
