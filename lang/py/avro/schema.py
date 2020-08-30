@@ -476,8 +476,8 @@ class Field:
 
     @property
     def other_props(self):
-        """dictionary of non-reserved properties"""
-        return get_other_props(self._props, FIELD_RESERVED_PROPS),
+        """Dictionary of non-reserved properties"""
+        return get_other_props(self._props, FIELD_RESERVED_PROPS)
 
     # utility functions to manipulate properties dict
     def get_prop(self, key):
