@@ -27,14 +27,12 @@ import os
 import sys
 import threading
 import traceback
-from typing import Optional
 
 import avro.errors
 import avro.io
 import avro.ipc
 import avro.protocol
 import avro.schema
-import avro.types
 
 # create protocol objects for the input and output protocols
 # The build process should copy InputProtocol.avpr and OutputProtocol.avpr
@@ -131,7 +129,7 @@ class HTTPRequestor:
     SocketTransciever so that we can seamlessly switch between the two.
     """
 
-    def __init__(self, server: str, port: int, protocol: avro.protocol.Protocol) -> None:
+    def __init__(self, server, port, protocol):
         """
         Instantiate the class.
 
@@ -146,7 +144,7 @@ class HTTPRequestor:
         self.port = port
         self.protocol = protocol
 
-    def request(self, message_name: str, request_datum: avro.types.AvroAny) -> avro.types.AvroAny:
+    def request(self, message_name, request_datum):
         transciever = avro.ipc.HTTPTransceiver(self.server, self.port)
         requestor = avro.ipc.Requestor(self.protocol, transciever)
         return requestor.request(message_name, request_datum)
@@ -265,7 +263,7 @@ class TetherTask(abc.ABC):
             estr = traceback.format_exc()
             self.fail(estr)
 
-    def configure(self, taskType: TaskTypeType, inSchemaText: str, outSchemaText: str) -> None:
+    def configure(self, taskType, inSchemaText, outSchemaText):
         """
 
         Parameters
@@ -313,7 +311,7 @@ class TetherTask(abc.ABC):
     def partitions(self, npartitions):
         self._partitions = npartitions
 
-    def input(self, data: bytes, count: int) -> None:
+    def input(self, data, count):
         """ Recieve input from the server
 
         Parameters
@@ -352,7 +350,7 @@ class TetherTask(abc.ABC):
             self.log.warning("failing: " + estr)
             self.fail(estr)
 
-    def complete(self) -> None:
+    def complete(self):
         """
         Process the complete request
         """
@@ -408,7 +406,7 @@ class TetherTask(abc.ABC):
         record - the last record on which reduce was invoked.
         """
 
-    def status(self, message: str) -> None:
+    def status(self, message: str):
         """
         Called to update task status
         """

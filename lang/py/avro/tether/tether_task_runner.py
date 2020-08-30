@@ -25,7 +25,7 @@ import sys
 import threading
 import traceback
 import weakref
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 import avro.errors
 import avro.ipc
@@ -142,7 +142,7 @@ class TaskRunner:
     server = None
     sthread = None
 
-    def __init__(self, task: avro.tether.tether_task.TetherTask) -> None:
+    def __init__(self, task):
         """
         Construct the runner
 
@@ -153,7 +153,7 @@ class TaskRunner:
         self.log = logging.getLogger("TaskRunner:")
         self.task = task
 
-    def start(self, outputport=None, join=True) -> None:
+    def start(self, outputport=None, join=True):
         """
         Start the server
 
