@@ -1,0 +1,100 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: 'Test RPC Interop'
+on:
+  workflow_dispatch:
+  ##
+  # This is a heavy matrix.
+  # We need to target when we actually should run it.
+  # push:
+  #   branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
+  #   paths:
+  #   - lang/java/**
+  #   - lang/py3/**
+  #   - lang/ruby/**
+
+jobs:
+  test:
+    name: RPC Interop Java ${{ matrix.java }} × Python ${{ matrix.python }} × Ruby ${{ matrix.ruby }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java:
+        - '8'
+        - '11'
+        python:
+        - '3.6'
+        - '3.7'
+        - '3.8'
+        - '3.9'
+        - 'pypy-3.6'
+        - 'pypy-3.7'
+        ruby:
+        - '2.5'
+        - '2.6'
+        - '2.7'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Cache Java Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache Python Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('lang/py/setup.cfg') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Cache Ruby Dependencies
+        uses: actions/cache@v2
+        with:
+          path: .gem
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      - name: Build Jars
+        working-directory: lang/java/tools
+        run: mvn -B package -DskipTests
+
+      - name: Test RPC Interop
+        run: |
+          cp share/VERSION.txt lang/py3/avro/VERSION.txt
+          share/test/interop/bin/test_rpc_interop.sh
