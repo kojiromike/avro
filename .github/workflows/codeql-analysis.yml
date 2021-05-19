@@ -71,6 +71,8 @@ jobs:
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
       uses: github/codeql-action/autobuild@v1
+      with:
+        languages: csharp, java
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
@@ -79,9 +81,12 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - with:
+        languages: cpp
+      run: |
+        cd lang/c++
+        ./build.sh dist
+        ./build.sh install
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
