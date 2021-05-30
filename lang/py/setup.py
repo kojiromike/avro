@@ -18,6 +18,7 @@
 # limitations under the License.
 
 
+"""hi"""
 import distutils.errors
 import glob
 import os
