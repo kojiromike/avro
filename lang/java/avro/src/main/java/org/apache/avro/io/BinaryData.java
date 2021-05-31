@@ -297,7 +297,7 @@ public class BinaryData {
   /**
    * Encode a boolean to the byte array at the given position. Will throw
    * IndexOutOfBounds if the position is not valid.
-   * 
+   *
    * @return The number of bytes written to the buffer, 1.
    */
   public static int encodeBoolean(boolean b, byte[] buf, int pos) {
@@ -309,7 +309,7 @@ public class BinaryData {
    * Encode an integer to the byte array at the given position. Will throw
    * IndexOutOfBounds if it overflows. Users should ensure that there are at least
    * 5 bytes left in the buffer before calling this method.
-   * 
+   *
    * @return The number of bytes written to the buffer, between 1 and 5.
    */
   public static int encodeInt(int n, byte[] buf, int pos) {
@@ -340,7 +340,7 @@ public class BinaryData {
    * Encode a long to the byte array at the given position. Will throw
    * IndexOutOfBounds if it overflows. Users should ensure that there are at least
    * 10 bytes left in the buffer before calling this method.
-   * 
+   *
    * @return The number of bytes written to the buffer, between 1 and 10.
    */
   public static int encodeLong(long n, byte[] buf, int pos) {
@@ -391,7 +391,7 @@ public class BinaryData {
    * Encode a float to the byte array at the given position. Will throw
    * IndexOutOfBounds if it overflows. Users should ensure that there are at least
    * 4 bytes left in the buffer before calling this method.
-   * 
+   *
    * @return Returns the number of bytes written to the buffer, 4.
    */
   public static int encodeFloat(float f, byte[] buf, int pos) {
@@ -407,7 +407,7 @@ public class BinaryData {
    * Encode a double to the byte array at the given position. Will throw
    * IndexOutOfBounds if it overflows. Users should ensure that there are at least
    * 8 bytes left in the buffer before calling this method.
-   * 
+   *
    * @return Returns the number of bytes written to the buffer, 8.
    */
   public static int encodeDouble(double d, byte[] buf, int pos) {

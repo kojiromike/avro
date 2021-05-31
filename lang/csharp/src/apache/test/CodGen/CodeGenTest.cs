@@ -35,7 +35,7 @@ namespace Avro.Test
 ""name"" : ""ClassKeywords"",
 ""namespace"" : ""com.base"",
 ""fields"" :
-		[ 	
+		[
 			{ ""name"" : ""int"", ""type"" : ""int"" },
 			{ ""name"" : ""base"", ""type"" : ""long"" },
 			{ ""name"" : ""event"", ""type"" : ""boolean"" },
@@ -54,7 +54,7 @@ namespace Avro.Test
 ""name"" : ""SchemaObject"",
 ""namespace"" : ""schematest"",
 ""fields"" :
-	[ 	
+	[
 		{ ""name"" : ""myobject"", ""type"" :
 			[
 				""null"",
@@ -73,7 +73,7 @@ namespace Avro.Test
 	""name"" : ""LogicalTypes"",
 	""namespace"" : ""schematest"",
 	""fields"" :
-		[ 	
+		[
 			{ ""name"" : ""nullibleguid"", ""type"" : [""null"", {""type"": ""string"", ""logicalType"": ""uuid"" } ]},
 			{ ""name"" : ""guid"", ""type"" : {""type"": ""string"", ""logicalType"": ""uuid"" } },
 			{ ""name"" : ""nullibletimestampmillis"", ""type"" : [""null"", {""type"": ""long"", ""logicalType"": ""timestamp-millis""}]  },

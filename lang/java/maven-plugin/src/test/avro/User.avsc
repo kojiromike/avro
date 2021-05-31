@@ -1,22 +1,22 @@
 {
-    "type": "record", 
+    "type": "record",
     "namespace": "test",
     "name": "SchemaUser",
     "doc": "User Test Bean",
     "fields": [
         {
-            "name": "id", 
+            "name": "id",
             "type": ["null", "string"],
             "default": null
         },
         {
-            "name": "createdOn", 
+            "name": "createdOn",
             "type": ["null", "long"],
             "default": null
         },
         {
-            "name": "privacy", 
-            "type": ["null", { 
+            "name": "privacy",
+            "type": ["null", {
                     "type": "enum",
                     "name": "SchemaPrivacy",
                     "namespace": "test",
@@ -25,12 +25,12 @@
             "default": null
         },
         {
-            "name": "privacyImported", 
+            "name": "privacyImported",
             "type": ["null", "test.PrivacyImport"],
             "default": null
         },
         {
-            "name": "privacyDirectImport", 
+            "name": "privacyDirectImport",
             "type": ["null", "test.PrivacyDirectImport"],
             "default": null
         },

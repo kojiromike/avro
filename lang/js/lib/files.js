@@ -243,15 +243,15 @@ BlockDecoder.prototype._writeChunk = function (chunk, encoding, cb) {
 
 BlockDecoder.prototype._createBlockCallback = function () {
   var self = this;
-  var index = this._index++;
-  this._pending++;
+  var index = this._index += 1;
+  this._pending += 1;
 
   return function (err, data) {
     if (err) {
       self.emit('error', err);
       return;
     }
-    self._pending--;
+    self._pending -= 1;
     self._queue.push(new BlockData(index, data));
     if (self._needPush) {
       self._needPush = false;
@@ -453,7 +453,7 @@ BlockEncoder.prototype._writeChunk = function (val, encoding, cb) {
     tap.pos = 0;
     this._writeValue(tap, val); // Rewrite last failed write.
   }
-  this._blockCount++;
+  this._blockCount += 1;
 
   cb();
 };
@@ -485,16 +485,16 @@ BlockEncoder.prototype._read = function () {
 
 BlockEncoder.prototype._createBlockCallback = function () {
   var self = this;
-  var index = this._index++;
+  var index = this._index += 1;
   var count = this._blockCount;
-  this._pending++;
+  this._pending += 1;
 
   return function (err, data) {
     if (err) {
       self.emit('error', err);
       return;
     }
-    self._pending--;
+    self._pending -= 1;
     self._queue.push(new BlockData(index, data, count));
     if (self._needPush) {
       self._needPush = false;

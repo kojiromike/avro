@@ -13,5 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include avro/*.avsc avro/tether/*.avpr 
+include avro/*.avsc avro/tether/*.avpr
 include avro/VERSION.txt avro/LICENSE avro/NOTICE

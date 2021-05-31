@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class MD5 : SpecificFixed
 	{
 		private static Schema _SCHEMA = Avro.Schema.Parse("{\"type\":\"fixed\",\"name\":\"MD5\",\"namespace\":\"org.apache.avro.test\",\"size\":16,\"javaAn" +

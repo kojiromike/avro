@@ -41,4 +41,3 @@ main()
     std::cout << '(' << c2.re << ", " << c2.im << ')' << std::endl;
     return 0;
 }
-

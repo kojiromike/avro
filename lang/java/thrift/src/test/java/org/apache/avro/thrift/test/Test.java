@@ -77,7 +77,7 @@ public class Test
     BINARY_FIELD((short) 8, "binaryField"), MAP_FIELD((short) 9, "mapField"), LIST_FIELD((short) 10, "listField"),
     SET_FIELD((short) 11, "setField"),
     /**
-     * 
+     *
      * @see E
      */
     ENUM_FIELD((short) 12, "enumField"), STRUCT_FIELD((short) 13, "structField"), FOO_OR_BAR((short) 14, "fooOrBar");
@@ -733,7 +733,7 @@ public class Test
   }
 
   /**
-   * 
+   *
    * @see E
    */
   @org.apache.thrift.annotation.Nullable
@@ -742,7 +742,7 @@ public class Test
   }
 
   /**
-   * 
+   *
    * @see E
    */
   public void setEnumField(@org.apache.thrift.annotation.Nullable E enumField) {

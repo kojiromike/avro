@@ -29,7 +29,7 @@ Deserialization proceeds in much the same fashion as serialization. When require
 ```csharp
     Activator.CreateInstance(x);
 ```
-however this can be overridden by setting the deserializer property RecordFactory. 
+however this can be overridden by setting the deserializer property RecordFactory.
 ```csharp
 public Func<Type, object> RecordFactory {get;set;}
 ```
@@ -37,7 +37,7 @@ You might want to do this if your class contains interfaces and/or if you use an
 
 See the section on Arrays. The ArrayHelper specifies the type of object created when an array is deserialized. The default is List\<T>.
 
-The type created for Map objects is specified by the Deserializer property MapType. *This must be a two (or more) parameter generic type where the first type paramater is string and the second is undefined* e.g. Dictionary<string,>. 
+The type created for Map objects is specified by the Deserializer property MapType. *This must be a two (or more) parameter generic type where the first type paramater is string and the second is undefined* e.g. Dictionary<string,>.
 ```csharp
 public Type MapType { get; set; }
 ```
@@ -60,7 +60,7 @@ Basic deserialization is performed as in the following example:
 
 ## Class cache
 
-The dotnet reflection libraries can add an amount of performance overhead. Efforts are made to minimize this by supporting a cache of class details obtained by reflection (PropertyInfo objects) so that property value lookups can be performed quickly and with as little overhead as possible. 
+The dotnet reflection libraries can add an amount of performance overhead. Efforts are made to minimize this by supporting a cache of class details obtained by reflection (PropertyInfo objects) so that property value lookups can be performed quickly and with as little overhead as possible.
 
 The class cache can be created separately from the serializer/deserializer and reused.
 
@@ -73,7 +73,7 @@ The class cache is also used with default type conversions and with array serial
 
 ## Converters
 
-Converters are classes that convert to and from Avro primitive types and dotnet types. An example of where converters are used is to convert between dotnet DateTimeOffet object and the chosen Avro primitive. 
+Converters are classes that convert to and from Avro primitive types and dotnet types. An example of where converters are used is to convert between dotnet DateTimeOffet object and the chosen Avro primitive.
 
 Converters are implemented by inheriting from TypedFieldConverter<byte[],GenericFixed>, or creating an object of type FuncFieldConverter<A,T>.
 
@@ -135,7 +135,7 @@ The AvroField attribute can be used to defined field converters or to change the
 
 By default the reflect code will serialize and deserialized between Avro arrays and classes that implement IList. Classes that implement IEnumerable but do not implement IList can be handled by implementing an ArrayHelper class. The array helper provides a standard interface for a number of methods needed for serialization and deserialization but which are not supported by IEnumerable.
 
-An additional metadata called "helper" is required in the schema. This acts like the name of a record type and is used to associate a helper with a particular schema array. 
+An additional metadata called "helper" is required in the schema. This acts like the name of a record type and is used to associate a helper with a particular schema array.
 
 _Example_: ConcurrentQueue
 
@@ -208,7 +208,7 @@ Types associated with unions of this form can be automatically registered and no
     ["null", { "type": "record", "name": "X"}]
 ```
 
-_Example_: 
+_Example_:
 
 ```csharp
     public class MyClass
@@ -216,7 +216,7 @@ _Example_:
         public string A { get; set; }
         public double C { get; set; }
     }
-    
+
     // ...
 
     var nullableSchema = @"
@@ -242,7 +242,7 @@ _Example_:
 
 ### Manual Registration
 
-Where a record type is defined inside a union and the union does not 
+Where a record type is defined inside a union and the union does not
 follow the "nullable construct" above, the CSharp type and schema need to be manually registered. Registration is done using the ClassCache method LoadClassCache.
 
 ```csharp

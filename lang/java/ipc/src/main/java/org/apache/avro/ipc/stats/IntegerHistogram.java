@@ -20,7 +20,7 @@ package org.apache.avro.ipc.stats;
 /**
  * Specific implementation of histogram for integers, which also keeps track of
  * basic summary statistics.
- * 
+ *
  * @param <B>
  */
 class IntegerHistogram<B> extends Histogram<B, Integer> {

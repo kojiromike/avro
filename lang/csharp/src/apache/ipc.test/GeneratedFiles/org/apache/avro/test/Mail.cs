@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public abstract class Mail : Avro.Specific.ISpecificProtocol
 	{
 		private static readonly Avro.Protocol protocol = Avro.Protocol.Parse(@"{

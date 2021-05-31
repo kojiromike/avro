@@ -143,7 +143,7 @@ DATUM
 
  "types": [
      {"name": "org.apache.avro.test.util.MD5", "type": "fixed", "size": 16},
-     {"name": "ReferencedRecord", "type": "record", 
+     {"name": "ReferencedRecord", "type": "record",
        "fields": [ {"name": "foo", "type": "string"} ] },
      {"name": "TestRecord", "type": "record",
       "fields": [ {"name": "hash", "type": "org.apache.avro.test.util.MD5"},
@@ -156,7 +156,7 @@ DATUM
 
  "messages": {
      "echo": {
-         "request": [{"name": "qualified", 
+         "request": [{"name": "qualified",
              "type": "org.apache.avro.test.namespace.TestRecord"}],
          "response": "TestRecord"
      },
@@ -178,13 +178,13 @@ DATUM
 
  "types": [
      {"name": "org.apache.avro.test.util.MD5", "type": "fixed", "size": 16},
-     {"name": "ReferencedRecord", "type": "record", 
-       "namespace": "org.apache.avro.other.namespace", 
+     {"name": "ReferencedRecord", "type": "record",
+       "namespace": "org.apache.avro.other.namespace",
        "fields": [ {"name": "foo", "type": "string"} ] },
      {"name": "TestRecord", "type": "record",
       "fields": [ {"name": "hash", "type": "org.apache.avro.test.util.MD5"},
-                  {"name": "qualified", 
-                    "type": "org.apache.avro.other.namespace.ReferencedRecord"} 
+                  {"name": "qualified",
+                    "type": "org.apache.avro.other.namespace.ReferencedRecord"}
                 ]
      },
      {"name": "TestError",
@@ -194,7 +194,7 @@ DATUM
 
  "messages": {
      "echo": {
-         "request": [{"name": "qualified", 
+         "request": [{"name": "qualified",
              "type": "org.apache.avro.test.namespace.TestRecord"}],
          "response": "TestRecord"
      },
@@ -216,10 +216,10 @@ DATUM
 
  "types": [
      {"name": "org.apache.avro.test.util.MD5", "type": "fixed", "size": 16},
-     {"name": "ReferencedRecord", "type": "record", 
-       "namespace": "org.apache.avro.other.namespace", 
+     {"name": "ReferencedRecord", "type": "record",
+       "namespace": "org.apache.avro.other.namespace",
        "fields": [ {"name": "foo", "type": "string"} ] },
-     {"name": "ReferencedRecord", "type": "record", 
+     {"name": "ReferencedRecord", "type": "record",
        "fields": [ {"name": "bar", "type": "double"} ] },
      {"name": "TestError",
       "type": "error", "fields": [ {"name": "message", "type": "string"} ]
@@ -228,7 +228,7 @@ DATUM
 
  "messages": {
      "echo": {
-         "request": [{"name": "qualified", 
+         "request": [{"name": "qualified",
              "type": "ReferencedRecord"}],
          "response": "org.apache.avro.other.namespace.ReferencedRecord"
      },
@@ -250,9 +250,9 @@ DATUM
 
  "types": [
      {"name": "org.apache.avro.test.util.MD5", "type": "fixed", "size": 16},
-     {"name": "ReferencedRecord", "type": "record", 
+     {"name": "ReferencedRecord", "type": "record",
        "fields": [ {"name": "foo", "type": "string"} ] },
-     {"name": "ReferencedRecord", "type": "record", 
+     {"name": "ReferencedRecord", "type": "record",
        "fields": [ {"name": "bar", "type": "double"} ] },
      {"name": "TestError",
       "type": "error", "fields": [ {"name": "message", "type": "string"} ]
@@ -261,7 +261,7 @@ DATUM
 
  "messages": {
      "echo": {
-         "request": [{"name": "qualified", 
+         "request": [{"name": "qualified",
              "type": "ReferencedRecord"}],
          "response": "org.apache.avro.other.namespace.ReferencedRecord"
      },

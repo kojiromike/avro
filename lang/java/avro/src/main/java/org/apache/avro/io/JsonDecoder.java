@@ -86,7 +86,7 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
    * <p/>
    * Otherwise, this JsonDecoder will reset its state and then reconfigure its
    * input.
-   * 
+   *
    * @param in The InputStream to read from. Cannot be null.
    * @throws IOException
    * @throws NullPointerException if {@code in} is {@code null}
@@ -109,7 +109,7 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
    * <p/>
    * Otherwise, this JsonDecoder will reset its state and then reconfigure its
    * input.
-   * 
+   *
    * @param in The String to read from. Cannot be null.
    * @throws IOException
    * @throws NullPointerException if {@code in} is {@code null}

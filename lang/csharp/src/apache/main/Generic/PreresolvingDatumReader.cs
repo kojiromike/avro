@@ -198,7 +198,7 @@ namespace Avro.Generic
             var readerDefaultOrdinal = null != readerSchema.Default ? readerSchema.Ordinal(readerSchema.Default) : -1;
 
             foreach (var symbol in writerSchema.Symbols)
-            { 
+            {
                 var writerOrdinal = writerSchema.Ordinal(symbol);
                 if (readerSchema.Contains(symbol))
                 {

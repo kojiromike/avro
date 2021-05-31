@@ -37,7 +37,7 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
 
   /**
    * Creates a SpecificErrorBuilderBase for building errors of the given type.
-   * 
+   *
    * @param schema the schema associated with the error class.
    */
   protected SpecificErrorBuilderBase(Schema schema) {
@@ -46,7 +46,7 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
 
   /**
    * Creates a SpecificErrorBuilderBase for building errors of the given type.
-   * 
+   *
    * @param schema the schema associated with the error class.
    * @param model  the SpecificData instance associated with the error class
    */
@@ -56,7 +56,7 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
 
   /**
    * SpecificErrorBuilderBase copy constructor.
-   * 
+   *
    * @param other SpecificErrorBuilderBase instance to copy.
    */
   protected SpecificErrorBuilderBase(SpecificErrorBuilderBase<T> other) {
@@ -70,7 +70,7 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
 
   /**
    * Creates a SpecificErrorBuilderBase by copying an existing error instance.
-   * 
+   *
    * @param other the error instance to copy.
    */
   protected SpecificErrorBuilderBase(T other) {

@@ -21,7 +21,7 @@
 protocol Contexts {
   record HomePage {
   }
-  
+
   record ProductPage {
     string product;
   }
@@ -38,4 +38,4 @@ protocol Contexts {
     union {UnknownPage, HomePage, ProductPage, CartPage} pageContext;
   }
 
-} 
+}

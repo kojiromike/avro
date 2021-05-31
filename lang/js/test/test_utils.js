@@ -64,7 +64,7 @@ suite('utils', function () {
     ];
 
     var i;
-    for (i = 0; i < seqs.length; i++) {
+    for (i = 0; i < seqs.length; i += 1) {
       check(seqs[i]);
     }
 
@@ -72,10 +72,10 @@ suite('utils', function () {
       var q = new utils.OrderedQueue();
       var i;
       assert.strictEqual(q.pop(), null);
-      for (i = 0; i < seq.length; i++) {
+      for (i = 0; i < seq.length; i += 1) {
         q.push({index: seq[i]});
       }
-      for (i = 0; i < seq.length; i++) {
+      for (i = 0; i < seq.length; i += 1) {
         var j = q.pop();
         assert.equal(j !== null && j.index, i, seq.join());
       }
@@ -353,7 +353,7 @@ suite('utils', function () {
       test('write read ' + name, function () {
         var tap = newTap(size || 1024);
         var i, l, elem;
-        for (i = 0, l = elems.length; i < l; i++) {
+        for (i = 0, l = elems.length; i < l; i += 1) {
           tap.buf.fill(0);
           tap.pos = 0;
           elem = elems[i];
@@ -378,7 +378,7 @@ suite('utils', function () {
       test('skip ' + name, function () {
         var tap = newTap(size || 1024);
         var i, l, elem, pos;
-        for (i = 0, l = elems.length; i < l; i++) {
+        for (i = 0, l = elems.length; i < l; i += 1) {
           tap.buf.fill(0);
           tap.pos = 0;
           elem = elems[i];

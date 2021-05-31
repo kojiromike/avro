@@ -17,7 +17,7 @@ var validator = require('./validator');
 var Validator = validator.Validator;
 var ProtocolValidator = validator.ProtocolValidator;
 
-exports['test'] = {
+exports.test = {
   setUp: function(done) {
     done();
   },
@@ -252,7 +252,7 @@ exports['test'] = {
     test.throws(function() { ProtocolValidator.validate(protocol, null, {}); });
     test.throws(function() { ProtocolValidator.validate(protocol, '', {}); });
     test.throws(function() { ProtocolValidator.validate(protocol, {}, {}); });
-    test.done();    
+    test.done();
   },
 
   // Samples

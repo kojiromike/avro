@@ -25,7 +25,7 @@ public enum E implements org.apache.thrift.TEnum {
 
   /**
    * Find a the enum type by its integer value, as defined in the Thrift IDL.
-   * 
+   *
    * @return null if the value is not found.
    */
   @org.apache.thrift.annotation.Nullable

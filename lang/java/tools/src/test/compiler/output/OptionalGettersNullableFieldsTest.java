@@ -487,13 +487,3 @@ public class OptionalGettersNullableFieldsTest extends org.apache.avro.specific.
   }
 
 }
-
-
-
-
-
-
-
-
-
-

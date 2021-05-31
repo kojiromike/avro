@@ -7,6 +7,3 @@
     {"name": "nonNullDate",  "type": {"type": "int", "logicalType": "date"}, "default": 1234}
   ]
 }
-
-
-

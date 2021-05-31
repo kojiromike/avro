@@ -629,8 +629,9 @@ def usage():
     print "-n, --namespace=LABEL namespace for schema (default is avrouser)"
 
 if __name__ == "__main__":
+    import getopt
+    import sys
     from sys import argv
-    import getopt,sys
 
     try:
         opts, args = getopt.getopt(argv[1:], "hi:o:n:", ["help", "input=", "output=", "namespace="])
@@ -682,4 +683,3 @@ if __name__ == "__main__":
         inputFile.close()
     if outputFile:
         outputFile.close()
-

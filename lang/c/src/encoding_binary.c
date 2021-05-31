@@ -2,17 +2,17 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to you under the Apache License, Version 2.0 
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.  See the License for the specific language governing
- * permissions and limitations under the License. 
+ * permissions and limitations under the License.
  */
 
 #include "avro_private.h"
@@ -34,7 +34,7 @@ static int read_long(avro_reader_t reader, int64_t * l)
 	do {
 		if (offset == MAX_VARINT_BUF_SIZE) {
 			/*
-			 * illegal byte sequence 
+			 * illegal byte sequence
 			 */
 			avro_set_error("Varint too long");
 			return EILSEQ;
@@ -357,7 +357,7 @@ static int64_t size_boolean(avro_writer_t writer, const int8_t b)
 static int read_skip_null(avro_reader_t reader)
 {
 	/*
-	 * no-op 
+	 * no-op
 	 */
 	AVRO_UNUSED(reader);
 
@@ -367,7 +367,7 @@ static int read_skip_null(avro_reader_t reader)
 static int write_null(avro_writer_t writer)
 {
 	/*
-	 * no-op 
+	 * no-op
 	 */
 	AVRO_UNUSED(writer);
 
@@ -388,56 +388,56 @@ static int64_t size_null(avro_writer_t writer)
 const avro_encoding_t avro_binary_encoding = {
 	/* .description = */ "BINARY FORMAT",
 	/*
-	 * string 
+	 * string
 	 */
 	/* .read_string = */ read_string,
 	/* .skip_string = */ skip_string,
 	/* .write_string = */ write_string,
 	/* .size_string = */ size_string,
 	/*
-	 * bytes 
+	 * bytes
 	 */
 	/* .read_bytes = */ read_bytes,
 	/* .skip_bytes = */ skip_bytes,
 	/* .write_bytes = */ write_bytes,
 	/* .size_bytes = */ size_bytes,
 	/*
-	 * int 
+	 * int
 	 */
 	/* .read_int = */ read_int,
 	/* .skip_int = */ skip_int,
 	/* .write_int = */ write_int,
 	/* .size_int = */ size_int,
 	/*
-	 * long 
+	 * long
 	 */
 	/* .read_long = */ read_long,
 	/* .skip_long = */ skip_long,
 	/* .write_long = */ write_long,
 	/* .size_long = */ size_long,
 	/*
-	 * float 
+	 * float
 	 */
 	/* .read_float = */ read_float,
 	/* .skip_float = */ skip_float,
 	/* .write_float = */ write_float,
 	/* .size_float = */ size_float,
 	/*
-	 * double 
+	 * double
 	 */
 	/* .read_double = */ read_double,
 	/* .skip_double = */ skip_double,
 	/* .write_double = */ write_double,
 	/* .size_double = */ size_double,
 	/*
-	 * boolean 
+	 * boolean
 	 */
 	/* .read_boolean = */ read_boolean,
 	/* .skip_boolean = */ skip_boolean,
 	/* .write_boolean = */ write_boolean,
 	/* .size_boolean = */ size_boolean,
 	/*
-	 * null 
+	 * null
 	 */
 	/* .read_null = */ read_skip_null,
 	/* .skip_null = */ read_skip_null,

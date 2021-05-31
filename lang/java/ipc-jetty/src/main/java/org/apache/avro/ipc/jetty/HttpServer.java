@@ -154,7 +154,7 @@ public class HttpServer implements Server {
 
   /**
    * Start the server.
-   * 
+   *
    * @throws AvroRuntimeException if the underlying Jetty server throws any
    *                              exception while starting.
    */

@@ -35,7 +35,7 @@ import org.apache.avro.Protocol;
 /**
  * A socket-based {@link Transceiver} implementation. This uses a simple,
  * non-standard wire protocol and is not intended for production services.
- * 
+ *
  * @deprecated use {@link SaslSocketTransceiver} instead.
  */
 public class SocketTransceiver extends Transceiver {

@@ -33,7 +33,7 @@ import java.util.Objects;
  * {@link EncoderFactory#directBinaryEncoder(OutputStream, BinaryEncoder)}
  * <p/>
  * DirectBinaryEncoder is not thread-safe
- * 
+ *
  * @see BinaryEncoder
  * @see EncoderFactory
  * @see Encoder

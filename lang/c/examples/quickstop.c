@@ -202,7 +202,7 @@ int main(void)
 	avro_file_reader_close(dbreader);
 
 	/* You can also use projection, to only decode only the data you are
-	   interested in.  This is particularly useful when you have 
+	   interested in.  This is particularly useful when you have
 	   huge data sets and you'll only interest in particular fields
 	   e.g. your contacts First name and phone number */
 	projection_schema = avro_schema_record("Person", NULL);

@@ -98,7 +98,7 @@ public class NettyTransceiver extends Transceiver {
    * Creates a NettyTransceiver, and attempts to connect to the given address.
    * {@link #DEFAULT_CONNECTION_TIMEOUT_MILLIS} is used for the connection
    * timeout.
-   * 
+   *
    * @param addr the address to connect to.
    * @throws IOException if an error occurs connecting to the given address.
    */
@@ -108,7 +108,7 @@ public class NettyTransceiver extends Transceiver {
 
   /**
    * Creates a NettyTransceiver, and attempts to connect to the given address.
-   * 
+   *
    * @param addr                 the address to connect to.
    * @param connectTimeoutMillis maximum amount of time to wait for connection
    *                             establishment in milliseconds, or null to use
@@ -121,7 +121,7 @@ public class NettyTransceiver extends Transceiver {
 
   /**
    * Creates a NettyTransceiver, and attempts to connect to the given address.
-   * 
+   *
    * @param addr        the address to connect to.
    * @param initializer Consumer function to apply initial setup to the
    *                    SocketChannel. Useablet to set things like SSL
@@ -134,7 +134,7 @@ public class NettyTransceiver extends Transceiver {
 
   /**
    * Creates a NettyTransceiver, and attempts to connect to the given address.
-   * 
+   *
    * @param addr                 the address to connect to.
    * @param connectTimeoutMillis maximum amount of time to wait for connection
    *                             establishment in milliseconds, or null to use
@@ -151,7 +151,7 @@ public class NettyTransceiver extends Transceiver {
 
   /**
    * Creates a NettyTransceiver, and attempts to connect to the given address.
-   * 
+   *
    * @param addr                 the address to connect to.
    * @param connectTimeoutMillis maximum amount of time to wait for connection
    *                             establishment in milliseconds, or null to use
@@ -215,7 +215,7 @@ public class NettyTransceiver extends Transceiver {
   /**
    * Creates a Netty ChannelUpstreamHandler for handling events on the Netty
    * client channel.
-   * 
+   *
    * @return the ChannelUpstreamHandler to use.
    */
   protected ChannelInboundHandler createNettyClientAvroHandler() {
@@ -224,7 +224,7 @@ public class NettyTransceiver extends Transceiver {
 
   /**
    * Tests whether the given channel is ready for writing.
-   * 
+   *
    * @return true if the channel is open and ready; false otherwise.
    */
   private static boolean isChannelReady(Channel channel) {
@@ -235,7 +235,7 @@ public class NettyTransceiver extends Transceiver {
    * Gets the Netty channel. If the channel is not connected, first attempts to
    * connect. NOTE: The stateLock read lock *must* be acquired before calling this
    * method.
-   * 
+   *
    * @return the Netty channel
    * @throws IOException if an error occurs connecting the channel.
    */
@@ -282,7 +282,7 @@ public class NettyTransceiver extends Transceiver {
 
   /**
    * Closes the connection to the remote peer if connected.
-   * 
+   *
    * @param awaitCompletion       if true, will block until the close has
    *                              completed.
    * @param cancelPendingRequests if true, will drain the requests map and send an
@@ -387,7 +387,7 @@ public class NettyTransceiver extends Transceiver {
   /**
    * Closes this transceiver and disconnects from the remote peer. Cancels all
    * pending RPCs and sends an IOException to all pending callbacks.
-   * 
+   *
    * @param awaitCompletion if true, will block until the close has completed.
    */
   public void close(boolean awaitCompletion) {
@@ -465,7 +465,7 @@ public class NettyTransceiver extends Transceiver {
   /**
    * Writes a NettyDataPack, reconnecting to the remote peer if necessary. NOTE:
    * The stateLock read lock *must* be acquired before calling this method.
-   * 
+   *
    * @param dataPack the data pack to write.
    * @return the Netty ChannelFuture for the write operation.
    * @throws IOException if an error occurs connecting to the remote peer.
@@ -519,7 +519,7 @@ public class NettyTransceiver extends Transceiver {
     /**
      * Creates a WriteFutureListener that notifies the given callback if an error
      * occurs writing data to the channel.
-     * 
+     *
      * @param callback the callback to notify, or null to skip notification.
      */
     public WriteFutureListener(Callback<List<ByteBuffer>> callback) {
@@ -578,7 +578,7 @@ public class NettyTransceiver extends Transceiver {
     /**
      * Creates a NettyTransceiverThreadFactory that creates threads with the
      * specified name.
-     * 
+     *
      * @param prefix the name prefix to use for all threads created by this
      *               ThreadFactory. A unique ID will be appended to this prefix to
      *               form the final thread name.

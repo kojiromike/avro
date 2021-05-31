@@ -29,7 +29,7 @@ namespace Avro.Test.Specific
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class EmbeddedGenericRecordUser : ISpecificRecord
 	{
 		public static Schema _SCHEMA = Avro.Schema.Parse("{\"type\":\"record\",\"name\":\"EmbeddedGenericRecordUser\",\"namespace\":\"Avro.Test.Specif" +

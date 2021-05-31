@@ -746,7 +746,7 @@ UnionType.prototype._check = function (val, cb) {
   var b = false;
   if (val === null) {
     // Shortcut type lookup in this case.
-    b = this._indices['null'] !== undefined;
+    b = this._indices.null !== undefined;
   } else if (typeof val == 'object') {
     var keys = Object.keys(val);
     if (keys.length === 1) {
@@ -787,7 +787,7 @@ UnionType.prototype._skip = function (tap) {
 UnionType.prototype._write = function (tap, val) {
   var index, keys, name;
   if (val === null) {
-    index = this._indices['null'];
+    index = this._indices.null;
     if (index === undefined) {
       throwInvalidError(null, val, this);
     }
@@ -820,7 +820,7 @@ UnionType.prototype._updateResolver = function (resolver, type, opts) {
   // jshint -W083
   // (The loop exits after the first function is created.)
   var i, l, typeResolver, Class;
-  for (i = 0, l = this._types.length; i < l; i++) {
+  for (i = 0, l = this._types.length; i < l; i += 1) {
     try {
       typeResolver = this._types[i].createResolver(type, opts);
     } catch (err) {
@@ -847,7 +847,7 @@ UnionType.prototype._copy = function (val, opts) {
     }
     return new this._constructors[0](this._types[0]._copy(val, opts));
   }
-  if (val === null && this._indices['null'] !== undefined) {
+  if (val === null && this._indices.null !== undefined) {
     return null;
   }
 
@@ -862,7 +862,7 @@ UnionType.prototype._copy = function (val, opts) {
         // to deal with other serializers being less strict, so we fall
         // back to looking up unqualified names.
         var j, type;
-        for (j = 0, l = this._types.length; j < l; j++) {
+        for (j = 0, l = this._types.length; j < l; j += 1) {
           type = this._types[j];
           if (type._name && name === unqualify(type._name)) {
             i = j;
@@ -883,7 +883,7 @@ UnionType.prototype._copy = function (val, opts) {
       try {
         obj = this._types[i]._copy(val, opts);
       } catch (err) {
-        i++;
+        i += 1;
       }
     }
   }
@@ -1129,7 +1129,7 @@ MapType.prototype._check = function (val, cb) {
     // Slow path.
     j = PATH.length;
     PATH.push('');
-    for (i = 0, l = keys.length; i < l; i++) {
+    for (i = 0, l = keys.length; i < l; i += 1) {
       key = PATH[j] = keys[i];
       if (!this._values._check(val[key], cb)) {
         b = false;
@@ -1137,7 +1137,7 @@ MapType.prototype._check = function (val, cb) {
     }
     PATH.pop();
   } else {
-    for (i = 0, l = keys.length; i < l; i++) {
+    for (i = 0, l = keys.length; i < l; i += 1) {
       if (!this._values._check(val[keys[i]], cb)) {
         return false;
       }
@@ -1151,7 +1151,7 @@ MapType.prototype._read = function (tap) {
   var val = {};
   var n;
   while ((n = readArraySize(tap))) {
-    while (n--) {
+    while (n -= 1) {
       var key = tap.readString();
       val[key] = values._read(tap);
     }
@@ -1167,7 +1167,7 @@ MapType.prototype._skip = function (tap) {
       len = tap.readLong();
       tap.pos += len;
     } else {
-      while (n--) {
+      while (n -= 1) {
         tap.skipString();
         values._skip(tap);
       }
@@ -1186,7 +1186,7 @@ MapType.prototype._write = function (tap, val) {
   var i, key;
   if (n) {
     tap.writeLong(n);
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i += 1) {
       key = keys[i];
       tap.writeString(key);
       values._write(tap, val[key]);
@@ -1212,7 +1212,7 @@ MapType.prototype._copy = function (val, opts) {
     var keys = Object.keys(val);
     var i, l, key;
     var copy = {};
-    for (i = 0, l = keys.length; i < l; i++) {
+    for (i = 0, l = keys.length; i < l; i += 1) {
       key = keys[i];
       copy[key] = values._copy(val[key], opts);
     }
@@ -1226,7 +1226,7 @@ MapType.prototype.compare = MapType.prototype._match;
 MapType.prototype.random = function () {
   var val = {};
   var i, l;
-  for (i = 0, l = RANDOM.nextInt(10); i < l; i++) {
+  for (i = 0, l = RANDOM.nextInt(10); i < l; i += 1) {
     val[RANDOM.nextString(RANDOM.nextInt(20))] = this._values.random();
   }
   return val;
@@ -1268,7 +1268,7 @@ ArrayType.prototype._check = function (val, cb) {
     // Slow path.
     j = PATH.length;
     PATH.push('');
-    for (i = 0, l = val.length; i < l; i++) {
+    for (i = 0, l = val.length; i < l; i += 1) {
       PATH[j] = '' + i;
       if (!this._items._check(val[i], cb)) {
         b = false;
@@ -1276,7 +1276,7 @@ ArrayType.prototype._check = function (val, cb) {
     }
     PATH.pop();
   } else {
-    for (i = 0, l = val.length; i < l; i++) {
+    for (i = 0, l = val.length; i < l; i += 1) {
       if (!this._items._check(val[i], cb)) {
         return false;
       }
@@ -1294,7 +1294,7 @@ ArrayType.prototype._read = function (tap) {
       n = -n;
       tap.skipLong(); // Skip size.
     }
-    while (n--) {
+    while (n -= 1) {
       val.push(items._read(tap));
     }
   }
@@ -1308,7 +1308,7 @@ ArrayType.prototype._skip = function (tap) {
       len = tap.readLong();
       tap.pos += len;
     } else {
-      while (n--) {
+      while (n -= 1) {
         this._items._skip(tap);
       }
     }
@@ -1324,7 +1324,7 @@ ArrayType.prototype._write = function (tap, val) {
   var i;
   if (n) {
     tap.writeLong(n);
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i += 1) {
       this._items._write(tap, val[i]);
     }
   }
@@ -1340,10 +1340,10 @@ ArrayType.prototype._match = function (tap1, tap2) {
     if (f) {
       return f;
     }
-    if (!--n1) {
+    if (!(n1 -= 1)) {
       n1 = readArraySize(tap1);
     }
-    if (!--n2) {
+    if (!(n2 -= 1)) {
       n2 = readArraySize(tap2);
     }
   }
@@ -1363,7 +1363,7 @@ ArrayType.prototype._copy = function (val, opts) {
   }
   var items = [];
   var i, l;
-  for (i = 0, l = val.length; i < l; i++) {
+  for (i = 0, l = val.length; i < l; i += 1) {
     items.push(this._items._copy(val[i], opts));
   }
   return items;
@@ -1373,7 +1373,7 @@ ArrayType.prototype.compare = function (val1, val2) {
   var n1 = val1.length;
   var n2 = val2.length;
   var i, l, f;
-  for (i = 0, l = Math.min(n1, n2); i < l; i++) {
+  for (i = 0, l = Math.min(n1, n2); i < l; i += 1) {
     if ((f = this._items.compare(val1[i], val2[i]))) {
       return f;
     }
@@ -1386,7 +1386,7 @@ ArrayType.prototype.getItemsType = function () { return this._items; };
 ArrayType.prototype.random = function () {
   var arr = [];
   var i, l;
-  for (i = 0, l = RANDOM.nextInt(10); i < l; i++) {
+  for (i = 0, l = RANDOM.nextInt(10); i < l; i += 1) {
     arr.push(this._items.random());
   }
   return arr;
@@ -1447,7 +1447,7 @@ RecordType.prototype._createConstructor = function (isError) {
   // Not calling `Error.captureStackTrace` because this wouldn't be compatible
   // with browsers other than Chrome.
   var i, l, field, name, getDefault;
-  for (i = 0, l = this._fields.length; i < l; i++) {
+  for (i = 0, l = this._fields.length; i < l; i += 1) {
     field = this._fields[i];
     getDefault = field.getDefault;
     name = field._name;
@@ -1503,7 +1503,7 @@ RecordType.prototype._createChecker = function () {
     // Special case, empty record. We handle this directly.
     body += '  return true;\n';
   } else {
-    for (i = 0, l = this._fields.length; i < l; i++) {
+    for (i = 0, l = this._fields.length; i < l; i += 1) {
       field = this._fields[i];
       names.push('t' + i);
       values.push(field._type);
@@ -1516,7 +1516,7 @@ RecordType.prototype._createChecker = function () {
     body += '    var j = P.length;\n';
     body += '    P.push(\'\');\n';
     var i, l, field;
-    for (i = 0, l = this._fields.length; i < l; i++) {
+    for (i = 0, l = this._fields.length; i < l; i += 1) {
       field = this._fields[i];
       body += '    P[j] = \'' + field._name + '\';\n';
       if (field.getDefault() === undefined) {
@@ -1548,7 +1548,7 @@ RecordType.prototype._createReader = function () {
   var names = [];
   var values = [this._constructor];
   var i, l;
-  for (i = 0, l = this._fields.length; i < l; i++) {
+  for (i = 0, l = this._fields.length; i < l; i += 1) {
     names.push('t' + i);
     values.push(this._fields[i]._type);
   }
@@ -1568,7 +1568,7 @@ RecordType.prototype._createSkipper = function () {
   var body = 'return function skip' + unqualify(this._name) + '(tap) {\n';
   var values = [];
   var i, l;
-  for (i = 0, l = this._fields.length; i < l; i++) {
+  for (i = 0, l = this._fields.length; i < l; i += 1) {
     args.push('t' + i);
     values.push(this._fields[i]._type);
     body += '  t' + i + '._skip(tap);\n';
@@ -1584,7 +1584,7 @@ RecordType.prototype._createWriter = function () {
   var body = 'return function write' + unqualify(this._name) + '(tap, val) {\n';
   var values = [];
   var i, l, field, value;
-  for (i = 0, l = this._fields.length; i < l; i++) {
+  for (i = 0, l = this._fields.length; i < l; i += 1) {
     field = this._fields[i];
     args.push('t' + i);
     values.push(field._type);
@@ -1621,11 +1621,11 @@ RecordType.prototype._updateResolver = function (resolver, type, opts) {
   var innerArgs = []; // Arguments for reader constructor.
   var resolvers = {}; // Resolvers keyed by writer field name.
   var i, j, field, name, names, matches;
-  for (i = 0; i < rFields.length; i++) {
+  for (i = 0; i < rFields.length; i += 1) {
     field = rFields[i];
     names = getAliases(field);
     matches = [];
-    for (j = 0; j < names.length; j++) {
+    for (j = 0; j < names.length; j += 1) {
       name = names[j];
       if (wFieldsMap[name]) {
         matches.push(name);
@@ -1652,7 +1652,7 @@ RecordType.prototype._updateResolver = function (resolver, type, opts) {
   // See if we can add a bypass for unused fields at the end of the record.
   var lazyIndex = -1;
   i = wFields.length;
-  while (i && resolvers[wFields[--i]._name] === undefined) {
+  while (i && resolvers[wFields[i -= 1]._name] === undefined) {
     lazyIndex = i;
   }
 
@@ -1660,7 +1660,7 @@ RecordType.prototype._updateResolver = function (resolver, type, opts) {
   var args = [uname];
   var values = [this._constructor];
   var body = '  return function read' + uname + '(tap,lazy) {\n';
-  for (i = 0; i < wFields.length; i++) {
+  for (i = 0; i < wFields.length; i += 1) {
     if (i === lazyIndex) {
       body += '  if (!lazy) {\n';
     }
@@ -1689,7 +1689,7 @@ RecordType.prototype._updateResolver = function (resolver, type, opts) {
 RecordType.prototype._match = function (tap1, tap2) {
   var fields = this._fields;
   var i, l, field, order, type;
-  for (i = 0, l = fields.length; i < l; i++) {
+  for (i = 0, l = fields.length; i < l; i += 1) {
     field = fields[i];
     order = field._order;
     type = field._type;
@@ -1711,7 +1711,7 @@ RecordType.prototype._copy = function (val, opts) {
   var hook = opts && opts.fieldHook;
   var values = [undefined];
   var i, l, field, value;
-  for (i = 0, l = this._fields.length; i < l; i++) {
+  for (i = 0, l = this._fields.length; i < l; i += 1) {
     field = this._fields[i];
     value = field._type._copy(typeof val[field._name] == 'undefined' ? field.getDefault() : val[field._name], opts);
     if (hook) {
@@ -1719,13 +1719,13 @@ RecordType.prototype._copy = function (val, opts) {
     }
     values.push(value);
   }
-  return new (this._constructor.bind.apply(this._constructor, values));
+  return new (this._constructor.bind.apply(this._constructor, values))();
 };
 
 RecordType.prototype.compare = function (val1, val2) {
   var fields = this._fields;
   var i, l, field, name, order, type;
-  for (i = 0, l = fields.length; i < l; i++) {
+  for (i = 0, l = fields.length; i < l; i += 1) {
     field = fields[i];
     name = field._name;
     order = field._order;
@@ -1744,7 +1744,7 @@ RecordType.prototype.random = function () {
   // jshint -W058
   var fields = this._fields.map(function (f) { return f._type.random(); });
   fields.unshift(undefined);
-  return new (this._constructor.bind.apply(this._constructor, fields));
+  return new (this._constructor.bind.apply(this._constructor, fields))();
 };
 
 RecordType.prototype.getAliases = function () { return this._aliases; };
@@ -2096,7 +2096,7 @@ function getAliases(obj) {
   var names = [obj._name];
   var aliases = obj._aliases;
   var i, l;
-  for (i = 0, l = aliases.length; i < l; i++) {
+  for (i = 0, l = aliases.length; i < l; i += 1) {
     names.push(aliases[i]);
   }
   return names;
@@ -2213,7 +2213,7 @@ module.exports = {
     var obj = {Type: Type, LogicalType: LogicalType};
     var types = Object.keys(TYPES);
     var i, l, Class;
-    for (i = 0, l = types.length; i < l; i++) {
+    for (i = 0, l = types.length; i < l; i += 1) {
       Class = TYPES[types[i]];
       obj[Class.name] = Class;
     }

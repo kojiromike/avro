@@ -151,7 +151,7 @@ namespace Avro.Test
             var timeMicroSchema = (LogicalSchema)Schema.Parse("{\"type\": \"long\", \"logicalType\": \"time-micros\"}");
 
             var time = TimeSpan.Parse(s);
-            
+
             var avroTimeMilli = new TimeMillisecond();
             var avroTimeMicro = new TimeMicrosecond();
 

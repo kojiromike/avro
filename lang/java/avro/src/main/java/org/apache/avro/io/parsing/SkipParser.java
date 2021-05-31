@@ -79,7 +79,7 @@ public class SkipParser extends Parser {
 
   /**
    * Pushes the given symbol on to the skip and skips it.
-   * 
+   *
    * @param symToSkip The symbol that should be skipped.
    */
   public final void skipSymbol(Symbol symToSkip) throws IOException {

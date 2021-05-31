@@ -46,9 +46,9 @@ Apache Avro <dev@avro.apache.org>
 
 =head1 HISTORY
 
-Before contribution to the Apache Avro project, this module was 
-developed by Yann KerhervE<eacute> <yannk@cpank.org> with contributions 
-from Andy Grundman <andy@hybridized.org>, David Bushong 
+Before contribution to the Apache Avro project, this module was
+developed by Yann KerhervE<eacute> <yannk@cpank.org> with contributions
+from Andy Grundman <andy@hybridized.org>, David Bushong
 <dbushong@mashlogic.com>, and Ilya Martynov <ilya@iponweb.net>.
 
 =head1 COPYRIGHT

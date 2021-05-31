@@ -30,4 +30,3 @@ limitations under the License.
     cd lang\c++
     cmake -G "Visual Studio 16 2019" -DBOOST_ROOT=C:\<path to>\boost_1_68_0 -DBOOST_INCLUDEDIR=c:\<path to>\boost_1_68_0\boost  -DBOOST_LIBRARYDIR=c:\<path to>\boost_1_68_0\lib64-msvc-14.1 -DSNAPPY_INCLUDE_DIR=C:\<path to>\snappy-visual-cpp -DSNAPPY_LIBRARIES=C:\<path to>\snappy-visual-cpp\x64\Release\snappy.lib ..
     msbuild Avro-cpp.sln /p:Configuration=Release /p:Platform=x64
-

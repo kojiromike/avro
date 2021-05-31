@@ -382,13 +382,3 @@ public class NoSettersTest extends org.apache.avro.specific.SpecificRecordBase i
     }
   }
 }
-
-
-
-
-
-
-
-
-
-

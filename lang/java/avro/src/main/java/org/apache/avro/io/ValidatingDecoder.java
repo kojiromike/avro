@@ -36,7 +36,7 @@ import org.apache.avro.util.Utf8;
  * and configure.
  * <p/>
  * ValidatingDecoder is not thread-safe.
- * 
+ *
  * @see Decoder
  * @see DecoderFactory
  */

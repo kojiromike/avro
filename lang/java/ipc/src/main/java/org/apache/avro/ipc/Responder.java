@@ -87,7 +87,7 @@ public abstract class Responder {
   /**
    * Adds a new plugin to manipulate per-call metadata. Plugins are executed in
    * the order that they are added.
-   * 
+   *
    * @param plugin a plugin that will manipulate RPC metadata
    */
   public void addRPCPlugin(RPCPlugin plugin) {

@@ -34,7 +34,7 @@
 #include <time.h>
 #include <avro.h>
 
-enum { 
+enum {
 	NUMBER_OF_TEST_THREADS = 64,
 	THREAD_ERROR_BUFFER_SIZE = 1024,
 	MAX_THREAD_SLEEP_MILLIS = 3000,
@@ -65,7 +65,7 @@ int main()
 	unsigned i;
 	int found_error = 0;
 
-	srand( (unsigned)time( NULL ) );  
+	srand( (unsigned)time( NULL ) );
 
 	memset( threads_data, 0, sizeof(threads_data) );
 	for ( i = 0; i < NUMBER_OF_TEST_THREADS; i++ )
@@ -108,7 +108,7 @@ static DWORD worker_thread( LPVOID context )
 static void *worker_thread( void *context )
 #endif
 {
-	/* 
+	/*
 	worker thread set an error, request the error stack and validate it contains the error saved.
 	later it appends another error to the error stack, and validate it contains the two errors.
 	*/
@@ -131,7 +131,7 @@ static void *worker_thread( void *context )
 	if ( strcmp( error_stack, first_error_buffer ) != 0 )
 	{
 		thread_context->error_occured = 1;
-		snprintf( thread_context->error_message, 
+		snprintf( thread_context->error_message,
 				  sizeof(thread_context->error_message),
 				  "invalid error stack found: expected '%s' found '%s'", first_error_buffer, error_stack );
 	}
@@ -148,7 +148,7 @@ static void *worker_thread( void *context )
 	if ( strcmp( error_stack, full_error_buffer ) != 0 )
 	{
 		thread_context->error_occured = 1;
-		snprintf( thread_context->error_message, 
+		snprintf( thread_context->error_message,
 				  sizeof(thread_context->error_message),
 				  "invalid error stack found: expected '%s' found '%s'", full_error_buffer, error_stack );
 	}
@@ -198,6 +198,6 @@ static int join_thread( THR_HANDLE thread_handle )
 
 static int get_random_value( int max_value )
 {
-	return 
+	return
 		rand() % max_value;
 }

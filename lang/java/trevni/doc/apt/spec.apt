@@ -166,13 +166,13 @@ whether subsequent bytes are present.  For example:
 *--------------*------*
 1              | 02
 *--------------*------*
-...             
+...
 *--------------*------*
 -64            | 7f
 *--------------*------*
 64             | 80 01
 *--------------*------*
-...             
+...
 *--------------*------*
 
   * <<bytes>> are encoded as a <long> followed by that many bytes of data.
@@ -288,7 +288,7 @@ name=id       type=int
 name=date     type=long
 name=from     type=string
 name=to       type=string  array=true
-name=content  type=string 
+name=content  type=string
 ---
 
   If a row contains an array of records, e.g. "received" in the following:

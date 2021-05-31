@@ -12,7 +12,7 @@ namespace com.foo
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public enum MyEnum
 	{
 		A,

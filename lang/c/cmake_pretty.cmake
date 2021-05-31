@@ -30,4 +30,3 @@ foreach($dir src tests examples)
     message(STATUS ${indent_output})
 	# TODO: mv ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*~ /tmp; \
 endforeach()
-

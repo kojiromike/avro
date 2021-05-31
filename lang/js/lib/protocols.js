@@ -402,7 +402,7 @@ StatelessEmitter.prototype._emit = function (message, req, cb) {
   // change before the response returns (unlikely but possible if the emitter
   // talks to multiple servers at once or the server changes protocol).
   var serverHashString = this._serverHashString;
-  var id = this._id++;
+  var id = this._id += 1;
   var self = this;
 
   this._pending[id] = cb;
@@ -620,7 +620,7 @@ StatefulEmitter.prototype._emit = function (message, req, cb) {
   }
 
   var tap = new Tap(new Buffer(this._bufferSize));
-  var id = this._id++;
+  var id = this._id += 1;
   try {
     safeWrite(tap, this._idType, -id);
     this._encodeRequest(tap, message, req);
@@ -824,7 +824,7 @@ function StatelessListener(ptcl, readableFactory, opts) {
     .on('end', onEnd);
 
   function onRequestData(buf) {
-    self._pending++;
+    self._pending += 1;
     self.destroy(); // Only one message per stateless listener.
 
     var reqTap = new Tap(buf);
@@ -858,7 +858,7 @@ function StatelessListener(ptcl, readableFactory, opts) {
     } else {
       self._encodeArguments(self._tap, self._message, err, res);
     }
-    self._pending--;
+    self._pending -= 1;
     self._encoder.end(self._tap.getValue());
   }
 
@@ -915,7 +915,7 @@ function StatefulListener(ptcl, readable, writable, opts) {
       return;
     }
 
-    self._pending++;
+    self._pending += 1;
     var name;
     var message;
     var req;
@@ -933,13 +933,13 @@ function StatefulListener(ptcl, readable, writable, opts) {
 
     if (message.oneWay) {
       self.emit('_call', name, req);
-      self._pending--;
+      self._pending -= 1;
     } else {
       self.emit('_call', name, req, onResponse);
     }
 
     function onResponse(err, res) {
-      self._pending--;
+      self._pending -= 1;
       safeWrite(resTap, self._idType, id);
       if (!message) {
         self._encodeSystemError(resTap, err);

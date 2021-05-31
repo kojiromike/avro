@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
 
 /**
  * Deserializes a single datum from a ByteBuffer, byte array, or InputStream.
- * 
+ *
  * @param <D> a datum class
  */
 public interface MessageDecoder<D> {

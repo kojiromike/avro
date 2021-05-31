@@ -36,7 +36,7 @@ import org.apache.avro.util.Utf8;
  * and configure.
  * <p/>
  * ValidatingEncoder is not thread-safe.
- * 
+ *
  * @see Encoder
  * @see EncoderFactory
  */
@@ -60,7 +60,7 @@ public class ValidatingEncoder extends ParsingEncoder implements Parser.ActionHa
 
   /**
    * Reconfigures this ValidatingEncoder to wrap the encoder provided.
-   * 
+   *
    * @param encoder The Encoder to wrap for validation.
    * @return This ValidatingEncoder.
    */

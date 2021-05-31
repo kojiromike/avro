@@ -69,7 +69,7 @@ namespace Avro.Test
             typeof(SchemaParseException), Description = "No fields")]
         [TestCase("{\"type\":\"record\",\"name\":\"LongList\", \"fields\": \"hi\"}",
             typeof(SchemaParseException), Description = "Fields not an array")]
-        [TestCase("[{\"type\": \"record\",\"name\": \"Test\",\"namespace\":\"ns1\",\"fields\": [{\"name\": \"f\",\"type\": \"long\"}]}," + 
+        [TestCase("[{\"type\": \"record\",\"name\": \"Test\",\"namespace\":\"ns1\",\"fields\": [{\"name\": \"f\",\"type\": \"long\"}]}," +
                    "{\"type\": \"record\",\"name\": \"Test\",\"namespace\":\"ns2\",\"fields\": [{\"name\": \"f\",\"type\": \"long\"}]}]")]
         // Enum
         [TestCase("{\"type\": \"enum\", \"name\": \"Test\", \"symbols\": [\"A\", \"B\"]}")]
@@ -250,7 +250,7 @@ namespace Avro.Test
         }
 
         [TestCase("{\"type\": \"enum\", \"name\": \"Test\", \"symbols\": [\"Unknown\", \"A\", \"B\"], \"default\": \"Unknown\" }", "Unknown")]
-        public void TestEnumDefault(string s, string expectedToken) 
+        public void TestEnumDefault(string s, string expectedToken)
         {
             var es = Schema.Parse(s) as EnumSchema;
             Assert.IsNotNull(es);

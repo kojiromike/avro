@@ -116,7 +116,7 @@ sub parse_struct {
     else {
         my $type = $struct;
         ## It's one of our custom defined type
-        
+
         ## Short name provided, prepend the namespace
         if ( $type !~ /\./ ) {
             my $fulltype = $namespace . '.' . $type;
@@ -124,12 +124,12 @@ sub parse_struct {
                 return $names->{$fulltype};
             }
         }
-        
+
         ## Fully-qualified name
         if (exists $names->{$type}) {
             return $names->{$type};
         }
-        
+
         ## It's a primitive type
         return Avro::Schema::Primitive->new(type => $type);
     }
@@ -752,7 +752,7 @@ sub schemas {
     return $schema->{schemas};
 }
 
-sub is_data_valid {    
+sub is_data_valid {
     my $schema = shift;
     my $data = shift;
     for my $type ( @{ $schema->{schemas} } ) {

@@ -2,17 +2,17 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to you under the Apache License, Version 2.0 
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.  See the License for the specific language governing
- * permissions and limitations under the License. 
+ * permissions and limitations under the License.
  */
 
 #include "avro_private.h"
@@ -26,7 +26,7 @@ schema_record_equal(struct avro_record_schema_t *a,
 	long i;
 	if (strcmp(a->name, b->name)) {
 		/*
-		 * They have different names 
+		 * They have different names
 		 */
 		return 0;
 	}
@@ -48,13 +48,13 @@ schema_record_equal(struct avro_record_schema_t *a,
 		}
 		if (strcmp(fa.f->name, fb.f->name)) {
 			/*
-			 * They have fields with different names 
+			 * They have fields with different names
 			 */
 			return 0;
 		}
 		if (!avro_schema_equal(fa.f->type, fb.f->type)) {
 			/*
-			 * They have fields with different schemas 
+			 * They have fields with different schemas
 			 */
 			return 0;
 		}
@@ -68,7 +68,7 @@ schema_enum_equal(struct avro_enum_schema_t *a, struct avro_enum_schema_t *b)
 	long i;
 	if (strcmp(a->name, b->name)) {
 		/*
-		 * They have different names 
+		 * They have different names
 		 */
 		return 0;
 	}
@@ -86,7 +86,7 @@ schema_enum_equal(struct avro_enum_schema_t *a, struct avro_enum_schema_t *b)
 		}
 		if (strcmp(sa.sym, sb.sym) != 0) {
 			/*
-			 * They have different symbol names 
+			 * They have different symbol names
 			 */
 			return 0;
 		}
@@ -99,7 +99,7 @@ schema_fixed_equal(struct avro_fixed_schema_t *a, struct avro_fixed_schema_t *b)
 {
 	if (strcmp(a->name, b->name)) {
 		/*
-		 * They have different names 
+		 * They have different names
 		 */
 		return 0;
 	}
@@ -136,7 +136,7 @@ schema_union_equal(struct avro_union_schema_t *a, struct avro_union_schema_t *b)
 		}
 		if (!avro_schema_equal(ab.schema, bb.schema)) {
 			/*
-			 * They don't have the same schema types 
+			 * They don't have the same schema types
 			 */
 			return 0;
 		}
@@ -150,7 +150,7 @@ schema_link_equal(struct avro_link_schema_t *a, struct avro_link_schema_t *b)
 	/*
 	 * NOTE: links can only be used for named types. They are used in
 	 * recursive schemas so we just check the name of the schema pointed
-	 * to instead of a deep check.  Otherwise, we recurse forever... 
+	 * to instead of a deep check.  Otherwise, we recurse forever...
 	 */
 	if (is_avro_record(a->to)) {
 		if (!is_avro_record(b->to)) {
@@ -168,12 +168,12 @@ int avro_schema_equal(avro_schema_t a, avro_schema_t b)
 {
 	if (!a || !b) {
 		/*
-		 * this is an error. protecting from segfault. 
+		 * this is an error. protecting from segfault.
 		 */
 		return 0;
 	} else if (a == b) {
 		/*
-		 * an object is equal to itself 
+		 * an object is equal to itself
 		 */
 		return 1;
 	} else if (avro_typeof(a) != avro_typeof(b)) {

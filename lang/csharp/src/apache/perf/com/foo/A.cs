@@ -12,7 +12,7 @@ namespace com.foo
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class A : ISpecificRecord
 	{
 		public static Schema _SCHEMA = Avro.Schema.Parse("{\"type\":\"record\",\"name\":\"A\",\"namespace\":\"com.foo\",\"fields\":[{\"name\":\"f1\",\"type\":\"" +

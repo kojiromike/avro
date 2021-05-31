@@ -18,15 +18,15 @@ Avro provides:
 This document will focus on the C implementation of Avro.  To learn more about
 Avro in general, https://avro.apache.org/[visit the Avro website].
 
-== Introduction to Avro C 
+== Introduction to Avro C
 
 ....
     ___                      ______
    /   |_   ___________     / ____/
-  / /| | | / / ___/ __ \   / /     
- / ___ | |/ / /  / /_/ /  / /___   
-/_/  |_|___/_/   \____/   \____/   
-                                   
+  / /| | | / / ___/ __ \   / /
+ / ___ | |/ / /  / /_/ /  / /___
+/_/  |_|___/_/   \____/   \____/
+
 ....
 
 [quote,Waldi Ravens,(walra%moacs11 @ nl.net) 94/03/18]
@@ -603,7 +603,7 @@ avro_record_set(example, "solo", solo_field);
 avro_datum_decref(example);
 ----
 
-In this example, the +solo_field+ datum would *not* be freed since it 
+In this example, the +solo_field+ datum would *not* be freed since it
 has two references: the original reference and a reference inside
 the +Example+ record.  The +avro_datum_decref(example)+ call drops
 the number of reference to one.  If you are finished with the +solo_field+
@@ -625,22 +625,22 @@ avro_datum_t avro_givestring(const char *str);
 
 If you use, +avro_string+ then +Avro C+ will make a copy of your
 string and free it when the datum is dereferenced.  In some cases,
-especially when dealing with large amounts of data, you want 
+especially when dealing with large amounts of data, you want
 to avoid this memory copy.  That's where +avro_wrapstring+ and
 +avro_givestring+ can help.
 
-If you use, +avro_wrapstring+ then +Avro C+ will do no memory 
+If you use, +avro_wrapstring+ then +Avro C+ will do no memory
 management at all.  It will just save a pointer to your data and
-it's your responsibility to free the string.  
+it's your responsibility to free the string.
 
-WARNING: When using +avro_wrapstring+, do not free the string 
+WARNING: When using +avro_wrapstring+, do not free the string
 before you dereference the string datum with +avro_datum_decref()+.
 
 Lastly, if you use +avro_givestring+ then +Avro C+ will free the
 string later when the datum is dereferenced.  In a sense, you
 are "giving" responsibility for freeing the string to +Avro C+.
 
-[WARNING] 
+[WARNING]
 ===============================
 Don't "give" +Avro C+ a string that you haven't allocated from the heap with e.g. +malloc+ or +strdup+.
 
@@ -661,7 +661,7 @@ int avro_write_data(avro_writer_t writer,
 ----
 
 If you pass in a +writers_schema+, then you +datum+ will be validated *before*
-it is sent to the +writer+.  This check ensures that your data has the 
+it is sent to the +writer+.  This check ensures that your data has the
 correct format.  If you are certain your datum is correct, you can pass
 a +NULL+ value for +writers_schema+ and +Avro C+ will not validate before
 writing.
@@ -675,7 +675,7 @@ ____
 I'm not even supposed to be here today!
 ____
 
-Imagine you're a free-lance hacker in Leonardo, New Jersey and you've 
+Imagine you're a free-lance hacker in Leonardo, New Jersey and you've
 been approached by the owner of the local *Quick Stop Convenience* store.
 He wants you to create a contact database case he needs to call employees
 to work on their day off.
@@ -706,7 +706,7 @@ Avro is compact. Here is the data for all 6 people.
 | 28 35 35 35 29 20 31 32 | 33 2D 30 39 38 37 38 08 |	(555) 123-09878.
 | 0E 43 61 69 74 6C 69 6E | 08 42 72 65 65 1C 28 35 |	.Caitlin.Bree.(5
 | 35 35 29 20 31 32 33 2D | 32 33 32 33 36 0A 06 42 |	55) 123-23236..B
-| 6F 62 0C 53 69 6C 65 6E | 74 1C 28 35 35 35 29 20 |	ob.Silent.(555) 
+| 6F 62 0C 53 69 6C 65 6E | 74 1C 28 35 35 35 29 20 |	ob.Silent.(555)
 | 31 32 33 2D 36 34 32 32 | 3A 0C 06 4A 61 79 06 3F |	123-6422:..Jay.?
 | 3F 3F 1C 28 35 35 35 29 | 20 31 32 33 2D 39 31 38 |	??.(555) 123-918
 | 32 34 .. .. .. .. .. .. | .. .. .. .. .. .. .. .. |	24..............
@@ -721,15 +721,15 @@ Now let's read all the records back out
 
 
 Use projection to print only the First name and phone numbers
-          Dante |  (555) 123-4567 | 
-         Randal |  (555) 123-5678 | 
-       Veronica |  (555) 123-0987 | 
-        Caitlin |  (555) 123-2323 | 
-            Bob |  (555) 123-6422 | 
-            Jay |  (555) 123-9182 | 
+          Dante |  (555) 123-4567 |
+         Randal |  (555) 123-5678 |
+       Veronica |  (555) 123-0987 |
+        Caitlin |  (555) 123-2323 |
+            Bob |  (555) 123-6422 |
+            Jay |  (555) 123-9182 |
 ----
 
-The *Quick Stop* owner was so pleased, he asked you to create a 
+The *Quick Stop* owner was so pleased, he asked you to create a
 movie database for his *RST Video* store.
 
 == Reference files
@@ -745,7 +745,7 @@ but we'll be adding more information soon.
 include::../src/avro.h[]
 ----
 
-=== test_avro_data.c 
+=== test_avro_data.c
 
 Another good way to learn how to encode/decode data in +Avro C+ is
 to look at the +test_avro_data.c+ unit test.  This simple unit test
@@ -755,4 +755,3 @@ checks that all the avro types can be encoded/decoded correctly.
 ----
 include::../tests/test_avro_data.c[]
 ----
-

@@ -111,7 +111,7 @@ public class Idl implements Closeable {
     this(inputFile);
     this.resourceLoader = resourceLoader;
   }
-  
+
   private Idl(URL input, Idl parent) throws IOException {
     this(input.openStream(), "UTF-8");
     this.inputDir = "file".equals(input.getProtocol())
@@ -119,7 +119,7 @@ public class Idl implements Closeable {
       : parent.inputDir;
     this.resourceLoader = parent.resourceLoader;
   }
-  
+
   public void close() throws IOException {
     jj_input_stream.inputStream.close();
   }
@@ -150,7 +150,7 @@ public class Idl implements Closeable {
         throw error(key+" values must be textual: "+n, token);
     return values;
   }
-  
+
   private URL findFile(String importFile) throws IOException {
     File file = new File(this.inputDir, importFile);
     URL result = null;
@@ -1512,7 +1512,7 @@ Schema DecimalTypeProperties():
 {
   "(" {precision = Json().asInt();} "," {scale = Json().asInt();} ")"
   {
-    return LogicalTypes.decimal(precision, scale).addToSchema(Schema.create(Type.BYTES)); 
+    return LogicalTypes.decimal(precision, scale).addToSchema(Schema.create(Type.BYTES));
   }
 }
 
@@ -1594,7 +1594,7 @@ Token AnyIdentifier():
 
 private JsonNode Json() :
 { String s; Token t; JsonNode n; }
-{ 
+{
 ( s = JsonString() { n = new TextNode(s); }
 | (t=<INTEGER_LITERAL> { n = new LongNode(Long.parseLong(t.image)); })
 | (t=<FLOATING_POINT_LITERAL> {n=new DoubleNode(Double.parseDouble(t.image));})
@@ -1618,7 +1618,7 @@ String JsonString() :
 }
 
 private JsonNode JsonObject() :
-{ 
+{
   ObjectNode o = FACTORY.objectNode();
 }
 {

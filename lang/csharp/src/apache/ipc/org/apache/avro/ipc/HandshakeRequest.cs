@@ -12,7 +12,7 @@ namespace org.apache.avro.ipc
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class HandshakeRequest : ISpecificRecord
 	{
 		private static Schema _SCHEMA = Avro.Schema.Parse(@"{""type"":""record"",""name"":""HandshakeRequest"",""namespace"":""org.apache.avro.ipc"",""fields"":[{""name"":""clientHash"",""type"":{""type"":""fixed"",""name"":""MD5"",""namespace"":""org.apache.avro.ipc"",""size"":16}},{""name"":""clientProtocol"",""type"":[""null"",""string""]},{""name"":""serverHash"",""type"":""MD5""},{""name"":""meta"",""type"":[""null"",{""type"":""map"",""values"":""bytes""}]}]}");

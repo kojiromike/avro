@@ -480,7 +480,7 @@ namespace Avro.Test.Generic
             }
             else
             {
-                 testResolutionMismatch(ws, mkFixed(ws, value), rs); 
+                 testResolutionMismatch(ws, mkFixed(ws, value), rs);
             }
         }
 

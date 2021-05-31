@@ -583,13 +583,3 @@ public class Player extends org.apache.avro.specific.SpecificRecordBase implemen
     }
   }
 }
-
-
-
-
-
-
-
-
-
-

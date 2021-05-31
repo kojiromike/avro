@@ -12,7 +12,7 @@ namespace org.apache.avro.ipc
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public enum HandshakeMatch
 	{
 		BOTH,

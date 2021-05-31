@@ -470,7 +470,7 @@ namespace Avro
         public static implicit operator AvroDecimal(BigInteger value)
         {
             return new AvroDecimal(value, 0);
-        } 
+        }
 
         /// <summary>
         /// Converts the numeric value of the current <see cref="AvroDecimal"/> to a given type.

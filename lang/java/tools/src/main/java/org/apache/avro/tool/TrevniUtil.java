@@ -49,7 +49,7 @@ class TrevniUtil {
   /**
    * Returns stdin if filename is "-", else opens the local or HDFS file and
    * returns an InputStream for it.
-   * 
+   *
    * @throws IOException
    */
   static InputStream input(String filename, InputStream stdin) throws IOException {
@@ -66,7 +66,7 @@ class TrevniUtil {
   /**
    * Returns stdout if filename is "-", else opens the local or HDFS file and
    * returns an OutputStream for it.
-   * 
+   *
    * @throws IOException
    */
   static OutputStream output(String filename, OutputStream stdout) throws IOException {

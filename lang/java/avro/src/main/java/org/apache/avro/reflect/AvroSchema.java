@@ -31,11 +31,11 @@ import java.lang.annotation.Target;
  * This is useful for slight alterations to the schema that would be
  * automatically inferred. For example, a <code>List&lt;Integer&gt;</code>whose
  * elements may be null might use the annotation
- * 
+ *
  * <pre>
  * &#64;AvroSchema("{\"type\":\"array\",\"items\":[\"null\",\"int\"]}")
  * </pre>
- * 
+ *
  * since the {@link Nullable} annotation could not be used here.
  */
 @Retention(RetentionPolicy.RUNTIME)

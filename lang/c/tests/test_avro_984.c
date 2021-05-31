@@ -20,27 +20,27 @@
 #include <stdlib.h>
 
 
-/* Test code for JIRA Issue AVRO-984. 
- * 
+/* Test code for JIRA Issue AVRO-984.
+ *
  * AVRO-984: Avro-C schema resolution fails on nested array
- * 
+ *
  * This program tests schema resolution for nested arrays. For the
  * purposes of this test, there are two schemas "old" and "new" which
  * are created by reading the same JSON schema.
- * 
+ *
  * The test creates and populates a nested array, and serializes it to
  * memory. The raw memory is written to a file, primarily to decouple
  * writing and reading. Note that the schema is not written to the
- * file. The nested array is also printed to the screen. 
- * 
+ * file. The nested array is also printed to the screen.
+ *
  * The binary file is then read using two separate readers -- the
  * matched reader and the resolved reader.
- * 
+ *
  * In the matched reader case, the "old" and "new" schemas are known
  * to match, and therefore no schema resolution is done. The binary
  * buffer is deserialized into an avro value and the nested array
- * encoded in the avro value is printed to the screen. 
- * 
+ * encoded in the avro value is printed to the screen.
+ *
  * In the resolved reader case, the "old" and "new" schemas are not
  * known to match, and therefore schema resolution is performed. (Note
  * that the schemas *do* match, but we perform schema resolution
@@ -48,25 +48,25 @@
  * appears to succeed. However, once the code tries to perform an
  * "avro_value_read()" the code fails to read the nested array into
  * the avro value.
- * 
+ *
  * Additionally valgrind indicates that conditional jumps are being
- * performed based on uninitialized values. 
- * 
+ * performed based on uninitialized values.
+ *
  * AVRO-C was compiled with CMAKE_INSTALL_PREFIX=avrolib
  * The static library (libavro.a) was copied into a subdirectory of avrolib/lib/static
- * 
+ *
  * This file was compiled under Linux using:
  *   gcc -g avro-984-test.c -o avro984 -I../../build/avrolib/include -L../../build/avrolib/lib/static -lavro
- * 
+ *
  * The code was tested with valgrind using the command:
  *   valgrind -v --leak-check=full --track-origins=yes ./avro984
- * 
+ *
  */
 
 
 // Encode the following json string in NESTED_ARRAY
 // {"type":"array", "items": {"type": "array", "items": "long"}}
-// 
+//
 #define NESTED_ARRAY \
   "{\"type\":\"array\", \"items\": {\"type\": \"array\", \"items\": \"long\"}}"
 
@@ -114,14 +114,14 @@ int print_array_fields ( avro_value_t *p_array )
   try( avro_value_get_size( p_array, &length ),
        "Couldn't get array size" );
   printf( "Main array length = %d\n", (int) length );
-  
+
   for ( idx = 0; idx < length; idx ++ )
   {
     avro_value_t subarray;
     size_t sublength;
     size_t jdx;
     const char *unused;
-    
+
     try ( avro_value_get_by_index( p_array, idx, &subarray, &unused ),
           "Couldn't get subarray" );
 
@@ -145,7 +145,7 @@ int print_array_fields ( avro_value_t *p_array )
       try ( avro_value_get_long( &element, &val ),
             "Couldn't get subarray element value" );
 
-      printf( "nested_array[%d][%d]: type = %d value = %lld\n", 
+      printf( "nested_array[%d][%d]: type = %d value = %lld\n",
               (int) idx, (int) jdx, (int) val_type, (long long) val );
 
     }
@@ -160,7 +160,7 @@ int print_array_fields ( avro_value_t *p_array )
  * the values to be distinct based on the iteration parameter.
  */
 int add_subarray( avro_value_t *p_subarray,
-                  int32_t elements, 
+                  int32_t elements,
                   int32_t iteration )
 {
   avro_value_t element;
@@ -187,7 +187,7 @@ int add_subarray( avro_value_t *p_subarray,
  * dimension of the nested array is "elements". The number of elements
  * in the second dimension of the nested array is hardcoded to 2.
  */
-int add_array( avro_writer_t writer, 
+int add_array( avro_writer_t writer,
                int32_t elements )
 {
   avro_schema_t chosen_schema;
@@ -200,7 +200,7 @@ int add_array( avro_writer_t writer,
 
   // Create avro class and value
   nested_array_class = avro_generic_class_from_schema( chosen_schema );
-  try ( avro_generic_value_new( nested_array_class, &nested ), 
+  try ( avro_generic_value_new( nested_array_class, &nested ),
         "Error creating instance of record" );
 
   for ( idx = 0; idx < elements; idx ++ )
@@ -287,8 +287,8 @@ int write_nested_array_file ( int64_t buf_len, const char *raw_binary_file_name 
 /* Read the raw binary file containing a serialized version of a
  * nested array, written by write_nested_array_file()
  */
-int read_nested_array_file ( int64_t buf_len, 
-                             const char *raw_binary_file_name, 
+int read_nested_array_file ( int64_t buf_len,
+                             const char *raw_binary_file_name,
                              avro_schema_t writer_schema,
                              avro_schema_t reader_schema,
                              int use_resolving_reader
@@ -303,7 +303,7 @@ int read_nested_array_file ( int64_t buf_len,
   // For Matched Reader and Resolving Reader
   avro_value_iface_t *reader_class;
   avro_value_t nested;
-  
+
   // For Resolving Reader
   avro_value_iface_t *resolver;
   avro_value_t resolved_value;
@@ -350,7 +350,7 @@ int read_nested_array_file ( int64_t buf_len,
     if ( avro_resolved_writer_new_value( resolver, &resolved_value ) )
     {
       avro_value_iface_decref( resolver );
-      free(buf);      
+      free(buf);
       exit(EXIT_FAILURE);
     }
 
@@ -413,7 +413,7 @@ int read_nested_array_file ( int64_t buf_len,
   else
   {
     // Matched Reader
-    avro_value_decref( &nested );    
+    avro_value_decref( &nested );
     avro_value_iface_decref( reader_class );
   }
 
@@ -444,7 +444,7 @@ int main(void)
 
   for ( use_resolving_reader = 0; use_resolving_reader < 2; use_resolving_reader++ )
   {
-    read_nested_array_file( buf_len, 
+    read_nested_array_file( buf_len,
                             raw_binary_file_name,
                             schema_old,
                             schema_new,
@@ -458,7 +458,7 @@ int main(void)
 
   // Remove the binary file
   remove(raw_binary_file_name);
-  
+
   printf("\n");
   return 0;
 }

@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class TestRecord : ISpecificRecord
 	{
 		private static Schema _SCHEMA = Avro.Schema.Parse(@"{""type"":""record"",""name"":""TestRecord"",""namespace"":""org.apache.avro.test"",""fields"":[{""name"":""name"",""type"":""string"",""javaAnnotation"":""org.apache.avro.TestAnnotation""},{""name"":""kind"",""type"":{""type"":""enum"",""name"":""Kind"",""namespace"":""org.apache.avro.test"",""symbols"":[""FOO"",""BAR"",""BAZ""],""javaAnnotation"":""org.apache.avro.TestAnnotation""}},{""name"":""hash"",""type"":{""type"":""fixed"",""name"":""MD5"",""namespace"":""org.apache.avro.test"",""size"":16,""javaAnnotation"":""org.apache.avro.TestAnnotation""}}],""javaAnnotation"":""org.apache.avro.TestAnnotation""}");

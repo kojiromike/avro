@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class TestRecordWithUnion : ISpecificRecord
 	{
 		private static Schema _SCHEMA = Avro.Schema.Parse(@"{""type"":""record"",""name"":""TestRecordWithUnion"",""namespace"":""org.apache.avro.test"",""fields"":[{""name"":""kind"",""type"":[""null"",{""type"":""enum"",""name"":""Kind"",""namespace"":""org.apache.avro.test"",""symbols"":[""FOO"",""BAR"",""BAZ""],""javaAnnotation"":""org.apache.avro.TestAnnotation""}]},{""name"":""value"",""type"":[""null"",""string""]}]}");

@@ -1,10 +1,10 @@
 /*
  * This is a public domain general purpose hash table package written by
- * Peter Moore @ UCB. 
+ * Peter Moore @ UCB.
  */
 
 /*
- * @(#) st.h 5.1 89/12/14 
+ * @(#) st.h 5.1 89/12/14
  */
 
 #ifndef ST_INCLUDED

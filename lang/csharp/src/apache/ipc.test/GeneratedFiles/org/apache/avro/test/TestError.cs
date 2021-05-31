@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class TestError : SpecificException
 	{
 		private static Schema _SCHEMA = Avro.Schema.Parse("{\"type\":\"error\",\"name\":\"TestError\",\"namespace\":\"org.apache.avro.test\",\"fields\":[{" +

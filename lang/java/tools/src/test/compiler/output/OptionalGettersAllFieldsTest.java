@@ -487,13 +487,3 @@ public class OptionalGettersAllFieldsTest extends org.apache.avro.specific.Speci
   }
 
 }
-
-
-
-
-
-
-
-
-
-

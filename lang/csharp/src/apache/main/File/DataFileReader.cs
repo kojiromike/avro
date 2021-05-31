@@ -120,7 +120,7 @@ namespace Avro.File
         {
             return OpenReader(inStream, readerSchema, CreateDefaultReader, leaveOpen);
         }
-       
+
         /// <summary>
         ///  Open a reader for a stream using the reader's schema and a custom DatumReader
         /// </summary>

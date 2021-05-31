@@ -70,7 +70,7 @@ public class DecoderFactory {
    *             nearest value in the range. Values less than 512 or greater than
    *             1024*1024 are not recommended.
    * @return This factory, to enable method chaining:
-   * 
+   *
    *         <pre>
    *         DecoderFactory myFactory = new DecoderFactory().useBinaryDecoderBufferSize(4096);
    *         </pre>
@@ -87,7 +87,7 @@ public class DecoderFactory {
   /**
    * Returns this factory's configured preferred buffer size. Used when creating
    * Decoder instances that buffer. See {@link #configureDecoderBufferSize}
-   * 
+   *
    * @return The preferred buffer size, in bytes.
    */
   public int getConfiguredBufferSize() {
@@ -156,7 +156,7 @@ public class DecoderFactory {
    * In the case that the improved performance of a buffering implementation does
    * not outweigh the inconvenience of its buffering semantics, a "direct" decoder
    * can be used.
-   * 
+   *
    * @param in    The InputStream to initialize to
    * @param reuse The BinaryDecoder to <i>attempt</i> to reuse given the factory
    *              configuration. A BinaryDecoder implementation may not be
@@ -227,11 +227,11 @@ public class DecoderFactory {
 
   /**
    * This method is shorthand for
-   * 
+   *
    * <pre>
    * createBinaryDecoder(bytes, 0, bytes.length, reuse);
    * </pre>
-   * 
+   *
    * {@link #binaryDecoder(byte[], int, int, BinaryDecoder)}
    */
   public BinaryDecoder binaryDecoder(byte[] bytes, BinaryDecoder reuse) {

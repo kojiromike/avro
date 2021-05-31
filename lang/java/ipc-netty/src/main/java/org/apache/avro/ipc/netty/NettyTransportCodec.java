@@ -76,7 +76,7 @@ public class NettyTransportCodec {
 
     /**
      * encode msg to ChannelBuffer
-     * 
+     *
      * @param msg NettyDataPack from NettyServerAvroHandler/NettyClientAvroHandler
      *            in the pipeline
      * @return encoded ChannelBuffer

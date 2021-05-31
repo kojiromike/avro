@@ -602,13 +602,13 @@ Here's a stylized version of the actual parsing code, with comments, to illustra
       ReaderUnionAction(index,writerSym):
         // Reader-union actions are allowed where the reader
         // is expecting a union.  In this case, we return the
-        // (parameterized!) reader-union-action symbol and 
+        // (parameterized!) reader-union-action symbol and
         // the code above figures out what to do
         if (t == union) return X;
 
       ErrorAction:
         throw the deferred error;
-      
+
     // Fall-through case:
     if (X == t) then return X
     else throw an error

@@ -31,7 +31,7 @@ import java.util.TreeMap;
  * MAX_HISTORY_SIZE entries which have been added to this histogram, in order.
  *
  * Note that Histogram, by itself, is not synchronized.
- * 
+ *
  * @param <B> Bucket type. Often String, since buckets are typically used for
  *            their toString() representation.
  * @param <T> Type of value

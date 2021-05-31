@@ -12,7 +12,7 @@ namespace com.foo
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class Simple : ISpecificRecord
 	{
 		public static Schema _SCHEMA = Avro.Schema.Parse(@"{""type"":""record"",""name"":""Simple"",""namespace"":""com.foo"",""fields"":[{""name"":""myInt"",""type"":""int""},{""name"":""myLong"",""type"":""long""},{""name"":""myBool"",""type"":""boolean""},{""name"":""myDouble"",""type"":""double""},{""name"":""myFloat"",""type"":""float""},{""name"":""myBytes"",""type"":""bytes""},{""name"":""myString"",""type"":""string""},{""name"":""myNull"",""type"":""null""}]}");

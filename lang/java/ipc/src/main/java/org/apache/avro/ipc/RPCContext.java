@@ -69,7 +69,7 @@ public class RPCContext {
   /**
    * This is an access method for the handshake state provided by the client to
    * the server.
-   * 
+   *
    * @return a map representing handshake state from the client to the server
    */
   public Map<String, ByteBuffer> requestHandshakeMeta() {
@@ -85,7 +85,7 @@ public class RPCContext {
   /**
    * This is an access method for the handshake state provided by the server back
    * to the client
-   * 
+   *
    * @return a map representing handshake state from the server to the client
    */
   public Map<String, ByteBuffer> responseHandshakeMeta() {
@@ -101,7 +101,7 @@ public class RPCContext {
   /**
    * This is an access method for the per-call state provided by the client to the
    * server.
-   * 
+   *
    * @return a map representing per-call state from the client to the server
    */
   public Map<String, ByteBuffer> requestCallMeta() {
@@ -118,7 +118,7 @@ public class RPCContext {
   /**
    * This is an access method for the per-call state provided by the server back
    * to the client.
-   * 
+   *
    * @return a map representing per-call state from the server to the client
    */
   public Map<String, ByteBuffer> responseCallMeta() {
@@ -140,7 +140,7 @@ public class RPCContext {
   /**
    * The response object generated at the server, if it exists. If an exception
    * was generated, this will be null.
-   * 
+   *
    * @return the response created by this RPC, no null if an exception was
    *         generated
    */
@@ -156,7 +156,7 @@ public class RPCContext {
   /**
    * The exception generated at the server, or null if no such exception has
    * occurred
-   * 
+   *
    * @return the exception generated at the server, or null if no such exception
    */
   public Exception error() {
@@ -165,7 +165,7 @@ public class RPCContext {
 
   /**
    * Indicates whether an exception was generated at the server
-   * 
+   *
    * @return true is an exception was generated at the server, or false if not
    */
   public boolean isError() {
@@ -179,7 +179,7 @@ public class RPCContext {
 
   /**
    * Returns the {@link Message} corresponding to this RPC
-   * 
+   *
    * @return this RPC's {@link Message}
    */
   public Message getMessage() {

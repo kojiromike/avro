@@ -164,11 +164,11 @@ public class TestStatsPluginAndServlet {
   /**
    * Demo program for using RPC stats. This automatically generates client RPC
    * requests. Alternatively a can be used (as below) to trigger RPCs.
-   * 
+   *
    * <pre>
    * java -jar build/avro-tools-*.jar rpcsend '{"protocol":"sleepy","namespace":null,"types":[],"messages":{"sleep":{"request":[{"name":"millis","type":"long"}],"response":"null"}}}' sleep localhost 7002 '{"millis": 20000}'
    * </pre>
-   * 
+   *
    * @param args
    * @throws Exception
    */

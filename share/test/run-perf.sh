@@ -44,7 +44,7 @@ function usage {
   echo "of times (controllable by the --iters flag), and takes either the"
   echo "average or minimum of those.  The result of all this is the results"
   echo "of a single 'trial.'"
-  echo 
+  echo
   echo "The basic model is that there is a 'baseline' trial plus any"
   echo "number of 'treatment' trials.  The goal is to compare the"
   echo "performance of each treatment against the baseline.  The main"
@@ -61,15 +61,15 @@ function usage {
   echo
   echo "By default, the running times of cycles are averaged together."
   echo "The --min flag changes that to taking the minimum."
-  echo 
+  echo
   echo "By default, output is written to the current working directory."
   echo "However, lots of intermediate files are generated, so it's recommended"
   echo "that the --out-dir argument is used to redirect the output to"
   echo "a different working directory."
-  echo 
+  echo
   echo "By default, the number of iterations in a trial is 4, but this can"
   echo "be changed with the --iters flag."
-  echo 
+  echo
   echo "Perf.java takes a number of command-line arguments, and can be"
   echo "influenced by system properties.  Command-line arguments can be"
   echo "passed using the --perf-args flag.  When using this switch, pass"
@@ -80,7 +80,7 @@ function usage {
   echo "branch are passed to all trials. System properties that come after"
   echo "the '--' switch and/or first branch are passed to the branch that"
   echo "follows them.  Commonly used system properties include:"
-  echo 
+  echo
   echo "     org.apache.avro.io.perf.count -- the number of elements"
   echo "generated for the inner-most loop of the performance test.  Defaults"
   echo "to 250K.  Must be a multple of 4."
@@ -88,7 +88,7 @@ function usage {
   echo "     org.apache.avro.io.perf.cycles -- the number of times the inner-"
   echo "most loop is called within an invocation of Perf.java.  Defaults"
   echo " to 800."
-  echo 
+  echo
   echo "     org.apache.avro.io.perf.use-direct -- use DirectBinaryEncoder instead"
   echo "of BufferedBinaryEncoder for write tests.  It is slower, but performance-wise"
   echo "it can be more consistent, which helps when trying to detect small performance"
@@ -97,7 +97,7 @@ function usage {
   echo "     org.apache.avro.specific.use_custom_coders -- flag that turns on"
   echo " the use of the custom-coder optimization in the SpecificRecord tests."
   echo "Defaults to 'false;' set to 'true' to turn them on."
-  echo 
+  echo
   echo "Trials, as indicated, are branches in git.  The branch_i arguments"
   echo " indicate which what branches make up a trial.  The first of these"
   echo "(branch_1) is considered the \"baseline\" trial: it's the trial"

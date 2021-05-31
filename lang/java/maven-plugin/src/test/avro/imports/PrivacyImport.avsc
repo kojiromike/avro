@@ -1,5 +1,5 @@
 {
-    "type": "enum", 
+    "type": "enum",
     "namespace": "test",
     "name": "PrivacyImport",
     "doc": "Privacy Test Enum",

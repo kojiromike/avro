@@ -17,9 +17,9 @@
  */
 function makeDotChart(yVals) {
     var xVals = pv.range(1, yVals.length + 1);
-    var data = new Array();
+    var data = [];
     var dotColors = pv.Colors.category20().range();
-    
+
     for (i = 0; i < yVals.length; i = i + 1) {
       data[i] = {x: xVals[i], y: yVals[i]};
     }
@@ -30,7 +30,7 @@ function makeDotChart(yVals) {
 	    x = pv.Scale.linear(0, Math.max.apply(Math, xVals)).range(0, w),
 	    y = pv.Scale.linear(0, Math.max.apply(Math, yVals)).range(0, h),
 	    c = pv.Scale.linear(1, 20).range("orange", "brown");
-	
+
 	/* The root panel. */
 	var vis = new pv.Panel()
 	    .width(w)
@@ -39,7 +39,7 @@ function makeDotChart(yVals) {
 	    .left(50)
 	    .right(10)
 	    .top(5);
-	
+
 	/* Y-axis and ticks. */
 	vis.add(pv.Rule)
 	    .data(y.ticks())
@@ -48,7 +48,7 @@ function makeDotChart(yVals) {
 	  .anchor("left").add(pv.Label)
 	    .text(y.tickFormat);
 
-	
+
 	/* The dot plot! */
 	vis.add(pv.Panel)
 	    .data(data)
@@ -58,7 +58,7 @@ function makeDotChart(yVals) {
 	    .strokeStyle(function(d) {return dotColors[d.x % 20]})
 	    .fillStyle(function() {return this.strokeStyle().alpha(1)})
 	    .title(function(d) {return d.y})
-	    .event("mouseover", pv.Behavior.tipsy({gravity: "n", 
+	    .event("mouseover", pv.Behavior.tipsy({gravity: "n",
 	      fade: false, delayIn: 0}));
 	vis.render();
 }
@@ -79,7 +79,7 @@ function makeBarChart(labels, boundries, data) {
 	    .left(40)
 	    .right(5)
 	    .top(30);
-	
+
 	var bar = vis.add(pv.Bar)
 	    .data(data)
 	    .left(function(){ return x(this.index); })
@@ -88,17 +88,17 @@ function makeBarChart(labels, boundries, data) {
 	    .height(y)
 	    .fillStyle(function(d) {return "#1f77b4"})
 	    .title(function() { return boundries[this.index]; })
-	    .event("mouseover", pv.Behavior.tipsy({gravity: "n", 
+	    .event("mouseover", pv.Behavior.tipsy({gravity: "n",
 	      fade: false, delayIn: 0}));
-	
+
 	bar.anchor("bottom").add(pv.Label)
     	.textMargin(5)
 		.textBaseline("top")
 		.text(function() {return (this.index % 4 == 0) ? labels[this.index]: ""});
-	
+
 	vis.add(pv.Rule)
 	    .data(y.ticks())
-	    .bottom(function(d) {return Math.round(y(d)) - .5})
+	    .bottom(function(d) {return Math.round(y(d)) - 0.5})
 	    .strokeStyle(function(d) {return d ? "rgba(255,255,255,.3)" : "#000"})
 	  .add(pv.Rule)
 	    .left(0)

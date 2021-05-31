@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * Consumers of this class call the {@link #find} method to find all subcases
  * marked with a given label. For example, imagine the following test-case file:
  * <blockquote>
- * 
+ *
  * <pre>
  *    &lt;&lt;INPUT 0
  *    &lt;&lt;VALUE 0
@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  *    &lt;&lt;SEXP (+ 1 1)
  *    SEXP
  * </pre>
- * 
+ *
  * </blockquote> Calling {@link #find} on the label "VALUE" will return two test
  * cases, the pair <code>&lt;"0","0"&gt;</code> and
  * <code>&lt;"1+1","2"&gt;</code>. Calling it on the label "PPRINT" will return
@@ -68,11 +68,11 @@ import java.util.regex.Pattern;
  * There are two forms of heredocs, single-line and multi-line. The examples
  * above (except "SEXP") are single-line heredocs. The general syntax for these
  * is: <blockquote>
- * 
+ *
  * <pre>
  * ^&lt;&lt;([a-zA-Z][_a-zA-Z0-9]*) (.*)$
  * </pre>
- * 
+ *
  * </blockquote> The first group in this regex is the label of the heredoc, and
  * the second group is the text of the heredoc. A single space separates the two
  * groups and is not part of there heredoc (subsequent spaces <em>will</em> be
@@ -83,7 +83,7 @@ import java.util.regex.Pattern;
  * <p>
  * As the name implies, multi-line heredocs are spread across multiple lines, as
  * in this example: <blockquote>
- * 
+ *
  * <pre>
  *    &lt;&lt;INPUT
  *    1
@@ -93,20 +93,20 @@ import java.util.regex.Pattern;
  *    &lt;&lt;VALUE 3
  *    &lt;&lt;PPRINT 1 + 1 + 1
  * </pre>
- * 
+ *
  * </blockquote> In this case, the input to the test case is spread across
  * multiple lines (the line terminators in these documents are preserved as part
  * of the document text). Multi-line heredocs can be used for both the inputs of
  * text cases and the expected outputs of them.
- * 
+ *
  * <p>
  * The syntax of multi-line heredocs obey the following pseudo-regex:
  * <blockquote>
- * 
+ *
  * <pre>
  * ^&lt;&lt;([a-zA-Z][_a-zA-Z0-9]*)$(.*)$^\1$
  * </pre>
- * 
+ *
  * </blockquote> That is, as illustrated by the example, a multi-line heredoc
  * named "LABEL" consists of the text <code>&lt;lt;LABEL</code> on a line by
  * itself, followed by the text of the heredoc, followed by the text

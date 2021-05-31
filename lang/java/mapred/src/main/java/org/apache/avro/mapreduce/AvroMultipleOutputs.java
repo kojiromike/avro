@@ -62,7 +62,7 @@ import org.apache.hadoop.util.ReflectionUtils;
  * </p>
  *
  * Usage pattern for job submission:
- * 
+ *
  * <pre>
  *
  * Job job = Job.getInstance();
@@ -92,7 +92,7 @@ import org.apache.hadoop.util.ReflectionUtils;
  * </pre>
  * <p>
  * Usage in Reducer:
- * 
+ *
  * <pre>
  *
  * public class MyAvroReducer extends
@@ -170,7 +170,7 @@ public class AvroMultipleOutputs {
    * Checks if output name is valid.
    *
    * name cannot be the name used for the default output
-   * 
+   *
    * @param outputPath base output Name
    * @throws IllegalArgumentException if the output name is not valid.
    */

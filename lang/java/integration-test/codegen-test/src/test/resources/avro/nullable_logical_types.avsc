@@ -6,6 +6,3 @@
     {"name": "nullableDate",  "type": ["null", {"type": "int", "logicalType": "date"}], "default": null}
   ]
 }
-
-
-

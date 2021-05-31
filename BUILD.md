@@ -44,7 +44,7 @@ The working directory in the container is mounted from your host. This
 allows you to access the files in your Avro development tree from the
 Docker container.
 
-There are some additional `DOCKER_` environment variables described in 
+There are some additional `DOCKER_` environment variables described in
 [build.sh](./build.sh) that can be used to interact with the image using
 the build script. Some examples:
 

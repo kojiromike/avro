@@ -438,7 +438,7 @@ public class BlockingBinaryEncoder extends BufferedBinaryEncoder {
    * Called when we've finished writing the last item in an overflow buffer. When
    * this is finished, the top of the stack will be an empty block in the
    * "regular" state.
-   * 
+   *
    * @throws IOException
    */
   private void finishOverflow() throws IOException {

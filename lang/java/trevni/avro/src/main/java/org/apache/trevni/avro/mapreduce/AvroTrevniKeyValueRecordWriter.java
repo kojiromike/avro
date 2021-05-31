@@ -64,7 +64,7 @@ public class AvroTrevniKeyValueRecordWriter<K, V>
 
   /**
    * Constructor.
-   * 
+   *
    * @param context The TaskAttempContext to supply the writer with information
    *                form the job configuration
    */

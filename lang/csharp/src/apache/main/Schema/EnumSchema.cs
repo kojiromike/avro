@@ -127,7 +127,7 @@ namespace Avro
             foreach (string s in this.Symbols)
                 writer.WriteValue(s);
             writer.WriteEndArray();
-            if (null != Default) 
+            if (null != Default)
             {
                 writer.WritePropertyName("default");
                 writer.WriteValue(Default);

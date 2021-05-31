@@ -52,7 +52,7 @@ public abstract class RecordBuilderBase<T extends IndexedRecord> implements Reco
 
   /**
    * Creates a RecordBuilderBase for building records of the given type.
-   * 
+   *
    * @param schema the schema associated with the record class.
    */
   protected RecordBuilderBase(Schema schema, GenericData data) {
@@ -65,7 +65,7 @@ public abstract class RecordBuilderBase<T extends IndexedRecord> implements Reco
   /**
    * RecordBuilderBase copy constructor. Makes a deep copy of the values in the
    * other builder.
-   * 
+   *
    * @param other RecordBuilderBase instance to copy.
    */
   protected RecordBuilderBase(RecordBuilderBase<T> other, GenericData data) {
@@ -80,7 +80,7 @@ public abstract class RecordBuilderBase<T extends IndexedRecord> implements Reco
    * following algorithm: 1. If the value is not null, or the field type is null,
    * or the field type is a union which accepts nulls, returns. 2. Else, if the
    * field has a default value, returns. 3. Otherwise throws AvroRuntimeException.
-   * 
+   *
    * @param field the field to validate.
    * @param value the value to validate.
    * @throws AvroRuntimeException if value is null and the given field does not
@@ -94,7 +94,7 @@ public abstract class RecordBuilderBase<T extends IndexedRecord> implements Reco
 
   /**
    * Tests whether a value is valid for a specified field.
-   * 
+   *
    * @param f     the field for which to test the value.
    * @param value the value to test.
    * @return true if the value is valid for the given field; false otherwise.
@@ -127,7 +127,7 @@ public abstract class RecordBuilderBase<T extends IndexedRecord> implements Reco
 
   /**
    * Gets the default value of the given field, if any.
-   * 
+   *
    * @param field the field whose default value should be retrieved.
    * @return the default value associated with the given field, or null if none is
    *         specified in the schema.

@@ -12,7 +12,7 @@ namespace com.foo
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class MyFixed : SpecificFixed
 	{
 		public static Schema _SCHEMA = Avro.Schema.Parse("{\"type\":\"fixed\",\"name\":\"MyFixed\",\"namespace\":\"com.foo\",\"size\":16}");

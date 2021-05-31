@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class AllTestRecord : ISpecificRecord
 	{
 		private static Schema _SCHEMA = Avro.Schema.Parse(@"{""type"":""record"",""name"":""AllTestRecord"",""namespace"":""org.apache.avro.test"",""fields"":[{""name"":""booleanTest"",""type"":""boolean""},{""name"":""intTest"",""type"":""int""},{""name"":""longTest"",""type"":""long""},{""name"":""floatTest"",""type"":""float""},{""name"":""doubleTest"",""type"":""double""},{""name"":""bytesTest"",""type"":""bytes""},{""name"":""stringTest"",""type"":""string""},{""name"":""enumTest"",""type"":{""type"":""enum"",""name"":""AllEnum"",""namespace"":""org.apache.avro.test"",""symbols"":[""FOO"",""BAR""]}},{""name"":""fixedTest"",""type"":{""type"":""fixed"",""name"":""FixedTest"",""namespace"":""org.apache.avro.test"",""size"":10}},{""name"":""arrayTest"",""type"":{""type"":""array"",""items"":""long""}},{""name"":""mapTest"",""type"":{""type"":""map"",""values"":""long""}},{""name"":""nestedTest"",""type"":[""AllTestRecord"",""null""]}]}");

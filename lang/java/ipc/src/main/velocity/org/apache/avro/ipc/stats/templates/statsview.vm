@@ -16,13 +16,13 @@
 ## limitations under the License.
 
 #macro( makeChart $attr_map )
-#if ($attr_map.type == "bar") 
+#if ($attr_map.type == "bar")
   <script>
     makeBarChart($attr_map.labelStr, $attr_map.boundaryStr, $attr_map.dataStr);
   </script>
 #end
 
-#if ($attr_map.type == "dot") 
+#if ($attr_map.type == "dot")
   <script>
     makeDotChart($attr_map.dataStr);
   </script>
@@ -30,7 +30,7 @@
 #end
 
 #macro( makeChartHeader $attr_map )
-#if ($attr_map.type == "bar") 
+#if ($attr_map.type == "bar")
   <p>
     $attr_map.title <br>
     Average: $attr_map.avg$attr_map.units<br>
@@ -38,7 +38,7 @@
   </p>
 #end
 
-#if ($attr_map.type == "dot") 
+#if ($attr_map.type == "dot")
   <p>
     $attr_map.title <br>
     Most recent calls
@@ -68,17 +68,17 @@
     Running since: $startupTime<br>
     Currently: $currTime
   </p>
-  
-  #if ($inFlightRpcs.size() != 0) 
+
+  #if ($inFlightRpcs.size() != 0)
   <h4>Active RPC's</h4>
     <ol>
-    #foreach( $rpc in $inFlightRpcs ) 
+    #foreach( $rpc in $inFlightRpcs )
       <li>$rpc</li>
     #end
     </ol>
   #end
     #foreach ($message in $messages)
-    #set( $width = $message.charts.size() * 300 ) 
+    #set( $width = $message.charts.size() * 300 )
     <table id="charts_table" width=$width>
       <h3>$message.name ($message.numCalls calls)</h3>
       <tr valign="top">

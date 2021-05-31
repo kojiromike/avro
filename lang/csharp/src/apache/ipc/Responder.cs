@@ -181,12 +181,12 @@ namespace Avro.ipc
                     WriteResponse(m.Response, response, output);
                 else
                 {
-                    try 
+                    try
                     {
                         WriteError(m.SupportedErrors, error, output);
-                    } 
+                    }
                     catch (Exception)
-                    {    
+                    {
                         // Presumably no match on the exception, throw the original
                         throw error;
                     }

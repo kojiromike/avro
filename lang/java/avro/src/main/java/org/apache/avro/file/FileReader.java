@@ -31,7 +31,7 @@ public interface FileReader<D> extends Iterator<D>, Iterable<D>, Closeable {
 
   /**
    * Read the next datum from the file.
-   * 
+   *
    * @param reuse an instance to reuse.
    * @throws NoSuchElementException if no more remain in the file.
    */

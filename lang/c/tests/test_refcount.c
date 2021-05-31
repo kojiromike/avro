@@ -54,7 +54,7 @@ int main(void)
   avro_value_decref( &simple );
   avro_value_iface_decref( simple_array_class );
   avro_schema_decref(schema);
-  
+
   return 0;
 
 }

@@ -1,7 +1,7 @@
 {
   "protocol" : "MyProtocol",
   "namespace" : "com.foo",
-  "types" : [ 
+  "types" : [
    {
 	"type" : "record",
 	"name" : "A",
@@ -13,15 +13,15 @@
 	"symbols" : [ "A", "B", "C" ]
    },
    {
-   "type": "fixed", 
-   "size": 16, 
+   "type": "fixed",
+   "size": 16,
    "name": "MyFixed"
    },
    {
 	"type" : "record",
 	"name" : "Simple",
-	"fields" : 
-			[ 	
+	"fields" :
+			[
 				{ "name" : "myInt", "type" : "int" },
 				{ "name" : "myLong", "type" : "long" },
 				{ "name" : "myBool", "type" : "boolean" },
@@ -31,12 +31,12 @@
 				{ "name" : "myString", "type" : "string" },
 				{ "name" : "myNull", "type" : "null" },
  			]
-   },   
+   },
    {
 	"type" : "record",
 	"name" : "Complex",
-	"fields" : 
-			[ 	
+	"fields" :
+			[
 				{ "name" : "myUInt", "type" : [ "int", "null" ] },
 				{ "name" : "myULong", "type" : [ "long", "null" ] },
 				{ "name" : "myUBool", "type" : [ "boolean", "null" ] },
@@ -44,7 +44,7 @@
 				{ "name" : "myUFloat", "type" : [ "float", "null" ] },
 				{ "name" : "myUBytes", "type" : [ "bytes", "null" ] },
 				{ "name" : "myUString", "type" : [ "string", "null" ] },
-				
+
 				{ "name" : "myInt", "type" : "int" },
 				{ "name" : "myLong", "type" : "long" },
 				{ "name" : "myBool", "type" : "boolean" },
@@ -54,7 +54,7 @@
 				{ "name" : "myString", "type" : "string" },
 				{ "name" : "myNull", "type" : "null" },
 
-				{ "name" : "myFixed", "type" : "MyFixed" },								
+				{ "name" : "myFixed", "type" : "MyFixed" },
 				{ "name" : "myA", "type" : "A" },
 				{ "name" : "myE", "type" : "MyEnum" },
 				{ "name" : "myArray", "type" : { "type" : "array", "items" : "bytes" } },
@@ -68,8 +68,8 @@
    {
 	"type" : "record",
 	"name" : "Wide",
-	"fields" : 
-			[ 	
+	"fields" :
+			[
 				{ "name" : "myInt", "type" : "int" },
 				{ "name" : "myLong", "type" : "long" },
 				{ "name" : "myBool", "type" : "boolean" },
@@ -111,8 +111,8 @@
    {
 	"type" : "record",
 	"name" : "Narrow",
-	"fields" : 
-			[ 	
+	"fields" :
+			[
 				{ "name" : "myInt", "type" : "int" },
 				{ "name" : "myLong", "type" : "long" },
 				{ "name" : "myString", "type" : "string" }

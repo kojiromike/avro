@@ -71,11 +71,11 @@ public class EncoderFactory {
    *             likely to improve performance but may be useful for the
    *             downstream OutputStream.
    * @return This factory, to enable method chaining:
-   * 
+   *
    *         <pre>
    *         EncoderFactory factory = new EncoderFactory().configureBufferSize(4096);
    *         </pre>
-   * 
+   *
    * @see #binaryEncoder(OutputStream, BinaryEncoder)
    */
   public EncoderFactory configureBufferSize(int size) {
@@ -90,7 +90,7 @@ public class EncoderFactory {
   /**
    * Returns this factory's configured default buffer size. Used when creating
    * Encoder instances that buffer writes.
-   * 
+   *
    * @see #configureBufferSize(int)
    * @see #binaryEncoder(OutputStream, BinaryEncoder)
    * @return The preferred buffer size, in bytes.
@@ -109,11 +109,11 @@ public class EncoderFactory {
    *             outside this range are set to the nearest value in the range. The
    *             encoder will require at least this amount of memory.
    * @return This factory, to enable method chaining:
-   * 
+   *
    *         <pre>
    *         EncoderFactory factory = new EncoderFactory().configureBlockSize(8000);
    *         </pre>
-   * 
+   *
    * @see #blockingBinaryEncoder(OutputStream, BinaryEncoder)
    */
   public EncoderFactory configureBlockSize(int size) {
@@ -131,7 +131,7 @@ public class EncoderFactory {
    * #blockingBinaryEncoder(OutputStream, BinaryEncoder) will have block buffers
    * of this size.
    * <p/>
-   * 
+   *
    * @see #configureBlockSize(int)
    * @see #blockingBinaryEncoder(OutputStream, BinaryEncoder)
    * @return The preferred block size, in bytes.

@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class FixedTest : SpecificFixed
 	{
 		private static Schema _SCHEMA = Avro.Schema.Parse("{\"type\":\"fixed\",\"name\":\"FixedTest\",\"namespace\":\"org.apache.avro.test\",\"size\":10}");

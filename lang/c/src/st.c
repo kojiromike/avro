@@ -1,10 +1,10 @@
 /*
  * This is a public domain general purpose hash table package written by
- * Peter Moore @ UCB. 
+ * Peter Moore @ UCB.
  */
 
 /*
- * static char sccsid[] = "@(#) st.c 5.1 89/12/14 Crucible"; 
+ * static char sccsid[] = "@(#) st.c 5.1 89/12/14 Crucible";
  */
 
 #include "avro_private.h"
@@ -44,7 +44,7 @@ static struct st_hash_type type_numhash = {
 };
 
 /*
- * extern int strcmp(const char *, const char *); 
+ * extern int strcmp(const char *, const char *);
  */
 static int strhash(const char *);
 static struct st_hash_type type_strhash = {
@@ -76,7 +76,7 @@ static void rehash(st_table *);
 #define MINSIZE 8
 
 /*
- * Table of prime numbers 2^n+a, 2<=n<=30. 
+ * Table of prime numbers 2^n+a, 2<=n<=30.
  */
 static long primes[] = {
 	8 + 3,
@@ -129,7 +129,7 @@ static int new_size(int size)
 			return primes[i];
 	}
 	/*
-	 * Ran out of polynomials 
+	 * Ran out of polynomials
 	 */
 	return -1;		/* should raise exception */
 #endif
@@ -466,12 +466,12 @@ int st_foreach(st_table *table,int (*func) (ANYARGS),st_data_t arg)
 				}
 				if (!tmp) {
 					/*
-					 * call func with error notice 
+					 * call func with error notice
 					 */
 					return 1;
 				}
 				/*
-				 * fall through 
+				 * fall through
 				 */
 			case ST_CONTINUE:
 				last = ptr;

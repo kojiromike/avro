@@ -29,7 +29,7 @@ namespace Avro.Test.Specific
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public partial class EmbeddedGenericsRecord : ISpecificRecord
 	{
 		public static Schema _SCHEMA = Avro.Schema.Parse(@"{""type"":""record"",""name"":""EmbeddedGenericsRecord"",""namespace"":""Avro.Test.Specific"",""fields"":[{""name"":""OptionalInt"",""type"":[""null"",""int""]},{""name"":""OptionalIntList"",""type"":{""type"":""array"",""items"":[""null"",""int""]}},{""name"":""OptionalUserList"",""type"":{""type"":""array"",""items"":[""null"",{""type"":""record"",""name"":""EmbeddedGenericRecordUser"",""namespace"":""Avro.Test.Specific"",""fields"":[{""name"":""name"",""type"":""string""}]}]}},{""name"":""OptionalIntMatrix"",""type"":{""type"":""array"",""items"":{""type"":""array"",""items"":{""type"":""array"",""items"":[""null"",""int""]}}}},{""name"":""OptionalUserMatrix"",""type"":{""type"":""array"",""items"":{""type"":""array"",""items"":{""type"":""array"",""items"":[""null"",""EmbeddedGenericRecordUser""]}}}},{""name"":""IntMatrix"",""type"":{""type"":""array"",""items"":{""type"":""array"",""items"":{""type"":""array"",""items"":""int""}}}},{""name"":""UserMatrix"",""type"":{""type"":""array"",""items"":{""type"":""array"",""items"":{""type"":""array"",""items"":""EmbeddedGenericRecordUser""}}}}]}");

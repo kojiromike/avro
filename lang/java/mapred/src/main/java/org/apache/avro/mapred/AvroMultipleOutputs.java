@@ -65,7 +65,7 @@ import org.apache.hadoop.io.NullWritable;
  * </p>
  *
  * Usage pattern for job submission:
- * 
+ *
  * <pre>
  *
  * JobConf job = new JobConf();
@@ -95,7 +95,7 @@ import org.apache.hadoop.io.NullWritable;
  * </pre>
  * <p>
  * Usage in Reducer:
- * 
+ *
  * <pre>
  *
  * public class MyAvroReducer extends

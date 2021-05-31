@@ -63,7 +63,7 @@ namespace Avro.Test
 	""type"" : ""record"",
 	""name"" : ""Z"",
 	""fields"" :
-			[ 	
+			[
 				{ ""name"" : ""myUInt"", ""type"" : [ ""int"", ""null"" ] },
 				{ ""name"" : ""myULong"", ""type"" : [ ""long"", ""null"" ] },
 				{ ""name"" : ""myUBool"", ""type"" : [ ""boolean"", ""null"" ] },
@@ -71,7 +71,7 @@ namespace Avro.Test
 				{ ""name"" : ""myUFloat"", ""type"" : [ ""float"", ""null"" ] },
 				{ ""name"" : ""myUBytes"", ""type"" : [ ""bytes"", ""null"" ] },
 				{ ""name"" : ""myUString"", ""type"" : [ ""string"", ""null"" ] },
-				
+
 				{ ""name"" : ""myInt"", ""type"" : ""int"" },
 				{ ""name"" : ""myLong"", ""type"" : ""long"" },
 				{ ""name"" : ""myBool"", ""type"" : ""boolean"" },
@@ -81,7 +81,7 @@ namespace Avro.Test
 				{ ""name"" : ""myString"", ""type"" : ""string"" },
 				{ ""name"" : ""myNull"", ""type"" : ""null"" },
 
-				{ ""name"" : ""myFixed"", ""type"" : ""MyFixed"" },								
+				{ ""name"" : ""myFixed"", ""type"" : ""MyFixed"" },
 				{ ""name"" : ""myA"", ""type"" : ""A"" },
 				{ ""name"" : ""myE"", ""type"" : ""MyEnum"" },
 				{ ""name"" : ""myArray"", ""type"" : { ""type"" : ""array"", ""items"" : ""bytes"" } },
@@ -559,7 +559,7 @@ namespace Avro.Test
         public Schema Schema
         {
             get
-            { 
+            {
                 return Schema.Parse(@"{
    ""type"":""record"",
    ""name"":""EnumRecord"",

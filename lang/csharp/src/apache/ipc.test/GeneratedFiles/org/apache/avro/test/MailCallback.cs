@@ -12,7 +12,7 @@ namespace org.apache.avro.test
 	using System.Text;
 	using Avro;
 	using Avro.Specific;
-	
+
 	public abstract class MailCallback : Mail
 	{
 		public abstract void send(org.apache.avro.test.Message message, Avro.IO.ICallback<System.String> callback);

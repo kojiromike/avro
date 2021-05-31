@@ -77,7 +77,7 @@ public abstract class AvroTrevniRecordWriterBase<K, V, T> extends RecordWriter<K
 
   /**
    * Constructor.
-   * 
+   *
    * @param context The TaskAttempContext to supply the writer with information
    *                form the job configuration
    */
@@ -99,14 +99,14 @@ public abstract class AvroTrevniRecordWriterBase<K, V, T> extends RecordWriter<K
 
   /**
    * Use the task context to construct a schema for writing
-   * 
+   *
    * @throws IOException
    */
   abstract protected Schema initSchema(TaskAttemptContext context);
 
   /**
    * A Trevni flush will close the current file and prep a new writer
-   * 
+   *
    * @throws IOException
    */
   public void flush() throws IOException {

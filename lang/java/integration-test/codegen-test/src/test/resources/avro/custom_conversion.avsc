@@ -9,6 +9,3 @@
     {"name": "nonNullFixedSizeString",  "type": {"type": "bytes", "logicalType": "fixed-size-string", "minLength": 1, "maxLength": 50}}
   ]
 }
-
-
-

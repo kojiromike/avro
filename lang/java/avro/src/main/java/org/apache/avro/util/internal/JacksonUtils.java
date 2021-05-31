@@ -175,7 +175,7 @@ public class JacksonUtils {
 
   /**
    * Convert an object into a map
-   * 
+   *
    * @param datum The object
    * @return Its Map representation
    */

@@ -424,13 +424,3 @@ public class AddExtraOptionalGettersTest extends org.apache.avro.specific.Specif
     }
   }
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 {
-  "type": "record", 
+  "type": "record",
   "name": "SimpleRecord",
   "fields" : [
     {"name": "value", "type": "int"},

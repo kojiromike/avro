@@ -38,7 +38,7 @@ syn region avroComment start="/\*" end="\*/" contains=avroTodo
 syn match avroComment "//.\{-}\(?>\|$\)\@=" contains=avroTodo
 
 " Identifiers
-syn region avroIdentifier start="^\s*\(error\|protocol\|record\)" end="{" contains=avroIdentifierType 
+syn region avroIdentifier start="^\s*\(error\|protocol\|record\)" end="{" contains=avroIdentifierType
 syn keyword avroIdentifierType error protocol record contained nextgroup=avroIdentifierName skipwhite
 syn match avroIdentifierName	"\w\w*" display contained skipwhite
 

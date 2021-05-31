@@ -7,4 +7,3 @@
     {"name": "hello", "type": {"type" : "array" , "items" :"float"}}
   ]
 }
-

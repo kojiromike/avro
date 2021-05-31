@@ -51,9 +51,9 @@ int main()
 	avro_schema_decref (schema);
 
 	// crash
-	avro_datum_t main_datum = avro_record(schema);		
+	avro_datum_t main_datum = avro_record(schema);
 	avro_datum_t id_datum = avro_int32(1);
-	
+
 	if (avro_record_set (main_datum, "ID", id_datum))
 	{
 		printf ("Unable to create datum");
@@ -70,4 +70,3 @@ int main()
 
 	return EXIT_SUCCESS;
 }
-

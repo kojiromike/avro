@@ -73,7 +73,7 @@ namespace Avro.Test
 	""type"" : ""record"",
 	""name"" : ""Z"",
 	""fields"" :
-			[ 	
+			[
 				{ ""name"" : ""myUInt"", ""type"" : [ ""int"", ""null"" ] },
 				{ ""name"" : ""myULong"", ""type"" : [ ""long"", ""null"" ] },
 				{ ""name"" : ""myUBool"", ""type"" : [ ""boolean"", ""null"" ] },
@@ -81,7 +81,7 @@ namespace Avro.Test
 				{ ""name"" : ""myUFloat"", ""type"" : [ ""float"", ""null"" ] },
 				{ ""name"" : ""myUBytes"", ""type"" : [ ""bytes"", ""null"" ] },
 				{ ""name"" : ""myUString"", ""type"" : [ ""string"", ""null"" ] },
-				
+
 				{ ""name"" : ""myInt"", ""type"" : ""int"" },
 				{ ""name"" : ""myLong"", ""type"" : ""long"" },
 				{ ""name"" : ""myBool"", ""type"" : ""boolean"" },
@@ -91,8 +91,8 @@ namespace Avro.Test
 				{ ""name"" : ""myString"", ""type"" : ""string"" },
 				{ ""name"" : ""myNull"", ""type"" : ""null"" },
 
-				{ ""name"" : ""myFixed"", ""type"" : ""MyFixed"" },								
-				{ ""name"" : ""myFixed2"", ""type"" : ""MyFixed"" },								
+				{ ""name"" : ""myFixed"", ""type"" : ""MyFixed"" },
+				{ ""name"" : ""myFixed2"", ""type"" : ""MyFixed"" },
 				{ ""name"" : ""myA"", ""type"" : ""A"" },
 				{ ""name"" : ""myE"", ""type"" : ""MyEnum"" },
 				{ ""name"" : ""myArray"", ""type"" : { ""type"" : ""array"", ""items"" : ""bytes"" } },
@@ -134,7 +134,7 @@ namespace Avro.Test
 	""type"" : ""record"",
 	""name"" : ""Z"",
 	""fields"" :
-			[ 	
+			[
 				{ ""name"" : ""myUInt"", ""type"" : [ ""int"", ""null"" ], ""default"" : 1 },
 				{ ""name"" : ""myULong"", ""type"" : [ ""long"", ""null"" ], ""default"" : 2 },
 				{ ""name"" : ""myUBool"", ""type"" : [ ""boolean"", ""null"" ], ""default"" : true },
@@ -142,7 +142,7 @@ namespace Avro.Test
 				{ ""name"" : ""myUFloat"", ""type"" : [ ""float"", ""null"" ], ""default"" : 4.5 },
 				{ ""name"" : ""myUBytes"", ""type"" : [ ""bytes"", ""null"" ], ""default"" : ""\u00ff"" },
 				{ ""name"" : ""myUString"", ""type"" : [ ""string"", ""null"" ], ""default"" : ""foo"" },
-				
+
 				{ ""name"" : ""myInt"", ""type"" : ""int"", ""default"" : 10 },
 				{ ""name"" : ""myLong"", ""type"" : ""long"", ""default"" : 11 },
 				{ ""name"" : ""myBool"", ""type"" : ""boolean"", ""default"" : false },

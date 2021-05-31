@@ -1,4 +1,4 @@
-Apache Avro Distribution 
+Apache Avro Distribution
 
 Avro is a data serialization system.
 
