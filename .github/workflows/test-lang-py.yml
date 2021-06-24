@@ -69,10 +69,17 @@ jobs:
 
       - name: Typechecks
         if: ${{ matrix.python == '3.9' }}
-        run: python3 -m tox -e typechecks
+        run: python3 -m tox -e typechecks -- --html-report type-coverage
 
       - name: Test
         run: python3 -m tox -e py
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: coverage-html
+          path: |
+            lang/py/test-coverage/
+            lang/py/type-coverage/
 
   interop:
     name: Python ${{ matrix.python }} Interop
