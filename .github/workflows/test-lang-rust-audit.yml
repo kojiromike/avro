@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Currently does not work. See https://github.com/actions-rs/audit-check/issues/194
       #- name: Rust Audit
       #  uses: actions-rs/audit-check@v1
